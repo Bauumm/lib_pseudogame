@@ -1,0 +1,17 @@
+{
+	"disambiguator": "library_pseudogame",
+	"name": "pseudogame",
+	"author": "Baum",
+	"description": "A library to create accurate fake players/pivots/walls and backgrounds which can then be used in combination with a custom wall layering system to create advanced effects with ease.",
+	"version": 1,
+	"priority": 0,
+	"dependencies":
+	[
+		{
+			"disambiguator": "ohvrvanilla",
+			"name": "base",
+			"author": "vittorio romeo",
+			"min_version": 1
+		}
+	]
+}
