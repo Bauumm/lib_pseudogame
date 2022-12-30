@@ -26,6 +26,11 @@ function render:background()
 	for i=0, l_getSides() - 1 do
 		local angle = div * i
 		local current_color = {style:get_color(i)}
+		if i % 2 == 0 and i == l_getSides() - 1 and l_getDarkenUnevenBackgroundChunk() then
+			for i=1,3 do
+				current_color[i] = current_color[i] / 1.4
+			end
+		end
 		local vertices = {0, 0, 0, 0}
 		vertices[5], vertices[6] = get_orbit(angle + half_div, distance)
 		vertices[7], vertices[8] = get_orbit(angle - half_div, distance)
