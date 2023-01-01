@@ -34,10 +34,17 @@ function fake_cw_container:create()
 end
 
 function fake_cw_container:destroy(handle)
+	self:_check_handle(handle)
 	self._data[handle] = nil
 	table.insert(self._freed, handle)
 	self.size = self.size - 1
 	self._must_apply_all = true
+end
+
+function fake_cw_container:_check_handle(handle)
+	if self._data[handle] == nil then
+		error("attempting to access invalid cw handle!")
+	end
 end
 
 function fake_cw_container:clear()
@@ -49,6 +56,7 @@ function fake_cw_container:clear()
 end
 
 function fake_cw_container:set_vertex_color(handle, vertex, r, g, b, a)
+	self:_check_handle(handle)
 	local data = self._data[handle]
 	data.colors[vertex + 1][1] = r
 	data.colors[vertex + 1][2] = g
@@ -58,6 +66,7 @@ function fake_cw_container:set_vertex_color(handle, vertex, r, g, b, a)
 end
 
 function fake_cw_container:set_color(handle, r, g, b, a)
+	self:_check_handle(handle)
 	local data = self._data[handle]
 	for vertex=1, 4 do
 		data.colors[vertex][1] = r
@@ -69,6 +78,7 @@ function fake_cw_container:set_color(handle, r, g, b, a)
 end
 
 function fake_cw_container:set_vertex_pos(handle, vertex, x, y)
+	self:_check_handle(handle)
 	local vertices = self._data[handle].vertices
 	vertices[vertex * 2 + 1] = x
 	vertices[vertex * 2 + 2] = y
@@ -76,15 +86,18 @@ function fake_cw_container:set_vertex_pos(handle, vertex, x, y)
 end
 
 function fake_cw_container:get_vertex_pos(handle, vertex)
+	self:_check_handle(handle)
 	local vertices = self._data[handle].vertices
 	return vertices[vertex * 2 + 1], vertices[vertex * 2 + 2]
 end
 
 function fake_cw_container:get_vertices(handle)
+	self:_check_handle(handle)
 	return self._data[handle].vertices
 end
 
 function fake_cw_container:set_vertices(handle, x0, y0, x1, y1, x2, y2, x3, y3)
+	self:_check_handle(handle)
 	self._data[handle].vertices[1] = x0
 	self._data[handle].vertices[2] = y0
 	self._data[handle].vertices[3] = x1
@@ -97,26 +110,32 @@ function fake_cw_container:set_vertices(handle, x0, y0, x1, y1, x2, y2, x3, y3)
 end
 
 function fake_cw_container:set_collision(handle, collision)
+	self:_check_handle(handle)
 	self._data[handle].collision = collision
 end
 
 function fake_cw_container:set_deadly(handle, deadly)
+	self:_check_handle(handle)
 	self._data[handle].deadly = deadly
 end
 
 function fake_cw_container:set_killing_side(handle, side)
+	self:_check_handle(handle)
 	self._data[handle].killing_side = side
 end
 
 function fake_cw_container:get_collision(handle)
+	self:_check_handle(handle)
 	return self._data[handle].collision
 end
 
 function fake_cw_container:get_deadly(handle)
+	self:_check_handle(handle)
 	return self._data[handle].deadly
 end
 
 function fake_cw_container:get_killing_side(handle)
+	self:_check_handle(handle)
 	return self._data[handle].killing_side
 end
 
