@@ -41,20 +41,12 @@ function injector:update()
 end
 
 function injector:inject_preset(preset)
-	self:inject("onInput", function(frametime, movement, focus)
-		preset:tick(frametime, focus)
-	end)
-	self:inject("onDeath", function()
-		preset:on_death()
-	end)
-	self:inject("onPreDeath", function()
-		preset:on_invincible_death()
-	end)
-	self:inject("onRenderStage", function()
-		preset:post_death()
-	end)
-	self:inject("onCursorSwap", function()
-		preset:on_swap()
-	end)
+	for name, member in pairs(preset) do
+		if type(member) == "function" and name:sub(1, 2) == "on" then
+			self:inject(name, function(...)
+				member(preset, ...)
+			end)
+		end
+	end
 	preset:init()
 end

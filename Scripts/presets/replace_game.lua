@@ -31,7 +31,7 @@ function replace_game:init()
 	layers:select(self.wall_layer)
 end
 
-function replace_game:tick(frametime, focus)
+function replace_game:onInput(frametime, movement, focus)
 	self.frametime = frametime
 	self.player:update(frametime, focus)
 	self.death_effect:update(frametime)
@@ -111,22 +111,22 @@ function replace_game:tick(frametime, focus)
 	end
 end
 
-function replace_game:on_death()
+function replace_game:onDeath()
 	self.death_effect:death()
 end
 
-function replace_game:on_invincible_death()
+function replace_game:onPreDeath()
 	self.death_effect:invincible_death()
 end
 
-function replace_game:on_swap()
+function replace_game:onCursorSwap()
 	self.player:swap()
 end
 
-function replace_game:post_death()
+function replace_game:onRenderStage()
 	if self.death_effect.initialized then
 		self.death_effect:ensure_tickrate(function()
-			self:tick(self.frametime, false)
+			self:onInput(self.frametime, false)
 		end)
 	end
 end
