@@ -34,7 +34,7 @@ end
 function injector:update()
 	for name, func in pairs(self.injected) do
 		if _G[name] ~= func then
-			self:init()
+			self:inject(name, func)
 			return
 		end
 	end

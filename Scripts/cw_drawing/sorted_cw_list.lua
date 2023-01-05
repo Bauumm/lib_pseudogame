@@ -37,9 +37,21 @@ function sorted_cw_list:resize(target_size)
 	end
 end
 
+function sorted_cw_list:resize_if_lower(target_size)
+	if target_size > #self.handles then
+		self:resize(target_size)
+	end
+end
+
 function sorted_cw_list:queue_apply(container, vertex_function, cw_function)
 	table.insert(self._apply_queue, {container, vertex_function, cw_function})
 	self._apply_queue_size = self._apply_queue_size + container.size
+end
+
+function sorted_cw_list:queue_apply_extra(container, transform_function)
+	local objects = container:apply_extra_prepare(transform_function)
+	table.insert(self._apply_queue, {container, objects})
+	self._apply_queue_size = self._apply_queue_size + #objects
 end
 
 function sorted_cw_list:apply()
@@ -47,9 +59,15 @@ function sorted_cw_list:apply()
 	self._apply_queue_size = 0
 	local current_index = 1
 	for i=1, #self._apply_queue do
-		local container, vertex_function, cw_function = unpack(self._apply_queue[i])
-		container:apply(self.handles, current_index, vertex_function, cw_function)
-		current_index = current_index + container.size
+		if type(self._apply_queue[i][2]) == "table" then
+			local container, objects = unpack(self._apply_queue[i])
+			container:apply_extra(self.handles, objects, current_index)
+			current_index = current_index + #objects
+		else
+			local container, vertex_function, cw_function = unpack(self._apply_queue[i])
+			container:apply(self.handles, current_index, vertex_function, cw_function)
+			current_index = current_index + container.size
+		end
 	end
 	for i=#self._apply_queue, 1, -1 do
 		self._apply_queue[i] = nil

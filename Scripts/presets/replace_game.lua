@@ -19,7 +19,6 @@ function replace_game:init()
 		self.player3D = player:new()
 		self.pivot3D = pivot:new()
 	end
-	self.main_layer = layer:new()
 	self.background_layer = layer:new()
 	self.background = background:new()
 	self.pivot = pivot:new()

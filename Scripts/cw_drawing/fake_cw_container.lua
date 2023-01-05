@@ -143,6 +143,27 @@ function fake_cw_container:size()
 	return self.size
 end
 
+function fake_cw_container:iter()
+	local index = 0
+	local count = self.highest_handle
+	local list = self._data
+	return function()
+		index = index + 1
+		while list[index] == nil and index <= count do
+			index = index + 1
+		end
+		if index <= count then
+			local data = list[index]
+			local x0, y0, x1, y1, x2, y2, x3, y3 = unpack(data.vertices)
+			local r0, g0, b0, a0 = unpack(data.colors[1])
+			local r1, g1, b1, a1 = unpack(data.colors[2])
+			local r2, g2, b2, a2 = unpack(data.colors[3])
+			local r3, g3, b3, a3 = unpack(data.colors[4])
+			return x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, data.collision, data.deadly, data.killing_side
+		end
+	end
+end
+
 function fake_cw_container:make_invisible()
 	for handle=1, self.highest_handle do
 		local data = self._data[handle]
@@ -194,5 +215,41 @@ function fake_cw_container:apply(cw_list, start_index, vertex_function, cw_funct
 			end
 			cw_index = cw_index + 1
 		end
+	end
+end
+
+function fake_cw_container:apply_extra_prepare(geometry_transform)
+	local objects = {}
+	for handle=1, self.highest_handle do
+		local data = self._data[handle]
+		if data ~= nil then
+			if self._must_apply_all or self._data_apply_queue[handle] then
+				self._data_apply_queue[handle] = nil
+				local x0, y0, x1, y1, x2, y2, x3, y3 = unpack(data.vertices)
+				local r0, g0, b0, a0 = unpack(data.colors[1])
+				local r1, g1, b1, a1 = unpack(data.colors[2])
+				local r2, g2, b2, a2 = unpack(data.colors[3])
+				local r3, g3, b3, a3 = unpack(data.colors[4])
+				local objs = geometry_transform(x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, data.collision, data.deadly, data.killing_side)
+				for i=1, #objs do
+					table.insert(objects, objs[i])
+				end
+			end
+		end
+	end
+	return objects
+end
+
+function fake_cw_container:apply_extra(cw_list, objects, start_index)
+	cw_index = start_index or 1
+	for i=1, #objects do
+		local obj = objects[i]
+		local cw = cw_list[cw_index]
+		cw_setVertexPos4(cw, unpack(obj, 1, 8))
+		cw_setVertexColor4(cw, unpack(obj, 9, 24))
+		cw_setCollision(cw, unpack(obj, 25, 25))
+		cw_setDeadly(cw, unpack(obj, 26, 26))
+		cw_setKillingSide(cw, unpack(obj, 27, 27))
+		cw_index = cw_index + 1
 	end
 end

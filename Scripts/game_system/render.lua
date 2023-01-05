@@ -65,7 +65,10 @@ function pivot:render(no_cap)
 		cw_setVertexColor4Same(cw0, style:get_main_color())
 		local cw1 = self.cws[i * 2 + 2]
 		if not no_cap then
-			cw_setVertexPos4(cw1, 0, 0, 0, 0, unpack(vertices, 1, 4))
+			cw_setVertexPos(cw1, 0, 0, 0)
+			cw_setVertexPos(cw1, 1, 0, 0)
+			cw_setVertexPos(cw1, 2, unpack(vertices, 3, 4))
+			cw_setVertexPos(cw1, 3, unpack(vertices, 1, 2))
 			cw_setVertexColor4Same(cw1, style:get_cap_color())
 		else
 			cw_setVertexPos4(cw1, 0, 0, 0, 0, 0, 0, 0, 0)

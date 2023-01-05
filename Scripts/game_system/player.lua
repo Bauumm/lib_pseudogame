@@ -35,13 +35,18 @@ function player:render()
 	end
 	local radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
 	local angle = u_getPlayerAngle()
+	if angle ~= angle then
+		angle = self.last_angle
+		u_setPlayerAngle(angle)
+	end
+	self.last_angle = angle
 	local size = 7.3 + (self.focus and -1.5 or 3)
 	self.pos[1], self.pos[2] = get_orbit(angle, radius)
 	local vertices = {}
 	vertices[1], vertices[2] = get_orbit(angle, 7.3, self.pos)
-	vertices[3], vertices[4] = get_orbit(angle + math.rad(100), size, self.pos)
+	vertices[3], vertices[4] = get_orbit(angle, 7.3, self.pos)
 	vertices[5], vertices[6] = get_orbit(angle - math.rad(100), size, self.pos)
-	vertices[7], vertices[8] = get_orbit(angle, 7.3, self.pos)
+	vertices[7], vertices[8] = get_orbit(angle + math.rad(100), size, self.pos)
 	cw_setVertexPos4(self.cw, unpack(vertices))
 	if self.color == nil then
 		cw_setVertexColor4Same(self.cw, style:get_main_color())
