@@ -30,10 +30,18 @@ function desync:init()
 		local sin_rot, cos_rot = math.sin(rad_rot), math.cos(rad_rot)
 		local new_x = x * cos_rot - y * sin_rot
 		local new_y = x * sin_rot + y * cos_rot
-		return new_x, new_y, 128 - r, 128 - g, 128 - b, a
+		return new_x, new_y, 255 - r, 255 - g, 255 - b, a
 	end
 	self.blend = function(r0, g0, b0, a0, r1, g1, b1, a1)
-		return (r0 + r1) / 2, (g0 + g1) / 2, (b0 + b1) / 2, (a0 + a1) / 2
+		local function clamp(c)
+			if c > 255 then
+				return 255
+			elseif c < 0 then
+				return 0
+			end
+			return c
+		end
+		return clamp(r0 + r1) / 1.3, clamp(g0 + g1) / 1.3, clamp(b0 + b1) / 1.3, clamp(a0 + a1) / 1.3
 	end
 end
 
