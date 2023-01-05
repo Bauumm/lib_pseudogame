@@ -18,8 +18,7 @@ function schizophrenic.rotate_point(x, y, angle)
 	return x * math.cos(angle) - y * math.sin(angle), x * math.sin(angle) + y * math.cos(angle)
 end
 
-function schizophrenic.transform_half_mirror(x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, collision, deadly, killing_side)
-	local objs = {}
+function schizophrenic.transform_half_mirror(objects, x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, collision, deadly, killing_side)
 	local upper_points = {}
 	local lower_points = {}
 	local points = {x0, y0, x1, y1, x2, y2, x3, y3}
@@ -35,11 +34,11 @@ function schizophrenic.transform_half_mirror(x0, y0, x1, y1, x2, y2, x3, y3, r0,
 		end
 		if not is_dup then
 			if x < 0 then
-				table.insert(lower_points, x)
-				table.insert(lower_points, y)
+				lower_points[#lower_points + 1] = x
+				lower_points[#lower_points + 1] = y
 			else
-				table.insert(upper_points, x)
-				table.insert(upper_points, y)
+				upper_points[#upper_points + 1] = x
+				upper_points[#upper_points + 1] = y
 			end
 		end
 	end
@@ -47,50 +46,49 @@ function schizophrenic.transform_half_mirror(x0, y0, x1, y1, x2, y2, x3, y3, r0,
 		local a, b = unpack(upper_points, #upper_points - 1, #upper_points)
 		local c, d = unpack(lower_points, #lower_points - 1, #lower_points)
 		local y = (b * c - a * d) / (c - a)
-		table.insert(upper_points, 0)
-		table.insert(upper_points, y)
-		table.insert(lower_points, 0)
-		table.insert(lower_points, y)
+		upper_points[#upper_points + 1] = 0
+		upper_points[#upper_points + 1] = y
+		lower_points[#lower_points + 1] = 0
+		lower_points[#lower_points + 1] = y
 		local a, b = unpack(upper_points, 1, 2)
 		local c, d = unpack(lower_points, 1, 2)
 		local y = (b * c - a * d) / (c - a)
-		table.insert(upper_points, 0)
-		table.insert(upper_points, y)
-		table.insert(lower_points, 0)
-		table.insert(lower_points, y)
+		upper_points[#upper_points + 1] = 0
+		upper_points[#upper_points + 1] = y
+		lower_points[#lower_points + 1] = 0
+		lower_points[#lower_points + 1] = y
 	end
 	if #upper_points ~= 0 then
 		while #upper_points < 8 do
-			table.insert(upper_points, upper_points[1])
-			table.insert(upper_points, upper_points[2])
+			upper_points[#upper_points + 1] = upper_points[1]
+			upper_points[#upper_points + 1] = upper_points[2]
 		end
 	end
 	if #lower_points ~= 0 then
 		while #lower_points < 8 do
-			table.insert(lower_points, lower_points[1])
-			table.insert(lower_points, lower_points[2])
+			lower_points[#lower_points + 1] = lower_points[1]
+			lower_points[#lower_points + 1] = lower_points[2]
 		end
 	end
 	local extra = {r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, false, false, 0}
 	if #upper_points == 8 then
 		for i=1, #extra do
-			table.insert(upper_points, extra[i])
+			upper_points[#upper_points + 1] = extra[i]
 		end
-		table.insert(objs, upper_points)
+		objects[#objects + 1] = upper_points
 	end
 	if #lower_points == 8 then
 		for i=0, 12, 4 do
 			extra[1 + i], extra[2 + i], extra[3 + i], extra[4 + i] = schizophrenic.color_transformation(unpack(extra, 1 + i, 4 + i))
 		end
 		for i=1, #extra do
-			table.insert(lower_points, extra[i])
+			lower_points[#lower_points + 1] = extra[i]
 		end
 		for i=2,8,2 do
 			lower_points[i] = -lower_points[i]
 		end
-		table.insert(objs, lower_points)
+		objects[#objects +1] = lower_points
 	end
-	return objs
 end
 
 function schizophrenic:init()

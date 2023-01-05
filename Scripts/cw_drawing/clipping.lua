@@ -79,6 +79,9 @@ function clipping:get_clipped_poly(poly_points, clipper_points)
 		while #poly_points > poly_size do
 			poly_points[#poly_points] = nil
 		end
+		if #poly_points == 0 then
+			break
+		end
 	end
 	clipping:remove_doubles(poly_points)
 end

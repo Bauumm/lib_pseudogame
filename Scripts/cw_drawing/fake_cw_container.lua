@@ -230,10 +230,7 @@ function fake_cw_container:apply_extra_prepare(geometry_transform)
 				local r1, g1, b1, a1 = unpack(data.colors[2])
 				local r2, g2, b2, a2 = unpack(data.colors[3])
 				local r3, g3, b3, a3 = unpack(data.colors[4])
-				local objs = geometry_transform(x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, data.collision, data.deadly, data.killing_side)
-				for i=1, #objs do
-					table.insert(objects, objs[i])
-				end
+				geometry_transform(objects, x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, data.collision, data.deadly, data.killing_side)
 			end
 		end
 	end
