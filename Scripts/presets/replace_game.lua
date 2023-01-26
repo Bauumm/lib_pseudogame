@@ -57,7 +57,7 @@ function replace_game:onInput(frametime, movement, focus)
 		layers:refresh()
 	end
 
-	layers:select()
+	layers:select(self.target)
 	self.background_layer:draw()
 	if self.depth > 0 then
 		self.pulse3D = self.pulse3D + s_get3dPulseSpeed() * self.pulse3DDirection * frametime

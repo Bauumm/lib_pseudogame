@@ -41,6 +41,10 @@ function injector:update()
 end
 
 function injector:inject_preset(preset)
+	if preset == nil or preset.init == nil then
+		print("trying to inject an invalid preset:")
+		error(preset)
+	end
 	for name, member in pairs(preset) do
 		if type(member) == "function" and name:sub(1, 2) == "on" then
 			self:inject(name, function(...)

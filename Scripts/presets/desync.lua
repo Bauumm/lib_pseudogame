@@ -5,10 +5,7 @@ u_execScript("game_system/player.lua")
 u_execScript("game_system/death_effect.lua")
 u_execScript("game_system/walls.lua")
 u_execScript("invisible.lua")
-desync = {
-	pulse3DDirection = 1,
-	pulse3D = 1
-}
+desync = {}
 
 function desync:init()
 	s_set3dDepth(0)
@@ -26,7 +23,7 @@ function desync:init()
 	self.death_effect_layer2 = layer:new()
 	layers:select(self.wall_layer1)
 	self.transform = function(x, y, r, g, b, a)
-		local rad_rot = math.rad(2 * l_getRotation() + 20)
+		local rad_rot = math.rad(2 * l_getRotation())
 		local sin_rot, cos_rot = math.sin(rad_rot), math.cos(rad_rot)
 		local new_x = x * cos_rot - y * sin_rot
 		local new_y = x * sin_rot + y * cos_rot
@@ -41,7 +38,7 @@ function desync:init()
 			end
 			return c
 		end
-		return clamp(r0 + r1) / 1.3, clamp(g0 + g1) / 1.3, clamp(b0 + b1) / 1.3, clamp(a0 + a1) / 1.3
+		return clamp(r0 + r1) / 1.3, clamp(g0 + g1) / 1.3, clamp(b0 + b1) / 1.3, 255
 	end
 end
 
