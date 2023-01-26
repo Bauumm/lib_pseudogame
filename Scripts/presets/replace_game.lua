@@ -27,6 +27,7 @@ function replace_game:init()
 	self.player = player:new()
 	self.death_effect = death_effect:new(self.player)
 	self.death_effect_layer = layer:new()
+	self.main_layer = layer:new()
 	layers:select(self.wall_layer)
 end
 
@@ -57,7 +58,7 @@ function replace_game:onInput(frametime, movement, focus)
 		layers:refresh()
 	end
 
-	layers:select(self.target)
+	layers:select(self.main_layer)
 	self.background_layer:draw()
 	if self.depth > 0 then
 		self.pulse3D = self.pulse3D + s_get3dPulseSpeed() * self.pulse3DDirection * frametime
@@ -103,6 +104,8 @@ function replace_game:onInput(frametime, movement, focus)
 	self.foreground_layer:draw()
 	self.death_effect_layer:draw()
 	layers:refresh()
+
+	self.death_effect:draw_main(self.main_layer)
 
 	layers:select(self.wall_layer)
 	if not self.death_effect.initialized then

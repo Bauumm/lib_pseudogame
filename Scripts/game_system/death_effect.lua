@@ -10,14 +10,23 @@ function death_effect:new(player)
 		player_hue = 0,
 		initialized = false,
 		rotation_on_death = 0,
+		rotation_speed_on_death = 0,
+		transform = nil,
 		timer = 0,
-		player = player
+		player = player,
+		real_get_rotation = nil,
+		exploit_rot = 100
 	}, death_effect)
 end
 
 function death_effect:death()
 	self.rotation_on_death = l_getRotation()
-	l_setRotationSpeed(1000000)
+	self.rotation_speed_on_death = l_getRotationSpeed()
+	self.real_get_rotation = l_getRotation
+	l_getRotation = function()
+		return self.rotation_on_death
+	end
+	l_setRotationSpeed(self.exploit_rot)
 	self.initialized = true
 end
 
@@ -32,12 +41,30 @@ function death_effect:update(frametime)
 	end
 end
 
+function death_effect:draw_main(main_layer)
+	layers:select()
+	if self.initialized then
+		main_layer:draw_transformed(self.transform)
+	else
+		main_layer:draw()
+	end
+	layers:refresh()
+end
+
 function death_effect:ensure_tickrate(func)
 	if not self.initialized then
 		error("trying to ensure death tick rate without initialization!")
 	end
-	l_setRotation(self.rotation_on_death)
-	while l_getRotationSpeed() <= 990000 do
+	while l_getRotationSpeed() <= self.exploit_rot * 0.99 do
+		self.rotation_speed_on_death = self.rotation_speed_on_death * 0.99
+		local rad_rot = math.rad(self.real_get_rotation() - self.rotation_on_death)
+		local sin_rot, cos_rot = math.sin(rad_rot), math.cos(rad_rot)
+		self.transform = function(x, y, r, g, b, a)
+			local new_x = x * cos_rot - y * sin_rot
+			local new_y = x * sin_rot + y * cos_rot
+			return new_x, new_y, r, g, b, a
+		end
+		self.rotation_on_death = (self.rotation_on_death - self.rotation_speed_on_death) % 360
 		l_setRotationSpeed(l_getRotationSpeed() / 0.99)
 		func()
 	end

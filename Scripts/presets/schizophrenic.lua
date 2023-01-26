@@ -100,7 +100,7 @@ function schizophrenic:init()
 		self.player3D = player:new()
 		self.pivot3D = pivot:new()
 	end
-	self.main_layer = layer:new()
+	self.main_game_layer = layer:new()
 	self.background_layer = layer:new()
 	self.background = background:new()
 	self.pivot = pivot:new()
@@ -109,6 +109,7 @@ function schizophrenic:init()
 	self.player = player:new()
 	self.death_effect = death_effect:new(self.player)
 	self.death_effect_layer = layer:new()
+	self.main_layer = layer:new()
 	layers:select(self.wall_layer)
 end
 
@@ -139,7 +140,7 @@ function schizophrenic:onInput(frametime, movement, focus)
 		layers:refresh()
 	end
 
-	layers:select(self.main_layer)
+	layers:select(self.main_game_layer)
 	self.background_layer:draw()
 	if self.depth > 0 then
 		self.pulse3D = self.pulse3D + s_get3dPulseSpeed() * self.pulse3DDirection * frametime
@@ -185,14 +186,16 @@ function schizophrenic:onInput(frametime, movement, focus)
 	self.foreground_layer:draw()
 	layers:refresh()
 
-	layers:select()
-	self.main_layer:draw_invisible()
-	self.main_layer:draw_transformed_extra(self.transform_half_mirror)
+	layers:select(self.main_layer)
+	self.main_game_layer:draw_invisible()
+	self.main_game_layer:draw_transformed_extra(self.transform_half_mirror)
 	local color_transformation = self.color_transformation
 	self.color_transformation = function(r, g, b, a) return r, g, b, a end
 	self.death_effect_layer:draw_transformed_extra(self.transform_half_mirror)
 	self.color_transformation = color_transformation
 	layers:refresh()
+
+	self.death_effect:draw_main(self.main_layer)
 
 	layers:select(self.wall_layer)
 	if not self.death_effect.initialized then

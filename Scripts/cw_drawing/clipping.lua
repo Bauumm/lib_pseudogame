@@ -38,50 +38,56 @@ function clipping:get_clipped_poly(poly_points, clipper_points)
 	clipping:remove_doubles(poly_points)
 	clipping:remove_doubles(clipper_points)
 	for i=1, #clipper_points, 2 do
-		local x1, y1 = clipper_points[i], clipper_points[i + 1]
-		local x2, y2 = clipper_points[(i + 1) % #clipper_points + 1], clipper_points[(i + 2) % #clipper_points + 1]
-		local dx, dy = x2 - x1, y2 - y1
-		local const_num_part = (x1*y2 - y1*x2)
-		local first_x, first_y
-		local poly_size = 2
-		for i = 1, #poly_points, 2 do
-			local ix, iy = poly_points[i], poly_points[i + 1]
-			local kx, ky = poly_points[(i + 1) % #poly_points + 1], poly_points[(i + 2) % #poly_points + 1]
-			local i_pos, k_pos = dx * (iy-y1) - dy * (ix-x1), dx * (ky-y1) - dy * (kx-x1)
-			local case0, case1, case2 = i_pos < 0 and k_pos < 0, i_pos >= 0 and k_pos < 0, i_pos < 0 and k_pos >= 0
-			local isect, add_this = case1 or case2, case0 or case1
-			if isect then
-				local dikx, diky = ix - kx, iy - ky
-				local other_num_part = (ix*ky - iy*kx)
-				local den = dy * dikx - dx * diky
-				if first_x ~= nil then
-					poly_size = poly_size + 2
-					poly_points[poly_size - 1] = (const_num_part * dikx + dx * other_num_part) / den
-					poly_points[poly_size] = (const_num_part * diky + dy * other_num_part) / den
-				else
-					first_x = (const_num_part * dikx + dx * other_num_part) / den
-					first_y = (const_num_part * diky + dy * other_num_part) / den
-				end
-			end
-			if add_this then
-				if first_x ~= nil then
-					poly_size = poly_size + 2
-					poly_points[poly_size - 1] = kx
-					poly_points[poly_size] = ky
-				else
-					first_x = kx
-					first_y = ky
-				end
-			end
-		end
-		poly_points[1] = first_x
-		poly_points[2] = first_y
-		while #poly_points > poly_size do
-			poly_points[#poly_points] = nil
-		end
+		clipping:slice(
+			poly_points,
+			clipper_points[i], clipper_points[i + 1],
+			clipper_points[(i + 1) % #clipper_points + 1], clipper_points[(i + 2) % #clipper_points + 1]
+		)
 		if #poly_points == 0 then
 			break
 		end
+	end
+end
+
+function clipping:slice(poly_points, x1, y1, x2, y2)
+	local dx, dy = x2 - x1, y2 - y1
+	local const_num_part = (x1*y2 - y1*x2)
+	local first_x, first_y
+	local poly_size = 2
+	for i = 1, #poly_points, 2 do
+		local ix, iy = poly_points[i], poly_points[i + 1]
+		local kx, ky = poly_points[(i + 1) % #poly_points + 1], poly_points[(i + 2) % #poly_points + 1]
+		local i_pos, k_pos = dx * (iy-y1) - dy * (ix-x1), dx * (ky-y1) - dy * (kx-x1)
+		local case0, case1, case2 = i_pos < 0 and k_pos < 0, i_pos >= 0 and k_pos < 0, i_pos < 0 and k_pos >= 0
+		local isect, add_this = case1 or case2, case0 or case1
+		if isect then
+			local dikx, diky = ix - kx, iy - ky
+			local other_num_part = (ix*ky - iy*kx)
+			local den = dy * dikx - dx * diky
+			if first_x ~= nil then
+				poly_size = poly_size + 2
+				poly_points[poly_size - 1] = (const_num_part * dikx + dx * other_num_part) / den
+				poly_points[poly_size] = (const_num_part * diky + dy * other_num_part) / den
+			else
+				first_x = (const_num_part * dikx + dx * other_num_part) / den
+				first_y = (const_num_part * diky + dy * other_num_part) / den
+			end
+		end
+		if add_this then
+			if first_x ~= nil then
+				poly_size = poly_size + 2
+				poly_points[poly_size - 1] = kx
+				poly_points[poly_size] = ky
+			else
+				first_x = kx
+				first_y = ky
+			end
+		end
+	end
+	poly_points[1] = first_x
+	poly_points[2] = first_y
+	while #poly_points > poly_size do
+		poly_points[#poly_points] = nil
 	end
 	clipping:remove_doubles(poly_points)
 end
