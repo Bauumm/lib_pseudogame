@@ -1,7 +1,5 @@
 u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "utils.lua")
 
-
--- Attempt to make real player invisible on death too
 local nothing_shader = shdr_getShaderId("nothing.frag")
 if nothing_shader < 0 then
 	error("Failed loading shader!")

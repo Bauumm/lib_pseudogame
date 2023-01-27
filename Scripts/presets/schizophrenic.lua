@@ -14,80 +14,44 @@ function schizophrenic.color_transformation(r, g, b, a)
 	return 255 - r, 255 - g, 255 - b, a
 end
 
-function schizophrenic.rotate_point(x, y, angle)
-	return x * math.cos(angle) - y * math.sin(angle), x * math.sin(angle) + y * math.cos(angle)
+function schizophrenic.rotate_points(pts, angle)
+	for i=1,#pts,2 do
+		local x, y = pts[i], pts[i + 1]
+		pts[i] = x * math.cos(angle) - y * math.sin(angle)
+		pts[i + 1] = x * math.sin(angle) + y * math.cos(angle)
+	end
 end
 
 function schizophrenic.transform_half_mirror(objects, x0, y0, x1, y1, x2, y2, x3, y3, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, collision, deadly, killing_side)
-	local upper_points = {}
-	local lower_points = {}
 	local points = {x0, y0, x1, y1, x2, y2, x3, y3}
-	for i=1,8,2 do
-		local x = points[i]
-		local y = points[i + 1]
-		x, y = schizophrenic.rotate_point(x, y, math.rad(l_getRotation() * 2))
-		local is_dup = false
-		for j=1,i - 1,2 do
-			if points[j] == x and points[j + 1] == y then
-				is_dup = true
+	local angle = math.rad(l_getRotation() * 2)
+	schizophrenic.rotate_points(points, angle)
+	local extra = {r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, collision, deadly, killing_side}
+	clipping:remove_doubles(points)
+	local pts1, pts2 = clipping:slice(points, 0, 0, -1, 0)
+	local polys = {clipping:divide_poly(pts1), clipping:divide_poly(pts2)}
+	for j=1, #polys do
+		local polys = polys[j]
+		if polys ~= nil then
+			for i=1,#polys do
+				local poly = polys[i]
+				if j == 2 then
+					for i=1,16,4 do
+						for j=0,2 do
+							extra[i + j] = 255 - extra[i + j]
+						end
+					end
+					for i=1,8,2 do
+						poly[i] = -poly[i]
+					end
+				end
+				schizophrenic.rotate_points(poly, angle)
+				for i=1,#extra do
+					poly[#poly + 1] = extra[i]
+				end
+				objects[#objects + 1] = poly
 			end
 		end
-		if not is_dup then
-			if x < 0 then
-				lower_points[#lower_points + 1] = x
-				lower_points[#lower_points + 1] = y
-			else
-				upper_points[#upper_points + 1] = x
-				upper_points[#upper_points + 1] = y
-			end
-		end
-	end
-	if #lower_points >= 2 and #upper_points >= 2 then
-		local a, b = unpack(upper_points, #upper_points - 1, #upper_points)
-		local c, d = unpack(lower_points, #lower_points - 1, #lower_points)
-		local y = (b * c - a * d) / (c - a)
-		upper_points[#upper_points + 1] = 0
-		upper_points[#upper_points + 1] = y
-		lower_points[#lower_points + 1] = 0
-		lower_points[#lower_points + 1] = y
-		local a, b = unpack(upper_points, 1, 2)
-		local c, d = unpack(lower_points, 1, 2)
-		local y = (b * c - a * d) / (c - a)
-		upper_points[#upper_points + 1] = 0
-		upper_points[#upper_points + 1] = y
-		lower_points[#lower_points + 1] = 0
-		lower_points[#lower_points + 1] = y
-	end
-	if #upper_points ~= 0 then
-		while #upper_points < 8 do
-			upper_points[#upper_points + 1] = upper_points[1]
-			upper_points[#upper_points + 1] = upper_points[2]
-		end
-	end
-	if #lower_points ~= 0 then
-		while #lower_points < 8 do
-			lower_points[#lower_points + 1] = lower_points[1]
-			lower_points[#lower_points + 1] = lower_points[2]
-		end
-	end
-	local extra = {r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3, false, false, 0}
-	if #upper_points == 8 then
-		for i=1, #extra do
-			upper_points[#upper_points + 1] = extra[i]
-		end
-		objects[#objects + 1] = upper_points
-	end
-	if #lower_points == 8 then
-		for i=0, 12, 4 do
-			extra[1 + i], extra[2 + i], extra[3 + i], extra[4 + i] = schizophrenic.color_transformation(unpack(extra, 1 + i, 4 + i))
-		end
-		for i=1, #extra do
-			lower_points[#lower_points + 1] = extra[i]
-		end
-		for i=2,8,2 do
-			lower_points[i] = -lower_points[i]
-		end
-		objects[#objects +1] = lower_points
 	end
 end
 

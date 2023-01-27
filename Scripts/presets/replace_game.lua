@@ -5,6 +5,7 @@ u_execScript("game_system/player.lua")
 u_execScript("game_system/death_effect.lua")
 u_execScript("game_system/walls.lua")
 u_execScript("invisible.lua")
+
 replace_game = {
 	pulse3DDirection = 1,
 	pulse3D = 1
