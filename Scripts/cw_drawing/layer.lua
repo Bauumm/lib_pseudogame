@@ -24,6 +24,16 @@ function layer:draw_transformed_extra(transform_function)
 	layers:_get_render_target():queue_apply_extra(self.container, transform_function)
 end
 
+function layer:draw_rotated(angle)
+	self:draw_transformed(function(x, y, r, g, b, a)
+		local cos = math.cos(angle)
+		local sin = math.sin(angle)
+		local new_x = x * cos - y * sin
+		local new_y = x * sin + y * cos
+		return new_x, new_y, r, g, b, a
+	end)
+end
+
 function layer:draw_invisible()
 	self:draw_transformed(function(x, y)
 		return x, y, 0, 0, 0, 0
