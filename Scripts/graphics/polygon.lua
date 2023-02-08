@@ -143,6 +143,9 @@ function Polygon:clip(clipper_polygon)
 	local cw = self:is_clockwise()
 	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:double_vertex_color_pairs() do
 		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw)
+		if return_polygon.vertex_count == 0 then
+			break
+		end
 	end
 	return return_polygon
 end
