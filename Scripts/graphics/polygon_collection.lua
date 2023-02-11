@@ -52,6 +52,10 @@ function PolygonCollection:blend(polygon_collection, blend_func, blend_collectio
 	for polygon0 in self:iter() do
 		for polygon1 in polygon_collection:iter() do
 			local clipped_polygon = polygon0:clip(polygon1)
+			local r, g, b, a = polygon0:get_vertex_color(1)
+			for index, x, y in clipped_polygon:vertex_color_pairs() do
+				clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon1:get_vertex_color(1)))
+			end
 			if clipped_polygon.vertex_count > 0 then
 				blend_collection:add(clipped_polygon)
 			end

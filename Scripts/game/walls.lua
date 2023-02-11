@@ -1,4 +1,4 @@
-u_execScript("game_system/math.lua")
+u_execScript("game/math.lua")
 
 walls = {
 	walls = {},

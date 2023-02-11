@@ -8,6 +8,8 @@ Polygon.__index = Polygon
 -- colors: table = {r0, g0, b0, a0, r1, g1, b1, a1, ...}
 -- return: Polygon
 function Polygon:new(vertices, colors)
+	vertices = vertices or {}
+	colors = colors or {}
 	if #vertices % 2 ~= 0 then
 		error("Polygon: vertices must be 2D points in this format: {x0, y0, x1, y1, ...}")
 	end
@@ -16,8 +18,8 @@ function Polygon:new(vertices, colors)
 		error("Polygon: the number of colors and vertices doesn't match")
 	end
 	local obj = setmetatable({
-		_vertices = vertices or {},
-		_colors = colors or {},
+		_vertices = vertices,
+		_colors = colors,
 		vertex_count = vertex_count,
 		_has_changed = true
 	}, Polygon)
@@ -37,7 +39,7 @@ function Polygon:vertex_color_pairs()
 		if index <= self.vertex_count then
 			local vertex_index = index * 2
 			local color_index = index * 4
-			return index, self._vertices[vertex_index - 1], self._vertices[vertex_index], self.colors[color_index - 3], self.colors[color_index - 2], self.colors[color_index - 1], self.colors[color_index]
+			return index, self._vertices[vertex_index - 1], self._vertices[vertex_index], self._colors[color_index - 3], self._colors[color_index - 2], self._colors[color_index - 1], self._colors[color_index]
 		end
 	end
 end
@@ -56,7 +58,7 @@ function Polygon:double_vertex_color_pairs()
 			local index2 = index % self.vertex_count + 1
 			local vertex_index2 = index2 * 2
 			local color_index2 = index2 * 4
-			return self._vertices[vertex_index - 1], self._vertices[vertex_index], self.colors[color_index - 3], self.colors[color_index - 2], self.colors[color_index - 1], self.colors[color_index], self._vertices[vertex_index2 - 1], self._vertices[vertex_index2], self.colors[color_index2 - 3], self.colors[color_index2 - 2], self.colors[color_index2 - 1], self.colors[color_index2]
+			return self._vertices[vertex_index - 1], self._vertices[vertex_index], self._colors[color_index - 3], self._colors[color_index - 2], self._colors[color_index - 1], self._colors[color_index], self._vertices[vertex_index2 - 1], self._vertices[vertex_index2], self._colors[color_index2 - 3], self._colors[color_index2 - 2], self._colors[color_index2 - 1], self._colors[color_index2]
 		end
 	end
 end
@@ -147,7 +149,7 @@ end
 function Polygon:is_clockwise()
 	local area = 0
 	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
-		area = area + (x1 - x0) * (y1 * y0)
+		area = area + (x1 - x0) * (y1 + y0)
 	end
 	return area > 0
 end
@@ -213,6 +215,9 @@ function Polygon:slice(x0, y0, x1, y1, left, right)
 
 			-- interpolate between vertex colors to keep gradients
 			local fac = (x - kx) / dikx
+			if dikx == 0 then
+				fac = 0
+			end
 			local r = ir * fac + kr * (1 - fac)
 			local g = ig * fac + kg * (1 - fac)
 			local b = ib * fac + kb * (1 - fac)
@@ -281,10 +286,7 @@ end
 -- copies the polygon
 -- return: Polygon
 function Polygon:copy()
-	local copy = Polygon:new()
-	copy._vertices = self._vertices
-	copy._colors = self._colors
-	return copy
+	return Polygon:new({unpack(self._vertices)}, {unpack(self._colors)})
 end
 
 -- transform the vertices and vertex colors of the polygon
