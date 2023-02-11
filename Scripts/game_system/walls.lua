@@ -24,9 +24,9 @@ function walls:wall(side, thickness, speed_mult, acceleration, min_speed, max_sp
 	table.insert(self.walls, {
 		cw = cw,
 		speed = speed_mult * u_getSpeedMultDM(),
-		accel = acceleration,
-		min_speed = min_speed,
-		max_speed = max_speed
+		accel = acceleration / (u_getDifficultyMult() ^ 0.65),
+		min_speed = min_speed * u_getSpeedMultDM(),
+		max_speed = max_speed * u_getSpeedMultDM()
 	})
 end
 
@@ -43,10 +43,14 @@ function walls:update(frametime)
 			wall.speed = wall.speed + wall.accel * frametime
 			if wall.speed > wall.max_speed then
 				wall.speed = wall.max_speed
-				wall.accel = 0
+				if wall.accel > 0 then
+					wall.accel = 0
+				end
 			elseif wall.speed < wall.min_speed then
 				wall.speed = wall.min_speed
-				wall.accel = 0
+				if wall.accel < 0 then
+					wall.accel = 0
+				end
 			end
 		end
 		local points_on_center = 0
@@ -65,7 +69,7 @@ function walls:update(frametime)
 				cw_moveVertexPos(wall.cw, vertex, -x / magnitude * move_distance, -y / magnitude * move_distance)
 			end
 		end
-		cw_setVertexColor4Same(wall.cw, style:get_main_color())
+		cw_setVertexColor4Same(wall.cw, s_getMainColor())
 		if points_on_center == 4 or points_out_of_bounds == 4 then
 			table.insert(del_queue, 1, i)
 			cw_destroy(wall.cw)

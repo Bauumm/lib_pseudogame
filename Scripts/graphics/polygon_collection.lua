@@ -27,7 +27,7 @@ function PolygonCollection:remove(index)
 	if index == self._highest_index then
 		self._highest_index = self._highest_index - 1
 	else
-		self._free_indices[#self._free_indices] = index
+		self._free_indices[#self._free_indices + 1] = index
 	end
 end
 

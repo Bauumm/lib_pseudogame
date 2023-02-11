@@ -56,7 +56,7 @@ function overwrite_cw_functions(polygon_collection)
 	local function polygon_by_index(index)
 		local polygon = polygon_collection:get(index)
 		if polygon == nil then
-			error("cw_setVertexPos: invalid cw handle")
+			error("invalid cw handle: " .. index)
 		end
 		return polygon
 	end

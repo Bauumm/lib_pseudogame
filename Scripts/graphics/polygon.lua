@@ -18,7 +18,7 @@ function Polygon:new(vertices, colors)
 	local obj = setmetatable({
 		_vertices = vertices or {},
 		_colors = colors or {},
-		vertex_count = vertex_count
+		vertex_count = vertex_count,
 		_has_changed = true
 	}, Polygon)
 	obj.split4 = Cache:new(Polygon.split4, obj)
@@ -241,6 +241,9 @@ end
 function Polygon:split4()
 	if self.vertex_count == 0 then
 		return
+	end
+	if self.vertex_count == 4 then
+		return {self._vertices, self._colors}
 	end
 	local polygons = {}
 	local offset = 0
