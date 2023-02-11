@@ -34,91 +34,105 @@ function restore_cw_functions()
 	end
 end
 
-function overwrite_cw_functions(container)
+function overwrite_cw_functions(polygon_collection)
 	cw_create = function()
-		return container:create()
+		local polygon = Polygon:new({0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
+		polygon.extra_data = {collision=true, deadly=false, killing_side=0}
+		return polygon_collection:add(polygon)
 	end
 	cw_createDeadly = function()
-		local handle = container:create()
-		container:set_deadly(true)
-		return handle
+		local polygon = Polygon:new({0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
+		polygon.extra_data = {collision=false, deadly=true, killing_side=0}
+		return polygon_collection:add(polygon)
 	end
 	cw_createNoCollision = function()
-		local handle = container:create()
-		container:set_collision(handle, false)
-		return handle
+		local polygon = Polygon:new({0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
+		polygon.extra_data = {collision=false, deadly=false, killing_side=0}
+		return polygon_collection:add(polygon)
 	end
 	cw_destroy = function(handle)
-		container:destroy(handle)
+		polygon_collection:remove(handle)
+	end
+	local function polygon_by_index(index)
+		local polygon = polygon_collection:get(index)
+		if polygon == nil then
+			error("cw_setVertexPos: invalid cw handle")
+		end
+		return polygon
 	end
 	cw_setVertexPos = function(handle, vertex, x, y)
-		container:set_vertex_pos(handle, vertex, x, y)
+		polygon_by_index(handle):set_vertex_pos(vertex + 1, x, y)
 	end
 	cw_moveVertexPos = function(handle, vertex, offset_x, offset_y)
-		local x, y = container:get_vertex_pos(handle, vertex)
-		container:set_vertex_pos(handle, vertex, x + offset_x, y + offset_y)
+		local polygon = polygon_by_index(handle)
+		local x, y = polygon:get_vertex_pos(vertex + 1)
+		polygon:set_vertex_pos(vertex + 1, x + offset_x, y + offset_y)
 	end
 	cw_moveVertexPos4Same = function(handle, offset_x0, offset_y0, offset_x1, offset_y1, offset_x2, offset_y2, offset_x3, offset_y3)
-		local vertices = container:get_vertices(handle)
-		vertices[1] = vertices[1] + offset_x0
-		vertices[2] = vertices[2] + offset_y0
-		vertices[3] = vertices[3] + offset_x1
-		vertices[4] = vertices[4] + offset_y1
-		vertices[5] = vertices[5] + offset_x2
-		vertices[6] = vertices[6] + offset_y2
-		vertices[7] = vertices[7] + offset_x3
-		vertices[8] = vertices[8] + offset_y3
-		container:set_vertices(handle, unpack(vertices))
+		local polygon = polygon_by_index(handle)
+		local x0, y0 = polygon:get_vertex_pos(1)
+		local x1, y1 = polygon:get_vertex_pos(2)
+		local x2, y2 = polygon:get_vertex_pos(3)
+		local x3, y3 = polygon:get_vertex_pos(4)
+		polygon:set_vertex_pos(1, x0 + offset_x0, y0 + offset_y0)
+		polygon:set_vertex_pos(2, x1 + offset_x1, y1 + offset_y1)
+		polygon:set_vertex_pos(3, x2 + offset_x2, y2 + offset_y2)
+		polygon:set_vertex_pos(4, x3 + offset_x3, y3 + offset_y3)
 	end
 	cw_setVertexColor = function(handle, vertex, r, g, b, a)
-		container:set_vertex_color(handle, vertex, r, g, b, a)
+		polygon_by_index(handle):set_vertex_color(vertex + 1, r, g, b, a)
 	end
 	cw_setVertexPos4 = function(handle, x0, y0, x1, y1, x2, y2, x3, y3)
-		local vertices = container:get_vertices(handle)
-		vertices[1] = x0
-		vertices[2] = y0
-		vertices[3] = x1
-		vertices[4] = y1
-		vertices[5] = x2
-		vertices[6] = y2
-		vertices[7] = x3
-		vertices[8] = y3
-		container:set_vertices(handle, unpack(vertices))
+		local polygon = polygon_by_index(handle)
+		polygon:set_vertex_pos(1, x0, y0)
+		polygon:set_vertex_pos(2, x1, y1)
+		polygon:set_vertex_pos(3, x2, y2)
+		polygon:set_vertex_pos(4, x3, y3)
 	end
 	cw_setVertexColor4 = function(handle, r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3)
-		container:set_vertex_color(handle, 0, r0, g0, b0, a0)
-		container:set_vertex_color(handle, 1, r1, g1, b1, a1)
-		container:set_vertex_color(handle, 2, r2, g2, b2, a2)
-		container:set_vertex_color(handle, 3, r3, g3, b3, a3)
+		local polygon = polygon_by_index(handle)
+		polygon:set_vertex_color(1, r0, g0, b0, a0)
+		polygon:set_vertex_color(2, r1, g1, b1, a1)
+		polygon:set_vertex_color(3, r2, g2, b2, a2)
+		polygon:set_vertex_color(4, r3, g3, b3, a3)
 	end
 	cw_setVertexColor4Same = function(handle, r, g, b, a)
-		container:set_color(handle, r, g, b, a)
+		local polygon = polygon_by_index(handle)
+		polygon:set_vertex_color(1, r, g, b, a)
+		polygon:set_vertex_color(2, r, g, b, a)
+		polygon:set_vertex_color(3, r, g, b, a)
+		polygon:set_vertex_color(4, r, g, b, a)
 	end
 	cw_setCollision = function(handle, collision)
-		container:set_collision(handle, collision)
+		polygon_by_index(handle).extra_data.collision = collision
 	end
 	cw_setDeadly = function(handle, deadly)
-		container:set_deadly(handle, deadly)
+		polygon_by_index(handle).extra_data.deadly = deadly
 	end
 	cw_setKillingSide = function(handle, side)
-		container:set_killing_side(handle, side)
+		polygon_by_index(handle).extra_data.killing_side = killing_side
 	end
-	cw_getCollision = function(handle, collision)
-		return container:get_collision(handle, collision)
+	cw_getCollision = function(handle)
+		return polygon_by_index(handle).collision
 	end
-	cw_getDeadly = function(handle, deadly)
-		return container:get_deadly(handle, deadly)
+	cw_getDeadly = function(handle)
+		return polygon_by_index(handle).deadly
 	end
-	cw_getKillingSide = function(handle, side)
-		return container:get_killing_side(handle, side)
+	cw_getKillingSide = function(handle)
+		return polygon_by_index(handle).killing_side
 	end
 	cw_getVertexPos = function(handle, vertex)
-		return container:get_vertex_pos(handle, vertex)
+		return polygon_by_index(handle):get_vertex_pos(vertex + 1)
 	end
 	cw_getVertexPos4 = function(handle)
-		return unpack(container:get_vertices(handle))
+		local polygon = polygon_by_index(handle)
+		local x0, y0 = polygon:get_vertex_pos(1)
+		local x1, y1 = polygon:get_vertex_pos(2)
+		local x2, y2 = polygon:get_vertex_pos(3)
+		local x3, y3 = polygon:get_vertex_pos(4)
+		return x0, y0, x1, y1, x2, y2, x3, y3
 	end
 	cw_clear = function()
-		container:clear()
+		polygon_collection:clear()
 	end
 end

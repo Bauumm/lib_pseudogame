@@ -4,36 +4,46 @@ PolygonCollection.__index = PolygonCollection
 function PolygonCollection:new()
 	return setmetatable({
 		_polygons = {},
-		size = 0
+		_free_indices = {},
+		_highest_index = 0
 	}, PolygonCollection)
 end
 
 function PolygonCollection:add(polygon)
-	self.size = self.size + 1
-	self._polygons[self.size] = polygon
+	local index
+	if #self._free_indices == 0 then
+		self._highest_index = self._highest_index + 1
+		index = self._highest_index
+	else
+		index = self._free_indices[1]
+		table.remove(self._free_indices, 1)
+	end
+	self._polygons[index] = polygon
+	return index
 end
 
-function PolygonCollection:copy_over(polygon_collection)
-	self:clear()
-	self:copy_add(polygon_collection)
+function PolygonCollection:remove(index)
+	self._polygons[index] = nil
+	if index == self._highest_index then
+		self._highest_index = self._highest_index - 1
+	else
+		self._free_indices[#self._free_indices] = index
+	end
 end
 
-function PolygonCollection:ref_over(polygon_collection)
-	self:clear()
-	self:ref_add(polygon_collection)
+function PolygonCollection:get(index)
+	return self._polygons[index]
 end
 
 function PolygonCollection:copy_add(polygon_collection)
 	for polygon in polygon_collection:iter() do
-		self.size = self.size + 1
-		self._polygons[self.size] = polygon:copy()
+		self:add(polygon:copy())
 	end
 end
 
 function PolygonCollection:ref_add(polygon_collection)
 	for polygon in polygon_collection:iter() do
-		self.size = self.size + 1
-		self._polygons[self.size] = polygon
+		self:add(polygon)
 	end
 end
 
@@ -52,13 +62,19 @@ end
 function PolygonCollection:iter()
 	local index = 0
 	return function()
-		index = index + 1
-		if index <= self.size then
-			return self._polygons[index]
+		local polygon
+		while polygon == nil do
+			index = index + 1
+			if index > self._highest_index then
+				return
+			end
+			polygon = self._polygons[index]
 		end
+		return polygon
 	end
 end
 
 function PolygonCollection:clear()
-	self.size = 0
+	self._highest_index = 0
+	self._free_indices = {}
 end

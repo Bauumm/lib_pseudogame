@@ -5,7 +5,7 @@ Polygon.__index = Polygon
 
 -- The constructor for the Polygon class that represents a 2D polygon with a solid color
 -- vertices: table = {x0, y0, x1, y1, ...}
--- color: table = {r, g, b, a}
+-- colors: table = {r0, g0, b0, a0, r1, g1, b1, a1, ...}
 -- return: Polygon
 function Polygon:new(vertices, colors)
 	if #vertices % 2 ~= 0 then
@@ -102,12 +102,19 @@ end
 -- y: number		-- the y coordinate the vertex should be set to
 function Polygon:set_vertex_pos(index, x, y)
 	self:_check_vert_index(index)
-	local color_index = index * 4
-	self._colors[color_index - 3] = r
-	self._colors[color_index - 2] = g
-	self._colors[color_index - 1] = b
-	self._colors[color_index] = a
+	local vertex_index = index * 2
+	self._vertices[vertex_index - 1] = x
+	self._vertices[vertex_index] = y
 	self:_changed()
+end
+
+-- gets a vertex position
+-- index: number		-- the index of the vertex
+-- returns: number, number	-- the position of the vertex
+function Polygon:get_vertex_pos(index)
+	self:_check_vert_index(index)
+	local vertex_index = index * 2
+	return self._vertices[vertex_index - 1], self._vertices[vertex_index]
 end
 
 -- sets the color of a vertex
@@ -118,10 +125,21 @@ end
 -- a: number		-- the a component of the vertex color
 function Polygon:set_vertex_color(index, r, g, b, a)
 	self:_check_vert_index(index)
-	local vertex_index = index * 2
-	self._vertices[vertex_index - 1] = x
-	self._vertices[vertex_index] = y
+	local color_index = index * 4
+	self._colors[color_index - 3] = r
+	self._colors[color_index - 2] = g
+	self._colors[color_index - 1] = b
+	self._colors[color_index] = a
 	self:_changed()
+end
+
+-- gets a vertex color
+-- index: number				-- the index of the vertex
+-- returns: number, number, number, number	-- the color of the vertex
+function Polygon:get_vertex_color(index)
+	self:_check_vert_index(index)
+	local color_index = index * 4
+	return self._colors[color_index - 3], self._colors[color_index - 2], self._colors[color_index - 1], self._colors[color_index]
 end
 
 -- checks if the polygon is defined in clockwise order
