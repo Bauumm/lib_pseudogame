@@ -257,6 +257,25 @@ function Polygon:split4()
 	return polygons
 end
 
+-- copies the polygon
+-- return: Polygon
+function Polygon:copy()
+	local copy = Polygon:new()
+	copy._vertices = self._vertices
+	copy._colors = self._colors
+	return copy
+end
+
+-- transform the vertices and vertex colors of the polygon
+-- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+function Polygon:transform(transform_func)
+	for index, x, y, r, g, b, a in self:vertex_color_pairs() do
+		x, y, r, g, b, a = transform_func(x, y, r, g, b, a)
+		self:set_vertex_pos(index, x, y)
+		self:set_vertex_color(index, r, g, b, a)
+	end
+end
+
 -- remove duplicate vertices, does not respect color
 function Polygon:_remove_doubles()
 	for i=self.vertex_count * 2, 1, -2 do
