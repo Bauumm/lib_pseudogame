@@ -1,11 +1,28 @@
 u_execScript("game/math.lua")
+u_execScript("game/style.lua")
 
-walls = {
-	walls = {},
-	has_fake_wall = false
-}
+if WallSystem == nil then
+	WallSystem = {
+		systems = {},
+		w_wall = w_wall,
+		w_wallAdj = w_wallAdj,
+		w_wallAcc = w_wallAcc,
+		u_clearWalls = u_clearWalls,
+		has_real_wall = false
+	}
+	WallSystem.__index = WallSystem
+end
 
-function walls:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
+function WallSystem:new()
+	local obj = setmetatable({
+		walls = {},
+		polygon_collection = PolygonCollection:new()
+	}, WallSystem)
+	WallSystem.systems[#WallSystem.systems + 1] = obj
+	return obj
+end
+
+function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
 	acceleration = acceleration or 0
@@ -14,15 +31,13 @@ function walls:wall(side, thickness, speed_mult, acceleration, min_speed, max_sp
 	local distance = l_getWallSpawnDistance()
 	local div = math.pi / l_getSides()
 	local angle = div * 2 * side
-	local vertices = {}
-	vertices[1], vertices[2] = get_orbit(angle - div, distance)
-	vertices[3], vertices[4] = get_orbit(angle + div, distance)
-	vertices[5], vertices[6] = get_orbit(angle + div + l_getWallAngleLeft(), distance + thickness + l_getWallSkewLeft())
-	vertices[7], vertices[8] = get_orbit(angle - div + l_getWallAngleRight(), distance + thickness + l_getWallSkewRight())
-	local cw = cw_create()
-	cw_setVertexPos4(cw, unpack(vertices))
+	local polygon = Polygon:new()
+	polygon:add_vertex(get_orbit(angle - div, distance))
+	polygon:add_vertex(get_orbit(angle + div, distance))
+	polygon:add_vertex(get_orbit(angle + div + l_getWallAngleLeft(), distance + thickness + l_getWallSkewLeft()))
+	polygon:add_vertex(get_orbit(angle - div + l_getWallAngleRight(), distance + thickness + l_getWallSkewRight()))
 	table.insert(self.walls, {
-		cw = cw,
+		polygon = self.polygon_collection:add(polygon),
 		speed = speed_mult * u_getSpeedMultDM(),
 		accel = acceleration / (u_getDifficultyMult() ^ 0.65),
 		min_speed = min_speed * u_getSpeedMultDM(),
@@ -30,11 +45,7 @@ function walls:wall(side, thickness, speed_mult, acceleration, min_speed, max_sp
 	})
 end
 
-function walls:update(frametime)
-	if not self.has_fake_wall then
-		real_w_wallAdj(0, 0, 0)
-		self.has_fake_wall = true
-	end
+function WallSystem:update(frametime)
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
 	local outer_bounds = l_getWallSpawnDistance() * 1.1
 	local del_queue = {}
@@ -55,8 +66,9 @@ function walls:update(frametime)
 		end
 		local points_on_center = 0
 		local points_out_of_bounds = 0
-		for vertex=0,3 do
-			local x, y = cw_getVertexPos(wall.cw, vertex)
+		local polygon = self.polygon_collection:get(wall.polygon)
+		for vertex=1,4 do
+			local x, y = polygon:get_vertex_pos(vertex)
 			local x_dist, y_dist = math.abs(x), math.abs(y)
 			if x_dist > outer_bounds or y_dist > outer_bounds then
 				points_out_of_bounds = points_out_of_bounds + 1
@@ -66,28 +78,34 @@ function walls:update(frametime)
 			else
 				local magnitude = math.sqrt(x ^ 2 + y ^ 2)
 				local move_distance = wall.speed * 5 * frametime
-				cw_moveVertexPos(wall.cw, vertex, -x / magnitude * move_distance, -y / magnitude * move_distance)
+				polygon:set_vertex_pos(vertex, x - x / magnitude * move_distance, y - y / magnitude * move_distance)
 			end
+			polygon:set_vertex_color(vertex, style:get_main_color())
 		end
-		cw_setVertexColor4Same(wall.cw, s_getMainColor())
 		if points_on_center == 4 or points_out_of_bounds == 4 then
 			table.insert(del_queue, 1, i)
-			cw_destroy(wall.cw)
+			self.polygon_collection:remove(wall.polygon)
 		end
 	end
 	for _, i in pairs(del_queue) do
 		table.remove(self.walls, i)
 	end
-	if #self.walls == 0 then
-		real_u_clearWalls()
-		self.has_fake_wall = false
+	local no_walls = true
+	for i=1,#self.systems do
+		local system = self.systems[i]
+		no_walls = no_walls and #system.walls == 0
+	end
+	if no_walls and self.has_real_wall then
+		self.u_clearWalls()
+		WallSystem.has_real_wall = false
+	end
+	if not no_walls and not self.has_real_wall then
+		WallSystem.has_real_wall = true
+		self.w_wallAdj(0, 0, 0)
 	end
 end
 
-
-if type(w_wall) == "userdata" then
-	real_w_wallAdj = w_wallAdj
-	real_u_clearWalls = u_clearWalls
+function WallSystem:overwrite()
 	w_wall = function(side, thickness)
 		t_eval("walls:wall(" .. side .. ", " .. thickness .. ")")
 	end
@@ -104,4 +122,11 @@ if type(w_wall) == "userdata" then
 		end
 		walls.walls = {}
 	end
+end
+
+function WallSystem:restore()
+	w_wall = self.w_wall
+	w_wallAdj = self.w_wallAdj
+	w_wallAcc = self.w_wallAcc
+	u_clearWalls = self.u_clearWalls
 end

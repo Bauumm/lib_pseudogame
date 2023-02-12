@@ -87,6 +87,7 @@ end
 -- index: number	-- the index of the vertex
 function Polygon:remove_vertex(index)
 	self:_check_vert_index(index)
+	self.vertex_count = self.vertex_count - 1
 	local vertex_index = index * 2
 	for i=0,1 do
 		table.remove(self._vertices, vertex_index - i)
@@ -314,7 +315,20 @@ function Polygon:_changed()
 	self._has_changed = true
 end
 
--- returns: true if any data about the polygon has changed since the last call of this function (returns true if never called before)
+-- x: number	-- the x coordinate of the point to check
+-- y: number	-- the y coordinate of the point to check
+-- return: bool	-- true if the point is inside the polygon
+function Polygon:contains_point(x, y)
+	local result = false
+	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
+		if (y0 > y) ~= (y1 > y) and x < (x1 - x0) * (y - y0) / (y1 - y0) + x0 then
+			result = not result
+		end
+	end
+	return result
+end
+
+-- return: true if any data about the polygon has changed since the last call of this function (returns true if never called before)
 function Polygon:has_changed()
 	if self.has_changed then
 		self.has_changed = false

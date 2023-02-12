@@ -1,12 +1,9 @@
-u_execScript("game_system/render.lua")
-u_execScript("game_system/math.lua")
+DeathEffect = {}
+DeathEffect.__index = DeathEffect
 
-death_effect = {}
-death_effect.__index = death_effect
-
-function death_effect:new(player)
+function DeathEffect:new(player)
 	return setmetatable({
-		cws = {},
+		polygon_collection = PolygonCollection:new(),
 		player_hue = 0,
 		initialized = false,
 		rotation_on_death = 0,
@@ -15,43 +12,77 @@ function death_effect:new(player)
 		timer = 0,
 		player = player,
 		real_get_rotation = nil,
-		exploit_rot = 100
-	}, death_effect)
+		exploit_rot = 100,
+		frametime = 0
+	}, DeathEffect)
 end
 
-function death_effect:death()
+function DeathEffect:death()
 	self.rotation_on_death = l_getRotation()
 	self.rotation_speed_on_death = l_getRotationSpeed()
 	self.real_get_rotation = l_getRotation
 	l_getRotation = function()
 		return self.rotation_on_death
 	end
+	self.real_screen_update = screen.update
+	self.real_collection = PolygonCollection:new()
+	screen.update = function(screen, polygon_collection)
+		self.real_collection:clear()
+		for polygon in polygon_collection:iter() do
+			local transformed_poly = polygon:copy()
+			transformed_poly:transform(self.transform)
+			self.real_collection:add(transformed_poly)
+		end
+		self.real_screen_update(screen, self.real_collection)
+	end
 	l_setRotationSpeed(self.exploit_rot)
 	self.initialized = true
 end
 
-function death_effect:invincible_death()
+function DeathEffect:invincible_death()
 	self.timer = 100
 end
 
-function death_effect:update(frametime)
+function DeathEffect:update(frametime)
+	self.frametime = frametime
 	self.timer = self.timer - frametime
 	if self.timer < 0 then
 		self.timer = 0
 	end
-end
-
-function death_effect:draw_main(main_layer)
-	layers:select()
-	if self.initialized then
-		main_layer:draw_transformed(self.transform)
+	if self.initialized or self.timer > 0 then
+		if self.polygon_collection:get(1) == nil then
+			for i=1,6 do
+				self.polygon_collection:add(Polygon:new({0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}))
+			end
+		end
+		self.player_hue = self.player_hue + 18 * frametime
+		if self.player_hue > 360 then
+			self.player_hue = 0
+		end
+		local div = math.pi / 6
+		local radius = self.player_hue / 8
+		local thickness = self.player_hue / 20
+		local color = style.get_color_from_hue(360 - self.player_hue)
+		local it = self.polygon_collection:iter()
+		for i=0, 5 do
+			local angle = div * i * 2
+			local polygon = it()
+			polygon:set_vertex_pos(1, get_orbit(angle - div, radius, self.player.pos))
+			polygon:set_vertex_pos(2, get_orbit(angle + div, radius, self.player.pos))
+			polygon:set_vertex_pos(3, get_orbit(angle + div, radius + thickness, self.player.pos))
+			polygon:set_vertex_pos(4, get_orbit(angle - div, radius + thickness, self.player.pos))
+			for i=1,4 do
+				polygon:set_vertex_color(i, unpack(color))
+			end
+		end
+		self.player.color = style.get_color_from_hue(self.player_hue)
 	else
-		main_layer:draw()
+		self.polygon_collection:clear()
+		self.player.color = nil
 	end
-	layers:refresh()
 end
 
-function death_effect:ensure_tickrate(func)
+function DeathEffect:ensure_tickrate(func)
 	if not self.initialized then
 		error("trying to ensure death tick rate without initialization!")
 	end
@@ -66,45 +97,6 @@ function death_effect:ensure_tickrate(func)
 		end
 		self.rotation_on_death = (self.rotation_on_death - self.rotation_speed_on_death) % 360
 		l_setRotationSpeed(l_getRotationSpeed() / 0.99)
-		func()
-	end
-end
-
-function death_effect:render()
-	if self.initialized or self.timer > 0 then
-		_reserve_cws(self.cws, 7)
-		self.player_hue = self.player_hue + 18 * 0.25
-		if self.player_hue > 360 then
-			self.player_hue = 0
-		end
-		local div = math.pi / 6
-		local radius = self.player_hue / 8
-		local thickness = self.player_hue / 20
-		local color = style.get_color_from_hue(360 - self.player_hue)
-		for i=0, 5 do
-			local angle = div * i * 2
-			local vertices = {}
-			vertices[1], vertices[2] = get_orbit(angle - div, radius, self.player.pos)
-			vertices[3], vertices[4] = get_orbit(angle + div, radius, self.player.pos)
-			vertices[5], vertices[6] = get_orbit(angle + div, radius + thickness, self.player.pos)
-			vertices[7], vertices[8] = get_orbit(angle - div, radius + thickness, self.player.pos)
-			local cw = self.cws[i + 1]
-			cw_setVertexPos4(cw, unpack(vertices))
-			cw_setVertexColor4Same(cw, unpack(color))
-		end
-		local player_cw = self.player.cw
-		self.player.cw = self.cws[7]
-		self.player.color = style.get_color_from_hue(self.player_hue)
-		self.player:render()
-		self.player.color = nil
-		self.player.cw = player_cw
-	else
-		if #self.cws ~= 0 then
-			for i=1, #self.cws do
-				local cw = self.cws[i]
-				cw_setVertexPos4(cw, 0, 0, 0, 0, 0, 0, 0, 0)
-				cw_setVertexColor4Same(cw, 0, 0, 0, 0)
-			end
-		end
+		func(self.frametime)
 	end
 end

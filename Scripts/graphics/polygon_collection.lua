@@ -22,6 +22,16 @@ function PolygonCollection:add(polygon)
 	return index
 end
 
+function PolygonCollection:resize(size)
+	local diff = self._highest_index - #self._free_indices - size
+	for i=1,diff do
+		self:remove(self._highest_index)
+	end
+	for i=-1,diff,-1 do
+		self:add(Polygon:new())
+	end
+end
+
 function PolygonCollection:remove(index)
 	self._polygons[index] = nil
 	if index == self._highest_index then
@@ -32,6 +42,9 @@ function PolygonCollection:remove(index)
 end
 
 function PolygonCollection:get(index)
+	if index > self._highest_index then
+		return
+	end
 	return self._polygons[index]
 end
 

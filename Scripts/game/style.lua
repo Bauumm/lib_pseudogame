@@ -45,10 +45,6 @@ function style:get_cap_color()
 	return unpack(self.cap_color)
 end
 
-function style:set_color(index, color)
-	self.background_colors[index + 1] = color
-end
-
 function style:get_color(index)
 	if #self.background_colors == 0 then
 		return s_getColor(index)
