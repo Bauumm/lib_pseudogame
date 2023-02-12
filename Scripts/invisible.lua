@@ -1,3 +1,4 @@
+-- this scrip hides the default game components using a shader and default functions
 u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "utils.lua")
 
 local nothing_shader = shdr_getShaderId("nothing.frag")

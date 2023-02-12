@@ -1,24 +1,27 @@
 Player = {}
 Player.__index = Player
 
+-- the constructor for a player that doesn't handle collisions (need to put invisible walls on the screen to make collisions)
+-- draw it using player.polygon
+-- return: Player
 function Player:new()
 	return setmetatable({
 		pos = {0, 0},
-		focus = false,
 		swap_blink_time = 6,
 		swap_cooldown_time = math.max(36 * l_getSwapCooldownMult(), 8),
 		polygon = Polygon:new({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	}, Player)
 end
 
+-- reset the swap cooldown to show swap blinking effect (should be called in onCursorSwap)
 function Player:swap()
 	self.swap_cooldown_time = self.swap_cooldown
 end
 
+-- update the players position and shape
+-- frametime: number	-- the time in 1/60s that passed since the last call of this function
+-- focus: bool		-- true if the player is focusing, false otherwise
 function Player:update(frametime, focus)
-	if focus ~= nil then
-		self.focus = focus
-	end
 	if l_getSwapEnabled() then
 		self.swap_cooldown = math.max(36 * l_getSwapCooldownMult(), 8)
 		self.swap_cooldown_time = self.swap_cooldown_time - frametime
@@ -37,7 +40,7 @@ function Player:update(frametime, focus)
 		u_setPlayerAngle(angle)
 	end
 	self.last_angle = angle
-	local size = 7.3 + (self.focus and -1.5 or 3)
+	local size = 7.3 + (focus and -1.5 or 3)
 	self.pos[1], self.pos[2] = get_orbit(angle, radius)
 	self.polygon:set_vertex_pos(1, get_orbit(angle, 7.3, self.pos))
 	self.polygon:set_vertex_pos(2, get_orbit(angle - math.rad(100), size, self.pos))

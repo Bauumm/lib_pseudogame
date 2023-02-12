@@ -2,6 +2,8 @@ screen = {
 	cw_list = {}
 }
 
+-- update the screen with a polygon collection
+-- polygon_collection: PolygonCollection	-- the polygon collection to render onto the screen
 function screen:update(polygon_collection)
 	local size = 0
 	for polygon in polygon_collection:iter() do

@@ -1,7 +1,12 @@
+-- this table contains functions to overwrite style colors
+-- modify the style.background_colors table to overwrite the colors of the background panels (it will use the current styles colors if the length is 0)
 style = {
 	background_colors = {}
 }
 
+-- get a color from a hue
+-- hue: number		-- a number between 0 and 360
+-- return: table	-- the resulting color in this format: {r, g, b, a}
 function style.get_color_from_hue(hue)
 	hue = hue % 360 / 360
 	local i = math.floor(hue * 6)
@@ -23,10 +28,14 @@ function style.get_color_from_hue(hue)
 	end
 end
 
+-- overwrite the main color
+-- color: table	-- the color should be formatted like this: {r, g, b, a}, giving nil will undo the overwrite
 function style:set_main_color(color)
 	self.main_color = color
 end
 
+-- get the main color of the current style
+-- return: number, number, number, number	-- r, g, b, a
 function style:get_main_color()
 	if self.main_color == nil then
 		return s_getMainColor()
@@ -34,10 +43,14 @@ function style:get_main_color()
 	return unpack(self.main_color)
 end
 
+-- overwrite the cap color
+-- color: table	-- the color should be formatted like this: {r, g, b, a}, giving nil will undo the overwrite
 function style:set_cap_color(color)
 	self.cap_color = color
 end
 
+-- get the cap color of the current style
+-- return: number, number, number, number	-- r, g, b, a
 function style:get_cap_color()
 	if self.cap_color == nil then
 		return s_getCapColorResult()
@@ -45,6 +58,9 @@ function style:get_cap_color()
 	return unpack(self.cap_color)
 end
 
+-- get the color of a background panel
+-- index: number				-- the index of the background panel
+-- return: number, number, number, number	-- r, g, b, a
 function style:get_color(index)
 	if #self.background_colors == 0 then
 		return s_getColor(index)

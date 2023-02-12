@@ -28,12 +28,15 @@ if type(cw_create) == "userdata" then
 	end
 end
 
+-- restores the real cw_* functions
 function restore_cw_functions()
 	for _, name in pairs(cw_function_names) do
 		_G[name] = cw_function_backup[name]
 	end
 end
 
+-- overwrite all cw_* functions to modify the given polygon collection instead of actual custom walls
+-- polygon_collection: PolygonCollection
 function overwrite_cw_functions(polygon_collection)
 	cw_create = function()
 		local polygon = Polygon:new({0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})

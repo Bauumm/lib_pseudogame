@@ -13,6 +13,9 @@ if WallSystem == nil then
 	WallSystem.__index = WallSystem
 end
 
+-- the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
+-- draw it using wall_system.polygon_collection
+-- return: WallSystem
 function WallSystem:new()
 	local obj = setmetatable({
 		walls = {},
@@ -22,6 +25,13 @@ function WallSystem:new()
 	return obj
 end
 
+-- create a wall in the system
+-- side: number		-- the side to spawn the wall at
+-- thickness: number	-- the thickness the wall should have
+-- speed_mult: number	-- the speed_mult (will be multiplied with u_getSpeedMultDM())
+-- acceleration: number	-- the acceleration (it will be adjusted using the difficulty mult)
+-- min_speed: number	-- the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+-- max_speed: number	-- the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
@@ -45,6 +55,8 @@ function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, m
 	})
 end
 
+-- update the walls position
+-- frametime: number	-- the time in 1/60s that passed since the last call of this function
 function WallSystem:update(frametime)
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
 	local outer_bounds = l_getWallSpawnDistance() * 1.1
@@ -105,6 +117,7 @@ function WallSystem:update(frametime)
 	end
 end
 
+-- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
 function WallSystem:overwrite()
 	w_wall = function(side, thickness)
 		t_eval("walls:wall(" .. side .. ", " .. thickness .. ")")
@@ -124,6 +137,7 @@ function WallSystem:overwrite()
 	end
 end
 
+-- restore the original w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions
 function WallSystem:restore()
 	w_wall = self.w_wall
 	w_wallAdj = self.w_wallAdj
