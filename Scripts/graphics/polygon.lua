@@ -250,6 +250,52 @@ function Polygon:split4()
 	end
 	if self.vertex_count == 4 then
 		return {self._vertices, self._colors}
+	elseif self.vertex_count < 4 then
+		local vertices = {unpack(self._vertices)}
+		local colors = {unpack(self._colors)}
+		for i = 1, 4 - self.vertex_count do
+			vertices[#vertices + 1] = vertices[1]
+			vertices[#vertices + 1] = vertices[2]
+			for i=1,4 do
+				colors[#colors + 1] = colors[i]
+			end
+		end
+		return {vertices, colors}
+	else
+		-- only works for simple polygons
+		local polygons = {}
+		local vert = 1
+		local quad = {self:get_vertex_pos(1)}
+		local colors = {self:get_vertex_color(1)}
+		local quad_index = 3
+		for i=2,self.vertex_count do
+			local color_index = quad_index * 2 - 1
+			quad[quad_index], quad[quad_index + 1] = self:get_vertex_pos(i)
+			colors[color_index], colors[color_index + 1], colors[color_index + 2], colors[color_index + 3] = self:get_vertex_color(i)
+			quad_index = quad_index + 2
+			if quad_index > 8 then
+				polygons[#polygons + 1] = quad
+				polygons[#polygons + 1] = colors
+				quad_index = 5
+				quad = {self:get_vertex_pos(1)}
+				quad[3], quad[4] = self:get_vertex_pos(i)
+				colors = {self:get_vertex_color(1)}
+				colors[5], colors[6], colors[7], colors[8] = self:get_vertex_color(i)
+			end
+		end
+		if #quad ~= 8 then
+			while #quad ~= 8 do
+				quad[#quad + 1] = quad[1]
+				quad[#quad + 1] = quad[2]
+				for i=1,4 do
+					colors[#colors + 1] = colors[i]
+				end
+			end
+			polygons[#polygons + 1] = quad
+			polygons[#polygons + 1] = colors
+		end
+		return polygons
+		--{{1, 2, 3, 4}, {1, 4, 5, 6}, {1, 6, 7, 8}}
 	end
 	local polygons = {}
 	local offset = 0
@@ -292,12 +338,14 @@ end
 
 -- transform the vertices and vertex colors of the polygon
 -- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+-- return: Polygon		-- returns itself for convenient chaining of operations
 function Polygon:transform(transform_func)
 	for index, x, y, r, g, b, a in self:vertex_color_pairs() do
 		x, y, r, g, b, a = transform_func(x, y, r, g, b, a)
 		self:set_vertex_pos(index, x, y)
 		self:set_vertex_color(index, r, g, b, a)
 	end
+	return self
 end
 
 -- remove duplicate vertices, does not respect color

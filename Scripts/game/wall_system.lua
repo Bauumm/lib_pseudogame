@@ -3,12 +3,13 @@ u_execScript("game/style.lua")
 
 if WallSystem == nil then
 	WallSystem = {
-		systems = {},
-		w_wall = w_wall,
-		w_wallAdj = w_wallAdj,
-		w_wallAcc = w_wallAcc,
-		u_clearWalls = u_clearWalls,
-		has_real_wall = false
+		_systems = {},
+		_selected_system = nil,
+		_w_wall = w_wall,
+		_w_wallAdj = w_wallAdj,
+		_w_wallAcc = w_wallAcc,
+		_u_clearWalls = u_clearWalls,
+		_has_real_wall = false
 	}
 	WallSystem.__index = WallSystem
 end
@@ -18,10 +19,10 @@ end
 -- return: WallSystem
 function WallSystem:new()
 	local obj = setmetatable({
-		walls = {},
+		_walls = {},
 		polygon_collection = PolygonCollection:new()
 	}, WallSystem)
-	WallSystem.systems[#WallSystem.systems + 1] = obj
+	WallSystem._systems[#WallSystem._systems + 1] = obj
 	return obj
 end
 
@@ -46,7 +47,7 @@ function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, m
 	polygon:add_vertex(get_orbit(angle + div, distance))
 	polygon:add_vertex(get_orbit(angle + div + l_getWallAngleLeft(), distance + thickness + l_getWallSkewLeft()))
 	polygon:add_vertex(get_orbit(angle - div + l_getWallAngleRight(), distance + thickness + l_getWallSkewRight()))
-	table.insert(self.walls, {
+	table.insert(self._walls, {
 		polygon = self.polygon_collection:add(polygon),
 		speed = speed_mult * u_getSpeedMultDM(),
 		accel = acceleration / (u_getDifficultyMult() ^ 0.65),
@@ -61,7 +62,7 @@ function WallSystem:update(frametime)
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
 	local outer_bounds = l_getWallSpawnDistance() * 1.1
 	local del_queue = {}
-	for i, wall in pairs(self.walls) do
+	for i, wall in pairs(self._walls) do
 		if wall.accel ~= 0 then
 			wall.speed = wall.speed + wall.accel * frametime
 			if wall.speed > wall.max_speed then
@@ -100,47 +101,48 @@ function WallSystem:update(frametime)
 		end
 	end
 	for _, i in pairs(del_queue) do
-		table.remove(self.walls, i)
+		table.remove(self._walls, i)
 	end
 	local no_walls = true
-	for i=1,#self.systems do
-		local system = self.systems[i]
-		no_walls = no_walls and #system.walls == 0
+	for i=1,#self._systems do
+		local system = self._systems[i]
+		no_walls = no_walls and #system._walls == 0
 	end
-	if no_walls and self.has_real_wall then
-		self.u_clearWalls()
-		WallSystem.has_real_wall = false
+	if no_walls and self._has_real_wall then
+		self._u_clearWalls()
+		WallSystem._has_real_wall = false
 	end
-	if not no_walls and not self.has_real_wall then
-		WallSystem.has_real_wall = true
-		self.w_wallAdj(0, 0, 0)
+	if not no_walls and not self._has_real_wall then
+		WallSystem._has_real_wall = true
+		self._w_wallAdj(0, 0, 0)
 	end
 end
 
 -- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
 function WallSystem:overwrite()
+	WallSystem._selected_system = self
 	w_wall = function(side, thickness)
-		t_eval("walls:wall(" .. side .. ", " .. thickness .. ")")
+		t_eval("WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ")")
 	end
 	w_wallAdj = function(side, thickness, speed_mult)
-		t_eval("walls:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
+		t_eval("WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
 	end
 	w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
-		t_eval("walls:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
+		t_eval("WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
 	end
 	u_clearWalls = function()
-		for i=1, #walls.walls do
-			local wall = walls.walls[i]
+		for i=1, #self._walls do
+			local wall = self._walls[i]
 			cw_destroy(wall.cw)
 		end
-		walls.walls = {}
+		self._walls = {}
 	end
 end
 
 -- restore the original w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions
 function WallSystem:restore()
-	w_wall = self.w_wall
-	w_wallAdj = self.w_wallAdj
-	w_wallAcc = self.w_wallAcc
-	u_clearWalls = self.u_clearWalls
+	w_wall = self._w_wall
+	w_wallAdj = self._w_wallAdj
+	w_wallAcc = self._w_wallAcc
+	u_clearWalls = self._u_clearWalls
 end

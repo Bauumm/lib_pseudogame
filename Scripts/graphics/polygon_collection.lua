@@ -115,6 +115,14 @@ function PolygonCollection:iter()
 	end
 end
 
+-- transform the vertices and vertex colors of all polygons in the collection
+-- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+function PolygonCollection:transform(transform_func)
+	for polygon in PolygonCollection:iter() do
+		polygon:transform(transform_func)
+	end
+end
+
 -- clear all polygons from this collection
 function PolygonCollection:clear()
 	self._highest_index = 0
