@@ -158,15 +158,19 @@ end
 -- Implementation of the sutherland hodgman algorithm for polygon clipping
 -- Doesn't work with concave polygons
 -- clipper_polygon: Polygon	-- the polygon that will contain the newly created clipped polygon
--- return: Polygon		-- Returns a polygon if copy is true
-function Polygon:clip(clipper_polygon)
+-- copy: bool			-- true will create a new polygon, false will modify the current one
+-- return: Polygon		-- Returns the clipped polygon
+function Polygon:clip(clipper_polygon, copy)
 	local return_polygon = self
-	local cw = self:is_clockwise()
+	local cw = clipper_polygon:is_clockwise()
 	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:double_vertex_color_pairs() do
 		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw)
 		if return_polygon.vertex_count == 0 then
 			break
 		end
+	end
+	if not copy then
+		self:copy_data(return_polygon)
 	end
 	return return_polygon
 end
@@ -276,11 +280,13 @@ function Polygon:split4()
 			if quad_index > 8 then
 				polygons[#polygons + 1] = quad
 				polygons[#polygons + 1] = colors
-				quad_index = 5
-				quad = {self:get_vertex_pos(1)}
-				quad[3], quad[4] = self:get_vertex_pos(i)
-				colors = {self:get_vertex_color(1)}
-				colors[5], colors[6], colors[7], colors[8] = self:get_vertex_color(i)
+				if i ~= self.vertex_count then
+					quad_index = 5
+					quad = {self:get_vertex_pos(1)}
+					quad[3], quad[4] = self:get_vertex_pos(i)
+					colors = {self:get_vertex_color(1)}
+					colors[5], colors[6], colors[7], colors[8] = self:get_vertex_color(i)
+				end
 			end
 		end
 		if #quad ~= 8 then
@@ -295,45 +301,48 @@ function Polygon:split4()
 			polygons[#polygons + 1] = colors
 		end
 		return polygons
-		--{{1, 2, 3, 4}, {1, 4, 5, 6}, {1, 6, 7, 8}}
 	end
-	local polygons = {}
-	local offset = 0
-	local polygon_index = 0
-	local done = false
-	while not done do
-		local vertices = {}
-		local colors = {}
-		local color_size = 1
-		for i=1,8 do
-			local index = i + offset
-			local coord = self._vertices[index]
-			if coord == nil then
-				index = (i - 1) % 2 + 1
-				coord = self._vertices[index]
-				done = true
-			end
-			vertices[i] = coord
-			if i % 2 == 1 then
-				local color_index = (index - 1) * 2 + 1
-				for i=0,3 do
-					colors[color_size + i] = self._colors[color_index + i]
-				end
-				color_size = color_size + 4
-			end
-		end
-		polygon_index = polygon_index + 1
-		offset = polygon_index * 6
-		polygons[polygon_index * 2 - 1] = vertices
-		polygons[polygon_index * 2] = colors
-	end
-	return polygons
 end
 
 -- copies the polygon
 -- return: Polygon
 function Polygon:copy()
 	return Polygon:new({unpack(self._vertices)}, {unpack(self._colors)})
+end
+
+-- copy the vertex and color data of another polygon onto this one
+-- polygon: Polygon		-- the polygon to copy data from
+-- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+function Polygon:copy_data(polygon)
+	while self.vertex_count > polygon.vertex_count do
+		self:remove_vertex(1)
+	end
+	for index, x, y, r, g, b, a in polygon:vertex_color_pairs() do
+		if index > self.vertex_count then
+			self:add_vertex(x, y, r, g, b, a)
+		else
+			self:set_vertex_pos(index, x, y)
+			self:set_vertex_color(index, r, g, b, a)
+		end
+	end
+end
+
+-- copy the vertex and color data of another polygon onto this one after transforming it
+-- polygon: Polygon		-- the polygon to copy data from
+-- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+function Polygon:copy_data_transformed(polygon, transform_func)
+	while self.vertex_count > polygon.vertex_count do
+		self:remove_vertex(1)
+	end
+	for index, x, y, r, g, b, a in polygon:vertex_color_pairs() do
+		x, y, r, g, b, a = transform_func(x, y, r, g, b, a)
+		if index > self.vertex_count then
+			self:add_vertex(x, y, r, g, b, a)
+		else
+			self:set_vertex_pos(index, x, y)
+			self:set_vertex_color(index, r, g, b, a)
+		end
+	end
 end
 
 -- transform the vertices and vertex colors of the polygon

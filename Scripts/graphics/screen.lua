@@ -23,12 +23,10 @@ function screen:update(polygon_collection)
 	table.sort(self.cw_list)
 	local cw_index = 1
 	for polygon in polygon_collection:iter() do
-		local cws = polygon:split4()
-		if cws ~= nil then
-			for i=1,#cws,2 do
+		if polygon.vertex_count == 4 then
 				local cw = self.cw_list[cw_index]
-				cw_function_backup.cw_setVertexPos4(cw, unpack(cws[i]))
-				cw_function_backup.cw_setVertexColor4(cw, unpack(cws[i + 1]))
+				cw_function_backup.cw_setVertexPos4(cw, unpack(polygon._vertices))
+				cw_function_backup.cw_setVertexColor4(cw, unpack(polygon._colors))
 				if polygon.extra_data == nil then
 					cw_function_backup.cw_setCollision(cw, false)
 					cw_function_backup.cw_setDeadly(cw, false)
@@ -38,6 +36,23 @@ function screen:update(polygon_collection)
 					cw_function_backup.cw_setKillingSide(cw, polygon.extra_data.killing_side)
 				end
 				cw_index = cw_index + 1
+		else
+			local cws = polygon:split4()
+			if cws ~= nil then
+				for i=1,#cws,2 do
+					local cw = self.cw_list[cw_index]
+					cw_function_backup.cw_setVertexPos4(cw, unpack(cws[i]))
+					cw_function_backup.cw_setVertexColor4(cw, unpack(cws[i + 1]))
+					if polygon.extra_data == nil then
+						cw_function_backup.cw_setCollision(cw, false)
+						cw_function_backup.cw_setDeadly(cw, false)
+					else
+						cw_function_backup.cw_setCollision(cw, polygon.extra_data.collision)
+						cw_function_backup.cw_setDeadly(cw, polygon.extra_data.deadly)
+						cw_function_backup.cw_setKillingSide(cw, polygon.extra_data.killing_side)
+					end
+					cw_index = cw_index + 1
+				end
 			end
 		end
 	end

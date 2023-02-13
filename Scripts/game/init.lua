@@ -224,7 +224,7 @@ function Game:draw()
 	})
 	self.polygon_collection:clear()
 	for i=1,8 do
-		if i == 8 then
+		if i == 6 then
 			self.polygon_collection:add(collections[i])
 		else
 			self.polygon_collection:ref_add(collections[i])

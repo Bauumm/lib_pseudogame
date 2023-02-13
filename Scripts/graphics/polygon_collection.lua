@@ -7,7 +7,8 @@ function PolygonCollection:new()
 	return setmetatable({
 		_polygons = {},
 		_free_indices = {},
-		_highest_index = 0
+		_highest_index = 0,
+		size = 0
 	}, PolygonCollection)
 end
 
@@ -24,6 +25,7 @@ function PolygonCollection:add(polygon)
 		table.remove(self._free_indices, 1)
 	end
 	self._polygons[index] = polygon
+	self.size = self.size + 1
 	return index
 end
 
@@ -48,6 +50,7 @@ function PolygonCollection:remove(index)
 	else
 		self._free_indices[#self._free_indices + 1] = index
 	end
+	self.size = self.size - 1
 end
 
 -- get a polygon from the collection
@@ -115,6 +118,29 @@ function PolygonCollection:iter()
 	end
 end
 
+
+-- recreate all polygons while reusing the old ones like this (avoids table allocation so this is good for performance):
+-- local it = polygon_collection:creation_iter()
+-- for i=1,100 do
+-- 	local polygon = it()
+-- 	...
+-- end
+function PolygonCollection:creation_iter()
+	local index = 0
+	self:clear()
+	return function()
+		index = index + 1
+		self._highest_index = index
+		self.size = index
+		local polygon = self._polygons[index]
+		if polygon == nil then
+			polygon = Polygon:new()
+			self._polygons[index] = polygon
+		end
+		return polygon
+	end
+end
+
 -- transform the vertices and vertex colors of all polygons in the collection
 -- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
 function PolygonCollection:transform(transform_func)
@@ -127,4 +153,5 @@ end
 function PolygonCollection:clear()
 	self._highest_index = 0
 	self._free_indices = {}
+	self.size = 0
 end
