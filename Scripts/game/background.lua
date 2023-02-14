@@ -10,8 +10,7 @@ end
 
 -- update the backgrounds color, position and shape
 function Background:update()
-	self.polygon_collection:resize(l_getSides())
-	local it = self.polygon_collection:iter()
+	local it = self.polygon_collection:creation_iter()
 	local div = math.pi * 2 / l_getSides()
 	local half_div = div / 2
 	local distance = s_getBGTileRadius()

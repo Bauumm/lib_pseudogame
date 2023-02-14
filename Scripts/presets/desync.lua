@@ -4,7 +4,11 @@ u_execScript("invisible.lua")
 desync = {
 	game = Game:new(),
 	collection = PolygonCollection:new(),
-	blend_collection = PolygonCollection:new()
+	main_collection = PolygonCollection:new(),
+	back_collection = PolygonCollection:new(),
+	back_blend_collection = PolygonCollection:new(),
+	blend_collection = PolygonCollection:new(),
+	final_collection = PolygonCollection:new()
 }
 
 function desync:init()
@@ -30,16 +34,31 @@ function desync:init()
 end
 
 function desync:onInput(frametime, movement, focus, swap)
-	self.game:overwrite(frametime, movement, focus, swap)
-	self.game:draw()
-	local it = self.collection:creation_iter()
-	for polygon in self.game.polygon_collection:iter() do
+	self.game:update(frametime, movement, focus, swap)
+	local collections = self.game:get_render_stages({0, 1, 2, 3, 4, 5, 6, 7})
+	local it = self.back_collection:creation_iter()
+	for polygon in collections[1]:iter() do
 		it():copy_data_transformed(polygon, self.transform)
 	end
-	self.game.polygon_collection:blend(self.collection, self.blend, self.blend_collection)
-	self.collection:ref_add(self.game.polygon_collection)
+	collections[1]:blend(self.back_collection, self.blend, self.back_blend_collection)
+	self.main_collection:clear()
+	for i = 2, #collections do
+		if i == 6 then
+			self.main_collection:add(collections[i])
+		else
+			self.main_collection:copy_add(collections[i])
+		end
+	end
+	self.collection:clear()
+	self.collection:copy_add(self.main_collection)
+	self.main_collection:transform(self.transform)
+	self.main_collection:blend(self.collection, self.blend, self.blend_collection)
+	self.collection:ref_add(self.main_collection)
 	self.collection:ref_add(self.blend_collection)
-	screen:update(self.collection)
+	self.final_collection:clear()
+	self.final_collection:ref_add(self.back_blend_collection)
+	self.final_collection:ref_add(self.collection)
+	screen:update(self.final_collection)
 end
 
 function desync:onDeath()

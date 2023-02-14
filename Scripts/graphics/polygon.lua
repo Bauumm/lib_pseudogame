@@ -79,7 +79,7 @@ end
 
 function Polygon:_check_vert_index(index)
 	if index > self.vertex_count or index <= 0 then
-		error("Polygon: index is out of bounds!")
+		error("Polygon: the index of " .. index .. " is out of bounds!")
 	end
 end
 

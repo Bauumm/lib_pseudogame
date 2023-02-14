@@ -87,12 +87,12 @@ function PolygonCollection:blend(polygon_collection, blend_func, blend_collectio
 	blend_collection:clear()
 	for polygon0 in self:iter() do
 		for polygon1 in polygon_collection:iter() do
-			local clipped_polygon = polygon0:clip(polygon1)
-			local r, g, b, a = polygon0:get_vertex_color(1)
-			for index, x, y in clipped_polygon:vertex_color_pairs() do
-				clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon1:get_vertex_color(1)))
-			end
+			local clipped_polygon = polygon0:clip(polygon1, true)
 			if clipped_polygon.vertex_count > 0 then
+				local r, g, b, a = polygon0:get_vertex_color(1)
+				for index, x, y in clipped_polygon:vertex_color_pairs() do
+					clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon1:get_vertex_color(1)))
+				end
 				blend_collection:add(clipped_polygon)
 			end
 		end
@@ -124,6 +124,9 @@ end
 -- for i=1,100 do
 -- 	local polygon = it()
 -- 	...
+-- 	-- alternatively you can also overwrite the polygon the iterator would normally return with a new one
+-- 	it(some_polygon)
+-- 	...
 -- end
 function PolygonCollection:creation_iter(polygon)
 	local index = 0
@@ -148,7 +151,7 @@ end
 -- transform the vertices and vertex colors of all polygons in the collection
 -- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
 function PolygonCollection:transform(transform_func)
-	for polygon in PolygonCollection:iter() do
+	for polygon in self:iter() do
 		polygon:transform(transform_func)
 	end
 end
