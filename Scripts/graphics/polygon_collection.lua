@@ -125,13 +125,17 @@ end
 -- 	local polygon = it()
 -- 	...
 -- end
-function PolygonCollection:creation_iter()
+function PolygonCollection:creation_iter(polygon)
 	local index = 0
 	self:clear()
 	return function()
 		index = index + 1
 		self._highest_index = index
 		self.size = index
+		if polygon ~= nil then
+			self._polygons[index] = polygon
+			return polygon
+		end
 		local polygon = self._polygons[index]
 		if polygon == nil then
 			polygon = Polygon:new()

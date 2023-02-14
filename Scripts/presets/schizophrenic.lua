@@ -1,13 +1,9 @@
-u_execScript("cw_drawing/layer.lua")
-u_execScript("cw_drawing/layers.lua")
-u_execScript("game_system/render.lua")
-u_execScript("game_system/player.lua")
-u_execScript("game_system/death_effect.lua")
-u_execScript("game_system/walls.lua")
+u_execScript("main.lua")
 u_execScript("invisible.lua")
+
 schizophrenic = {
-	pulse3DDirection = 1,
-	pulse3D = 1
+	game = Game:new(),
+	collection = PolygonCollection:new()
 }
 
 function schizophrenic.color_transformation(r, g, b, a)
@@ -56,133 +52,37 @@ function schizophrenic.transform_half_mirror(objects, x0, y0, x1, y1, x2, y2, x3
 end
 
 function schizophrenic:init()
-	self.depth = s_get3dDepth()
-	s_set3dDepth(0)
-	if self.depth > 0 then
-		self.foreground3D = layer:new()
-		self.main3D = layer:new()
-		self.player3D = player:new()
-		self.pivot3D = pivot:new()
-	end
-	self.main_game_layer = layer:new()
-	self.background_layer = layer:new()
-	self.background = background:new()
-	self.pivot = pivot:new()
-	self.wall_layer = layer:new()
-	self.foreground_layer = layer:new()
-	self.player = player:new()
-	self.death_effect = death_effect:new(self.player)
-	self.death_effect_layer = layer:new()
-	self.main_layer = layer:new()
-	layers:select(self.wall_layer)
+	self.game:overwrite()
 end
 
-function schizophrenic:onInput(frametime, movement, focus)
-	self.frametime = frametime
-	self.player:update(frametime, focus)
-	self.death_effect:update(frametime)
-
-	layers:select(self.background_layer)
-	self.background:render()
-
-	layers:select(self.foreground_layer)
-	self.pivot:render()
-	self.player:render()
-
-	layers:select(self.death_effect_layer)
-	self.death_effect:render()
-
-	if self.depth > 0 then
-		self.player3D:update(frametime, focus)
-		layers:select(self.foreground3D)
-		self.pivot3D:render(true)
-		self.player3D:render()
-		layers:select(self.main3D)
-		self.wall_layer:draw()
-		self.foreground3D:draw()
-		self.death_effect_layer:draw()
-		layers:refresh()
+function schizophrenic:onInput(frametime, movement, focus, swap)
+	self.game:overwrite(frametime, movement, focus, swap)
+	self.game:draw()
+	self.collection:clear()
+	local norot = transform:rotate(math.rad(-l_getRotation()))
+	local rot = transform:rotate(math.rad(l_getRotation() * 0.5))
+	for polygon in self.game.polygon_collection do
+		local poly0, poly1 = polygon:transform(norot):transform(rot):slice(0, 0, 1, 0, true, true)
+		self.collection:add(poly0:transform(function(x, y, r, g, b, a)
+			return -x, y, 255 - r, 255 - g, 255 - b, a
+		end))
+		self.collection:add(poly1)
 	end
-
-	layers:select(self.main_game_layer)
-	self.background_layer:draw()
-	if self.depth > 0 then
-		self.pulse3D = self.pulse3D + s_get3dPulseSpeed() * self.pulse3DDirection * frametime
-		if self.pulse3D > s_get3dPulseMax() then
-			self.pulse3DDirection = -1
-		elseif self.pulse3D < s_get3dPulseMin() then
-			self.pulse3DDirection = 1
-		end
-		local effect = s_get3dSkew() * self.pulse3D
-		local skew = 1 + effect
-		local rad_rot = math.rad(l_getRotation() + 90)
-		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-		local function adjust_alpha(a, i)
-			local new_alpha = (a / s_get3dAlphaMult()) - i * s_get3dAlphaFalloff()
-			if new_alpha > 255 then
-				new_alpha = 255
-			elseif new_alpha < 0 then
-				new_alpha = 0
-			end
-			return new_alpha
-		end
-		for j=1, self.depth do
-			local i = self.depth - j
-			local offset = s_get3dSpacing() * (i + 1) * s_get3dPerspectiveMult() * effect * 3.6 * 1.4
-			local new_pos_x = offset * cos_rot
-			local new_pos_y = offset * sin_rot
-			local override_color = {s_get3DOverrideColor()}
-			for i=1, 3 do
-				override_color[i] = override_color[i] / s_get3dDarkenMult()
-			end
-			override_color[4] = adjust_alpha(override_color[4], i)
-			self.main3D:draw_transformed(
-				function(x, y)
-					return x + new_pos_x, y + new_pos_y, unpack(override_color)
-				end,
-				function(collision, deadly, killing_side)
-					return false, false, 0
-				end
-			)
-		end
-	end
-	self.wall_layer:draw()
-	self.foreground_layer:draw()
-	layers:refresh()
-
-	layers:select(self.main_layer)
-	self.main_game_layer:draw_invisible()
-	self.main_game_layer:draw_transformed_extra(self.transform_half_mirror)
-	local color_transformation = self.color_transformation
-	self.color_transformation = function(r, g, b, a) return r, g, b, a end
-	self.death_effect_layer:draw_transformed_extra(self.transform_half_mirror)
-	self.color_transformation = color_transformation
-	layers:refresh()
-
-	self.death_effect:draw_main(self.main_layer)
-
-	layers:select(self.wall_layer)
-	if not self.death_effect.initialized then
-		walls:update(frametime)
-	end
+	self.collection:transform(rot)
 end
 
 function schizophrenic:onDeath()
-	self.death_effect:death()
+	self.game.death_effect:death()
 end
 
 function schizophrenic:onPreDeath()
-	self.death_effect:invincible_death()
-end
-
-function schizophrenic:onCursorSwap()
-	self.player:swap()
+	self.game.death_effect:invincible_death()
 end
 
 function schizophrenic:onRenderStage()
-	if self.death_effect.initialized then
-		self.death_effect:ensure_tickrate(function()
-			self:onInput(self.frametime, false)
+	if self.game.death_effect.initialized then
+		self.game.death_effect:ensure_tickrate(function(frametime)
+			self:onInput(frametime, 0, false, false)
 		end)
 	end
 end

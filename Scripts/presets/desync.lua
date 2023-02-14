@@ -1,28 +1,14 @@
-u_execScript("cw_drawing/layer.lua")
-u_execScript("cw_drawing/layers.lua")
-u_execScript("game_system/render.lua")
-u_execScript("game_system/player.lua")
-u_execScript("game_system/death_effect.lua")
-u_execScript("game_system/walls.lua")
+u_execScript("main.lua")
 u_execScript("invisible.lua")
-desync = {}
+
+desync = {
+	game = Game:new(),
+	collection = PolygonCollection:new(),
+	blend_collection = PolygonCollection:new()
+}
 
 function desync:init()
-	s_set3dDepth(0)
-	self.background_layer1 = layer:new()
-	self.background_layer2 = layer:new()
-	self.background = background:new()
-	self.pivot = pivot:new()
-	self.wall_layer1 = layer:new()
-	self.wall_layer2 = layer:new()
-	self.foreground_layer1 = layer:new()
-	self.foreground_layer2 = layer:new()
-	self.player = player:new()
-	self.death_effect = death_effect:new(self.player)
-	self.death_effect_layer1 = layer:new()
-	self.death_effect_layer2 = layer:new()
-	self.main_layer = layer:new()
-	layers:select(self.wall_layer1)
+	self.game:overwrite()
 	self.transform = function(x, y, r, g, b, a)
 		local rad_rot = math.rad(2 * l_getRotation())
 		local sin_rot, cos_rot = math.sin(rad_rot), math.cos(rad_rot)
@@ -43,74 +29,31 @@ function desync:init()
 	end
 end
 
-function desync:onInput(frametime, movement, focus)
-	layers:refresh()
-
-	self.frametime = frametime
-	self.player:update(frametime, focus)
-	self.death_effect:update(frametime)
-
-	layers:select(self.background_layer1)
-	self.background:render()
-	layers:refresh()
-
-	layers:select(self.foreground_layer1)
-	self.pivot:render()
-	self.player:render()
-	layers:refresh()
-
-	layers:select(self.death_effect_layer1)
-	self.death_effect:render()
-	layers:refresh()
-
-	layers:select(self.background_layer2)
-	self.background_layer1:draw_transformed(self.transform, function() return false, false, 0 end)
-	layers:refresh()
-	layers:select(self.foreground_layer2)
-	self.foreground_layer1:draw_transformed(self.transform, function() return false, false, 0 end)
-	layers:refresh()
-	layers:select(self.wall_layer2)
-	self.wall_layer1:draw_transformed(self.transform, function() return false, false, 0 end)
-	layers:refresh()
-	layers:select(self.death_effect_layer2)
-	self.death_effect_layer1:draw_transformed(self.transform, function() return false, false, 0 end)
-	layers:refresh()
-
-	layers:select(self.main_layer)
-	self.background_layer1:draw()
-	self.background_layer2:draw_extra_blend(self.blend, self.background_layer1)
-	self.wall_layer1:draw()
-	self.wall_layer2:draw_extra_blend(self.blend, self.wall_layer1)
-	self.foreground_layer1:draw()
-	self.foreground_layer2:draw_extra_blend(self.blend, self.foreground_layer1)
-	self.death_effect_layer1:draw()
-	self.death_effect_layer2:draw_extra_blend(self.blend, self.death_effect_layer1)
-	layers:refresh()
-
-	self.death_effect:draw_main(self.main_layer)
-
-	layers:select(self.wall_layer1)
-	if not self.death_effect.initialized then
-		walls:update(frametime)
+function desync:onInput(frametime, movement, focus, swap)
+	self.game:overwrite(frametime, movement, focus, swap)
+	self.game:draw()
+	local it = self.collection:creation_iter()
+	for polygon in self.game.polygon_collection:iter() do
+		it():copy_data_transformed(polygon, self.transform)
 	end
+	self.game.polygon_collection:blend(self.collection, self.blend, self.blend_collection)
+	self.collection:ref_add(self.game.polygon_collection)
+	self.collection:ref_add(self.blend_collection)
+	screen:update(self.collection)
 end
 
 function desync:onDeath()
-	self.death_effect:death()
+	self.game.death_effect:death()
 end
 
 function desync:onPreDeath()
-	self.death_effect:invincible_death()
-end
-
-function desync:onCursorSwap()
-	self.player:swap()
+	self.game.death_effect:invincible_death()
 end
 
 function desync:onRenderStage()
-	if self.death_effect.initialized then
-		self.death_effect:ensure_tickrate(function()
-			self:onInput(self.frametime, false)
+	if self.game.death_effect.initialized then
+		self.game.death_effect:ensure_tickrate(function(frametime)
+			self:onInput(frametime, 0, false)
 		end)
 	end
 end
