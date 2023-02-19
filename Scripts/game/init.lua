@@ -231,3 +231,25 @@ function Game:draw()
 		end
 	end
 end
+
+-- puts all the renderstages onto the screen
+function Game:draw_to_screen()
+	local collections = self:get_render_stages({
+		RenderStage.BACKGROUNDTRIS,
+		RenderStage.WALLQUADS3D,
+		RenderStage.PIVOTQUADS3D,
+		RenderStage.PLAYERTRIS3D,
+		RenderStage.WALLQUADS,
+		RenderStage.CAPTRIS,
+		RenderStage.PIVOTQUADS,
+		RenderStage.PLAYERTRIS
+	})
+	for i=1,8 do
+		if i == 6 then
+			screen:draw_polygon(collections[i])
+		else
+			screen:draw_polygon_collection(collections[i])
+		end
+	end
+	screen:update()
+end
