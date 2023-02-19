@@ -58,7 +58,8 @@ function desync:onInput(frametime, movement, focus, swap)
 	self.final_collection:clear()
 	self.final_collection:ref_add(self.back_blend_collection)
 	self.final_collection:ref_add(self.collection)
-	screen:update(self.final_collection)
+	screen:draw_polygon_collection(self.final_collection)
+	screen:update()
 end
 
 function desync:onDeath()

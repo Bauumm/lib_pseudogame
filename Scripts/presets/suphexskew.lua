@@ -20,7 +20,8 @@ function suphexskew:onInput(frametime, movement, focus, swap)
 			return x * skew, y * (1 / skew), r, g, b, a
 		end)
 	end
-	screen:update(self.collection)
+	screen:draw_polygon_collection(self.collection)
+	screen:update()
 end
 
 function suphexskew:onDeath()

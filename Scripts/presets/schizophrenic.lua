@@ -24,7 +24,8 @@ function schizophrenic:onInput(frametime, movement, focus, swap)
 		self.collection:add(poly1)
 	end
 	self.collection:transform(norot)
-	screen:update(self.collection)
+	screen:draw_polygon_collection(self.collection)
+	screen:update()
 end
 
 function schizophrenic:onDeath()

@@ -23,7 +23,6 @@ function Polygon:new(vertices, colors)
 		vertex_count = vertex_count,
 		_has_changed = true
 	}, Polygon)
-	obj.split4 = Cache:new(Polygon.split4, obj)
 	obj.is_clockwise = Cache:new(Polygon.is_clockwise, obj)
 	return obj
 end
@@ -458,7 +457,6 @@ function Polygon:_remove_doubles()
 end
 
 function Polygon:_changed()
-	self.split4:invalidate()
 	self.is_clockwise:invalidate()
 	self._has_changed = true
 end

@@ -40,7 +40,8 @@ function blended_desync:onInput(frametime, movement, focus, swap)
 			end
 		end
 	end
-	screen:update(self.game.polygon_collection)
+	screen:draw_polygon_collection(self.game.polygon_collection)
+	screen:update()
 end
 
 function blended_desync:onDeath()
