@@ -1,18 +1,24 @@
 screen = {
+	cw_data = {},
+	extra_cw_data = {},
 	cw_list = {}
 }
 
 -- update the screen with a polygon collection
 -- polygon_collection: PolygonCollection	-- the polygon collection to render onto the screen
 function screen:update(polygon_collection)
-	local size = 0
+	local current_index = 0
+	local last_index
+	local extra_index = 1
 	for polygon in polygon_collection:iter() do
-		if polygon.vertex_count <= 4 and polygon.vertex_count ~= 0 then
-			size = size + 1
-		else
-			size = size + math.ceil(polygon.vertex_count / 3)
+		last_index = current_index
+		current_index = polygon:_to_cw_data(self.cw_data, current_index)
+		for i = 1, current_index - last_index do
+			self.extra_cw_data[extra_index] = polygon.extra_data
+			extra_index = extra_index + 1
 		end
 	end
+	local size = current_index / 2
 	while #self.cw_list < size do
 		self.cw_list[#self.cw_list + 1] = cw_function_backup.cw_create()
 	end
@@ -21,39 +27,19 @@ function screen:update(polygon_collection)
 		self.cw_list[#self.cw_list] = nil
 	end
 	table.sort(self.cw_list)
-	local cw_index = 1
-	for polygon in polygon_collection:iter() do
-		if polygon.vertex_count == 4 then
-				local cw = self.cw_list[cw_index]
-				cw_function_backup.cw_setVertexPos4(cw, unpack(polygon._vertices))
-				cw_function_backup.cw_setVertexColor4(cw, unpack(polygon._colors))
-				if polygon.extra_data == nil then
-					cw_function_backup.cw_setCollision(cw, false)
-					cw_function_backup.cw_setDeadly(cw, false)
-				else
-					cw_function_backup.cw_setCollision(cw, polygon.extra_data.collision)
-					cw_function_backup.cw_setDeadly(cw, polygon.extra_data.deadly)
-					cw_function_backup.cw_setKillingSide(cw, polygon.extra_data.killing_side)
-				end
-				cw_index = cw_index + 1
+	for i=1,size do
+		local cw = self.cw_list[i]
+		local data_index = i * 2
+		cw_function_backup.cw_setVertexPos4(cw, unpack(self.cw_data[data_index - 1]))
+		cw_function_backup.cw_setVertexColor4(cw, unpack(self.cw_data[data_index]))
+		local extra_data = self.extra_cw_data[i]
+		if extra_data == nil then
+			cw_function_backup.cw_setCollision(cw, false)
+			cw_function_backup.cw_setDeadly(cw, false)
 		else
-			local cws = polygon:split4()
-			if cws ~= nil then
-				for i=1,#cws,2 do
-					local cw = self.cw_list[cw_index]
-					cw_function_backup.cw_setVertexPos4(cw, unpack(cws[i]))
-					cw_function_backup.cw_setVertexColor4(cw, unpack(cws[i + 1]))
-					if polygon.extra_data == nil then
-						cw_function_backup.cw_setCollision(cw, false)
-						cw_function_backup.cw_setDeadly(cw, false)
-					else
-						cw_function_backup.cw_setCollision(cw, polygon.extra_data.collision)
-						cw_function_backup.cw_setDeadly(cw, polygon.extra_data.deadly)
-						cw_function_backup.cw_setKillingSide(cw, polygon.extra_data.killing_side)
-					end
-					cw_index = cw_index + 1
-				end
-			end
+			cw_function_backup.cw_setCollision(cw, extra_data.collision)
+			cw_function_backup.cw_setDeadly(cw, extra_data.deadly)
+			cw_function_backup.cw_setKillingSide(cw, extra_data.killing_side)
 		end
 	end
 end

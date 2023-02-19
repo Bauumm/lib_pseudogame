@@ -302,62 +302,97 @@ function Polygon:slice(x0, y0, x1, y1, left, right)
 	end
 end
 
--- splits the polygon into pairs of tables with 4 vertices and 4 colors each
--- return: table = {{x0, y0, x1, y1, x2, y2, x3, y3}, {r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3}, {x0, y0, x1, y1, x2, y2, x3, y3}, {r0, g0, b0, a0, r1, g1, b1, a1, r2, g2, b2, a2, r3, g3, b3, a3}, ...}
-function Polygon:split4()
+function Polygon:_to_cw_data(data, current_index)
 	if self.vertex_count == 0 then
-		return
+		return current_index
 	end
 	if self.vertex_count == 4 then
-		return {self._vertices, self._colors}
-	elseif self.vertex_count < 4 then
-		local vertices = {unpack(self._vertices)}
-		local colors = {unpack(self._colors)}
-		for i = 1, 4 - self.vertex_count do
-			vertices[#vertices + 1] = vertices[1]
-			vertices[#vertices + 1] = vertices[2]
-			for i=1,4 do
-				colors[#colors + 1] = colors[i]
+		current_index = current_index + 2
+		if data[current_index - 1] == nil then
+			data[current_index - 1] = {}
+		end
+		if data[current_index] == nil then
+			data[current_index] = {}
+		end
+		local vertices = data[current_index - 1]
+		local colors = data[current_index]
+		for i = 1, 4 do
+			local index = i * 2
+			vertices[index - 1] = self._vertices[index - 1]
+			vertices[index] = self._vertices[index]
+			index = index * 2
+			for i = 3, 0, -1 do
+				colors[index - i] = self._colors[index - i]
 			end
 		end
-		return {vertices, colors}
+	elseif self.vertex_count < 4 then
+		current_index = current_index + 2
+		if data[current_index - 1] == nil then
+			data[current_index - 1] = {}
+		end
+		if data[current_index] == nil then
+			data[current_index] = {}
+		end
+		local vertices = data[current_index - 1]
+		local colors = data[current_index]
+		for i = 1, 4 do
+			local wrap_index = ((i - 1) % self.vertex_count + 1) * 2
+			local index = i * 2
+			vertices[index - 1] = self._vertices[wrap_index - 1]
+			vertices[index] = self._vertices[wrap_index]
+			index = index * 2
+			wrap_index = wrap_index * 2
+			for i=1,4 do
+				colors[index - 4 + i] = self._colors[wrap_index - 4 + i]
+			end
+		end
 	else
 		-- only works for simple polygons
-		local polygons = {}
-		local vert = 1
-		local quad = {self:get_vertex_pos(1)}
-		local colors = {self:get_vertex_color(1)}
+		current_index = current_index + 2
+		if data[current_index - 1] == nil then
+			data[current_index - 1] = {}
+		end
+		if data[current_index] == nil then
+			data[current_index] = {}
+		end
+		local quad = data[current_index - 1]
+		quad[1], quad[2] = self:get_vertex_pos(1)
+		local colors = data[current_index]
+		colors[1], colors[2], colors[3], colors[4] = self:get_vertex_color(1)
 		local quad_index = 3
 		for i=2,self.vertex_count do
 			local color_index = quad_index * 2 - 1
 			quad[quad_index], quad[quad_index + 1] = self:get_vertex_pos(i)
 			colors[color_index], colors[color_index + 1], colors[color_index + 2], colors[color_index + 3] = self:get_vertex_color(i)
 			quad_index = quad_index + 2
-			if quad_index > 8 then
-				polygons[#polygons + 1] = quad
-				polygons[#polygons + 1] = colors
-				if i ~= self.vertex_count then
-					quad_index = 5
-					quad = {self:get_vertex_pos(1)}
-					quad[3], quad[4] = self:get_vertex_pos(i)
-					colors = {self:get_vertex_color(1)}
-					colors[5], colors[6], colors[7], colors[8] = self:get_vertex_color(i)
+			if quad_index > 8 and i ~= self.vertex_count then
+				quad_index = 5
+				current_index = current_index + 2
+				if data[current_index - 1] == nil then
+					data[current_index - 1] = {}
 				end
+				if data[current_index] == nil then
+					data[current_index] = {}
+				end
+				quad = data[current_index - 1]
+				quad[1], quad[2] = self:get_vertex_pos(1)
+				quad[3], quad[4] = self:get_vertex_pos(i)
+				colors = data[current_index]
+				colors[1], colors[2], colors[3], colors[4] = self:get_vertex_color(1)
+				colors[5], colors[6], colors[7], colors[8] = self:get_vertex_color(i)
 			end
 		end
-		if #quad ~= 8 then
-			while #quad ~= 8 do
-				quad[#quad + 1] = quad[1]
-				quad[#quad + 1] = quad[2]
-				for i=1,4 do
-					colors[#colors + 1] = colors[i]
-				end
+		while quad_index < 8 do
+			quad[quad_index] = quad[1]
+			quad[quad_index + 1] = quad[2]
+			local color_index = quad_index * 2 - 1
+			for i=0,3 do
+				colors[color_index + i] = colors[1 + i]
 			end
-			polygons[#polygons + 1] = quad
-			polygons[#polygons + 1] = colors
+			quad_index = quad_index + 2
 		end
-		return polygons
 	end
+	return current_index
 end
 
 -- copies the polygon
