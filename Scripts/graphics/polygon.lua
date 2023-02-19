@@ -163,16 +163,72 @@ end
 function Polygon:clip(clipper_polygon, copy)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()
+	local polygon
+	if copy then
+		polygon = self:copy()
+	else
+		polygon = self
+	end
 	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:double_vertex_color_pairs() do
-		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw)
-		if return_polygon.vertex_count == 0 then
+		local dx, dy = x1 - x0, y1 - y0
+		local vertex_index = polygon.vertex_count * 2
+		local function add_point(x, y, r, g, b, a)
+			vertex_index = vertex_index + 2
+			polygon._vertices[vertex_index - 1] = x
+			polygon._vertices[vertex_index] = y
+			local color_index = vertex_index * 2
+			polygon._colors[color_index - 3] = r
+			polygon._colors[color_index - 2] = g
+			polygon._colors[color_index - 1] = b
+			polygon._colors[color_index] = a
+		end
+		for ix, iy, ir, ig, ib, ia, kx, ky, kr, kg, kb, ka in polygon:double_vertex_color_pairs() do
+			local i_pos, k_pos = dx * (iy-y0) - dy * (ix-x0), dx * (ky-y0) - dy * (kx-x0)
+			local iside, kside = i_pos >= 0, k_pos >= 0
+			if iside then
+				-- point is on the left side
+				if not cw then
+					add_point(ix, iy, ir, ig, ib, ia)
+				end
+			else
+				-- point is on the right side
+				if cw then
+					add_point(ix, iy, ir, ig, ib, ia)
+				end
+			end
+			if iside ~= kside then
+				-- next point will be on the other side, so add the intersection point with the line
+				local dikx, diky = ix - kx, iy - ky
+				local num_part1 = (x0*y1 - y0*x1)
+				local num_part2 = (ix*ky - iy*kx)
+				local den = dy * dikx - dx * diky
+				local x = (num_part1 * dikx + dx * num_part2) / den
+				local y = (num_part1 * diky + dy * num_part2) / den
+
+				-- interpolate between vertex colors to keep gradients
+				local fac = (x - kx) / dikx
+				if dikx == 0 then
+					fac = 0
+				end
+
+				add_point(
+					x, y,
+					ir * fac + kr * (1 - fac),
+					ig * fac + kg * (1 - fac),
+					ib * fac + kb * (1 - fac),
+					ia * fac + ka * (1 - fac)
+				)
+			end
+		end
+		for i=1, polygon.vertex_count do
+			polygon:remove_vertex(1)
+		end
+		polygon.vertex_count = #polygon._vertices / 2
+		if polygon.vertex_count == 0 then
 			break
 		end
 	end
-	if not copy then
-		self:copy_data(return_polygon)
-	end
-	return return_polygon
+	return polygon
 end
 
 -- slice the polygon into two polygons at a line given by two points
