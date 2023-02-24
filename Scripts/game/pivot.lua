@@ -12,10 +12,11 @@ end
 function Pivot:update()
 	self.polygon_collection:resize(l_getSides())
 	local it = self.polygon_collection:iter()
+	local sides = l_getSides()
 	local radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
 	local pivot_radius = 0.75 * radius
-	local div = math.pi / l_getSides()
-	for i=0, l_getSides() - 1 do
+	local div = math.pi / sides
+	for i=0, sides - 1 do
 		local s_angle = div * 2 * i
 		local polygon = it()
 		while polygon.vertex_count < 4 do

@@ -29,16 +29,10 @@ function DeathEffect:death()
 	l_getRotation = function()
 		return self.rotation_on_death
 	end
-	self.real_screen_update = screen.update
+	self.real_screen_draw_polygon = screen.draw_polygon
 	self.real_collection = PolygonCollection:new()
-	screen.update = function(screen, polygon_collection)
-		self.real_collection:clear()
-		for polygon in polygon_collection:iter() do
-			local transformed_poly = polygon:copy()
-			transformed_poly:transform(self.transform)
-			self.real_collection:add(transformed_poly)
-		end
-		self.real_screen_update(screen, self.real_collection)
+	screen.draw_polygon = function(screen, polygon)
+		self.real_screen_draw_polygon(screen, polygon:copy():transform(self.transform))
 	end
 	l_setRotationSpeed(self.exploit_rot)
 	self.initialized = true

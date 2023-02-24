@@ -11,13 +11,14 @@ end
 -- update the backgrounds color, position and shape
 function Background:update()
 	local it = self.polygon_collection:creation_iter()
-	local div = math.pi * 2 / l_getSides()
+	local sides = l_getSides()
+	local div = math.pi * 2 / sides
 	local half_div = div / 2
 	local distance = s_getBGTileRadius()
-	for i=0, l_getSides() - 1 do
+	for i=0, sides - 1 do
 		local angle = div * i + math.rad(s_getBGRotationOffset())
 		local current_color = {style:get_color(i)}
-		if i % 2 == 0 and i == l_getSides() - 1 and l_getDarkenUnevenBackgroundChunk() then
+		if i % 2 == 0 and i == sides - 1 and l_getDarkenUnevenBackgroundChunk() then
 			for i=1,3 do
 				current_color[i] = current_color[i] / 1.4
 			end
