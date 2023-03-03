@@ -8,7 +8,9 @@ desync = {
 	back_collection = PolygonCollection:new(),
 	back_blend_collection = PolygonCollection:new(),
 	blend_collection = PolygonCollection:new(),
-	final_collection = PolygonCollection:new()
+	final_collection = PolygonCollection:new(),
+	fps_limit = 120,
+	passed_time = 0
 }
 
 function desync:init()
@@ -36,30 +38,34 @@ end
 function desync:onInput(frametime, movement, focus, swap)
 	self.game:update(frametime, movement, focus, swap)
 	local collections = self.game:get_render_stages({0, 1, 2, 3, 4, 5, 6, 7})
-	local it = self.back_collection:creation_iter()
-	for polygon in collections[1]:iter() do
-		it():copy_data_transformed(polygon, self.transform)
-	end
-	collections[1]:blend(self.back_collection, self.blend, self.back_blend_collection)
-	self.main_collection:clear()
-	for i = 2, #collections do
-		if i == 6 then
-			self.main_collection:add(collections[i])
-		else
-			self.main_collection:copy_add(collections[i])
+	self.passed_time = self.passed_time + frametime
+	while self.passed_time >= 60 / self.fps_limit do
+		self.passed_time = self.passed_time - 60 / self.fps_limit
+		local it = self.back_collection:creation_iter()
+		for polygon in collections[1]:iter() do
+			it():copy_data_transformed(polygon, self.transform)
 		end
+		collections[1]:blend(self.back_collection, self.blend, self.back_blend_collection)
+		self.main_collection:clear()
+		for i = 2, #collections do
+			if i == 6 then
+				self.main_collection:add(collections[i])
+			else
+				self.main_collection:copy_add(collections[i])
+			end
+		end
+		self.collection:clear()
+		self.collection:copy_add(self.main_collection)
+		self.main_collection:transform(self.transform)
+		self.main_collection:blend(self.collection, self.blend, self.blend_collection)
+		self.collection:ref_add(self.main_collection)
+		self.collection:ref_add(self.blend_collection)
+		self.final_collection:clear()
+		self.final_collection:ref_add(self.back_blend_collection)
+		self.final_collection:ref_add(self.collection)
+		screen:draw_polygon_collection(self.final_collection)
+		screen:update()
 	end
-	self.collection:clear()
-	self.collection:copy_add(self.main_collection)
-	self.main_collection:transform(self.transform)
-	self.main_collection:blend(self.collection, self.blend, self.blend_collection)
-	self.collection:ref_add(self.main_collection)
-	self.collection:ref_add(self.blend_collection)
-	self.final_collection:clear()
-	self.final_collection:ref_add(self.back_blend_collection)
-	self.final_collection:ref_add(self.collection)
-	screen:draw_polygon_collection(self.final_collection)
-	screen:update()
 end
 
 function desync:onDeath()
