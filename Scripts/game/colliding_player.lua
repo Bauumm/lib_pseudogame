@@ -47,19 +47,23 @@ function CollidingPlayer:update(frametime, move, focus, swap, collide_collection
 	local x, y = get_orbit(self.angle, radius)
 	local collides = false
 	local last_collides = false
+	local must_kill = false
 	for polygon in collide_collection:iter() do
-		collides = collides or polygon:contains_point(x, y)
+		local is_in = polygon:contains_point(x, y)
+		if polygon.extra_data.deadly and is_in then
+			must_kill = true
+		end
+		collides = collides or is_in
 		if not self.just_swapped then
 			last_collides = last_collides or polygon:contains_point(unpack(self.pos))
 		end
 	end
-	local must_kill = false
 	if collides then
 		if self.just_swapped then
 			must_kill = true
 		elseif last_collides then
 			must_kill = true
-		else
+		elseif not must_kill then
 			x, y = unpack(self.pos)
 			self.angle = self.last_angle
 		end

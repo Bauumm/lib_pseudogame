@@ -64,7 +64,7 @@ function Game:new()
 				self._collide_collection:clear()
 				self._collide_collection:ref_add(self.walls.polygon_collection)
 				for polygon in self._cws:iter() do
-					if polygon.extra_data.collision then
+					if polygon.extra_data.collision or polygon.extra_data.deadly then
 						self._collide_collection:add(polygon)
 					end
 				end
