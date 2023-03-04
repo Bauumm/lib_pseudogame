@@ -50,7 +50,7 @@ function CollidingPlayer:update(frametime, move, focus, swap, collide_collection
 	local must_kill = false
 	for polygon in collide_collection:iter() do
 		local is_in = polygon:contains_point(x, y)
-		if polygon.extra_data.deadly and is_in then
+		if polygon.extra_data ~= nil and polygon.extra_data.deadly and is_in then
 			must_kill = true
 		end
 		collides = collides or is_in
