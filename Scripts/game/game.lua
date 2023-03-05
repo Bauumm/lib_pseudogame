@@ -95,12 +95,22 @@ end
 function Game:overwrite()
 	overwrite_cw_functions(self._cws)
 	s_set3dDepth(0)
+	self._oldSet3dDepth = s_set3dDepth
+	self._oldGet3dDepth = s_get3dDepth
+	s_set3dDepth = function(depth)
+		self.depth = depth
+	end
+	s_get3dDepth = function()
+		return self.depth
+	end
 	self.walls:overwrite()
 end
 
 -- restores the original wall and custom wall functions
 function Game:restore()
 	restore_cw_functions()
+	s_set3dDepth = self._oldSet3dDepth
+	s_get3dDepth = self._oldGet3dDepth
 	s_set3dDepth(self.depth)
 	self.walls:restore()
 end
@@ -171,9 +181,9 @@ function Game:_update_3D(walls, pivot, player)
 end
 
 -- get the polygon / polygon collection of a renderstage (the enum can be found in utils.lua in the base pack)
--- this function also updates the renderstages using the data provided to the update methodso renderstages that aren't required also won't be updated
+-- this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
 -- render_stages: table	-- a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
--- return: table	-- a table of polygon collections or polygons depending on the renderstage
+-- return: table	-- a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
 function Game:get_render_stages(render_stages)
 	local walls3d, pivot3d, player3d = false, false, false
 	local result = {}
@@ -210,7 +220,7 @@ function Game:update(frametime, move, focus, swap)
 	self._swap = swap
 end
 
--- puts all the renderstages onto game.polygon_collection
+-- puts all the renderstage's polygons into game.polygon_collection
 function Game:draw()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,
@@ -232,7 +242,7 @@ function Game:draw()
 	end
 end
 
--- puts all the renderstages onto the screen
+-- draws all the renderstages onto the screen and updates it
 function Game:draw_to_screen()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,
