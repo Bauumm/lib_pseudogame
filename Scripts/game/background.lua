@@ -3,9 +3,13 @@ Background.__index = Background
 
 -- the constructor for a games background
 -- use background.polygon_collection to draw it
+-- style: Style	-- the style to use (nil will use the default level style)
 -- return: Background
-function Background:new()
-	return setmetatable({polygon_collection = PolygonCollection:new()}, Background)
+function Background:new(style)
+	return setmetatable({
+		style = style or level_style,
+		polygon_collection = PolygonCollection:new()
+	}, Background)
 end
 
 -- update the backgrounds color, position and shape
@@ -17,7 +21,7 @@ function Background:update()
 	local distance = s_getBGTileRadius()
 	for i=0, sides - 1 do
 		local angle = div * i + math.rad(s_getBGRotationOffset())
-		local current_color = {style:get_color(i)}
+		local current_color = {self.style:get_background_color(i + 1)}
 		if i % 2 == 0 and i == sides - 1 and l_getDarkenUnevenBackgroundChunk() then
 			for i=1,3 do
 				current_color[i] = current_color[i] / 1.4

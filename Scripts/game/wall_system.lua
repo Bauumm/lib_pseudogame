@@ -1,6 +1,3 @@
-u_execScript("game/math.lua")
-u_execScript("game/style.lua")
-
 if WallSystem == nil then
 	WallSystem = {
 		_systems = {},
@@ -16,9 +13,11 @@ end
 
 -- the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
 -- draw it using wall_system.polygon_collection
+-- style: Style	-- the style to use (nil will use the default level style)
 -- return: WallSystem
-function WallSystem:new()
+function WallSystem:new(style)
 	local obj = setmetatable({
+		style = style or level_style,
 		_walls = {},
 		polygon_collection = PolygonCollection:new()
 	}, WallSystem)
@@ -93,7 +92,7 @@ function WallSystem:update(frametime)
 				local move_distance = wall.speed * 5 * frametime
 				polygon:set_vertex_pos(vertex, x - x / magnitude * move_distance, y - y / magnitude * move_distance)
 			end
-			polygon:set_vertex_color(vertex, style:get_main_color())
+			polygon:set_vertex_color(vertex, self.style:get_wall_color())
 		end
 		if points_on_center == 4 or points_out_of_bounds == 4 then
 			table.insert(del_queue, 1, i)

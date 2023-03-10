@@ -3,9 +3,13 @@ Pivot.__index = Pivot
 
 -- the constructor for a pivot
 -- draw it using pivot.polygon_collection
+-- style: Style	-- the style to use (nil will use the default level style)
 -- return: Pivot
-function Pivot:new()
-	return setmetatable({polygon_collection = PolygonCollection:new()}, Pivot)
+function Pivot:new(style)
+	return setmetatable({
+		style = style or level_style,
+		polygon_collection = PolygonCollection:new()
+	}, Pivot)
 end
 
 -- update the pivots shape and color
@@ -27,7 +31,7 @@ function Pivot:update()
 		polygon:set_vertex_pos(3, get_orbit(s_angle + div, pivot_radius + 5))
 		polygon:set_vertex_pos(4, get_orbit(s_angle - div, pivot_radius + 5))
 		for i=1,4 do
-			polygon:set_vertex_color(i, style:get_main_color())
+			polygon:set_vertex_color(i, self.style:get_main_color())
 		end
 	end
 end

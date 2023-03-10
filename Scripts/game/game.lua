@@ -4,8 +4,9 @@ Game = {}
 Game.__index = Game
 
 -- the constructor for a game object that recreates the game and allows direct access to each renderstage for transformation
+-- style: Style	-- the style the game should use (nil will use the default level style)
 -- return: Game
-function Game:new()
+function Game:new(style)
 	local obj = setmetatable({
 		-- game objects
 		background = Background:new(),
@@ -15,9 +16,8 @@ function Game:new()
 		cap = Cap:new(),
 
 		-- game data
-		pulse3DDirection = 1,
-		pulse3D = 1,
 		depth = s_get3dDepth(),
+		style = style or level_style,
 
 		-- additional collections
 		_collide_collection = PolygonCollection:new(),
@@ -116,26 +116,12 @@ function Game:restore()
 end
 
 function Game:_update_3D(walls, pivot, player)
-	self.pulse3D = self.pulse3D + s_get3dPulseSpeed() * self.pulse3DDirection * self._frametime
-	if self.pulse3D > s_get3dPulseMax() then
-		self.pulse3DDirection = -1
-	elseif self.pulse3D < s_get3dPulseMin() then
-		self.pulse3DDirection = 1
+	if self.style._update_pulse3D ~= nil then
+		self.style:_update_pulse3D(self._frametime)
 	end
 	if self.depth > 0 then
-		local effect = s_get3dSkew() * self.pulse3D
-		local skew = 1 + effect
 		local rad_rot = math.rad(l_getRotation() + 90)
 		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-		local function adjust_alpha(a, i)
-			local new_alpha = a / s_get3dAlphaMult() - i * s_get3dAlphaFalloff()
-			if new_alpha > 255 then
-				new_alpha = 255
-			elseif new_alpha < 0 then
-				new_alpha = 0
-			end
-			return new_alpha
-		end
 		if walls then
 			self.walls3d:clear()
 		end
@@ -146,15 +132,11 @@ function Game:_update_3D(walls, pivot, player)
 			self.player3d:clear()
 		end
 		for j=1, self.depth do
-			local i = self.depth - j
-			local offset = s_get3dSpacing() * (i + 1) * s_get3dPerspectiveMult() * effect * 3.6 * 1.4
+			local i = self.depth - j + 1
+			local offset = i * self.style:get_layer_spacing()
 			local new_pos_x = offset * cos_rot
-			local new_pos_y = offset* sin_rot
-			local override_color = {s_get3DOverrideColor()}
-			for i=1, 3 do
-				override_color[i] = override_color[i] / s_get3dDarkenMult()
-			end
-			override_color[4] = adjust_alpha(override_color[4], i)
+			local new_pos_y = offset * sin_rot
+			local override_color = {self.style:get_layer_color(i)}
 			if walls then
 				for polygon in self.wall_collection:iter() do
 					self.walls3d:add(polygon:copy():transform(function(x, y)

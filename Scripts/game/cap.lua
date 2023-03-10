@@ -3,9 +3,13 @@ Cap.__index = Cap
 
 -- the constructor for a cap
 -- use cap.polygon to draw it
+-- style: Style	-- the style to use (nil will use the default level style)
 -- return: Cap
-function Cap:new()
-	return setmetatable({polygon = Polygon:new()}, Cap)
+function Cap:new(style)
+	return setmetatable({
+		style = style or level_style,
+		polygon = Polygon:new()
+	}, Cap)
 end
 
 -- update the caps shape and color
@@ -23,6 +27,6 @@ function Cap:update()
 	for i=1, sides do
 		local s_angle = div * 2 * i
 		self.polygon:set_vertex_pos(i, get_orbit(s_angle - div, pivot_radius))
-		self.polygon:set_vertex_color(i, style:get_cap_color())
+		self.polygon:set_vertex_color(i, self.style:get_cap_color())
 	end
 end

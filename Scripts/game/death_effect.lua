@@ -74,7 +74,7 @@ function DeathEffect:update(frametime)
 		local div = math.pi / 6
 		local radius = self.player_hue / 8
 		local thickness = self.player_hue / 20
-		local color = style.get_color_from_hue(360 - self.player_hue)
+		local color = get_color_from_hue(360 - self.player_hue)
 		local it = self.polygon_collection:iter()
 		for i=0, 5 do
 			local angle = div * i * 2
@@ -87,7 +87,7 @@ function DeathEffect:update(frametime)
 				polygon:set_vertex_color(i, unpack(color))
 			end
 		end
-		self.player.color = style.get_color_from_hue(self.player_hue)
+		self.player.color = get_color_from_hue(self.player_hue)
 	else
 		self.polygon_collection:clear()
 		self.player.color = nil

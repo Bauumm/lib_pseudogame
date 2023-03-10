@@ -3,9 +3,11 @@ CollidingPlayer.__index = CollidingPlayer
 
 -- the constructor for a player that can handle collisions (without relying on the games internals)
 -- use player.polygon to draw it
+-- style: Style	-- the style to use (nil will use the default level style)
 -- return: CollidingPlayer
-function CollidingPlayer:new()
+function CollidingPlayer:new(style)
 	return setmetatable({
+		style = style or level_style,
 		angle = 0,
 		last_angle = 0,
 		pos = {0, 0},
@@ -36,7 +38,7 @@ function CollidingPlayer:update(frametime, move, focus, swap, collide_collection
 		if self.swap_cooldown_time < 0 then
 			self.swap_cooldown_time = 0
 			self.swap_blink_time = (self.swap_blink_time + frametime / 3.6) % 2
-			self.color = style.get_color_from_hue(self.swap_blink_time * 36)
+			self.color = get_color_from_hue(self.swap_blink_time * 36)
 		else
 			self.color = nil
 		end
@@ -88,7 +90,7 @@ function CollidingPlayer:update(frametime, move, focus, swap, collide_collection
 	self.polygon:set_vertex_pos(3, get_orbit(self.angle + math.rad(100), size, self.pos))
 	if self.color == nil then
 		for i=1,3 do
-			self.polygon:set_vertex_color(i, style:get_main_color())
+			self.polygon:set_vertex_color(i, self.style:get_player_color())
 		end
 	else
 		for i=1,3 do
