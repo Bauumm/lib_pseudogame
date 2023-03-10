@@ -29,10 +29,20 @@ function DeathEffect:death()
 	l_getRotation = function()
 		return self.rotation_on_death
 	end
-	self.real_screen_draw_polygon = screen.draw_polygon
-	self.real_collection = PolygonCollection:new()
-	screen.draw_polygon = function(screen, polygon)
-		self.real_screen_draw_polygon(screen, polygon:copy():transform(self.transform))
+	self.real_screen_update = screen.update
+	screen.update = function(screen)
+		local rad_rot = math.rad(self.real_get_rotation() - self.rotation_on_death)
+		local sin_rot, cos_rot = math.sin(rad_rot), math.cos(rad_rot)
+		for i=1, screen._current_index / 2 do
+			local vertices = screen._cw_data[i * 2 - 1]
+			for v=1,4 do
+				local index = v * 2
+				local x, y = vertices[index - 1], vertices[index]
+				vertices[index - 1] = x * cos_rot - y * sin_rot
+				vertices[index] = x * sin_rot + y * cos_rot
+			end
+		end
+		self.real_screen_update(screen)
 	end
 	l_setRotationSpeed(self.exploit_rot)
 	self.initialized = true
@@ -92,13 +102,6 @@ function DeathEffect:ensure_tickrate(func)
 	end
 	while l_getRotationSpeed() <= self.exploit_rot * 0.99 do
 		self.rotation_speed_on_death = self.rotation_speed_on_death * 0.99
-		local rad_rot = math.rad(self.real_get_rotation() - self.rotation_on_death)
-		local sin_rot, cos_rot = math.sin(rad_rot), math.cos(rad_rot)
-		self.transform = function(x, y, r, g, b, a)
-			local new_x = x * cos_rot - y * sin_rot
-			local new_y = x * sin_rot + y * cos_rot
-			return new_x, new_y, r, g, b, a
-		end
 		self.rotation_on_death = (self.rotation_on_death - self.rotation_speed_on_death) % 360
 		l_setRotationSpeed(l_getRotationSpeed() / 0.99)
 		func(self.frametime)
