@@ -122,14 +122,15 @@ function Game:_update_3D(walls, pivot, player)
 	if self.depth > 0 then
 		local rad_rot = math.rad(l_getRotation() + 90)
 		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
+		local wall_iter, pivot_iter, player_iter
 		if walls then
-			self.walls3d:clear()
+			wall_iter = self.walls3d:creation_iter()
 		end
 		if pivot then
-			self.pivot3d:clear()
+			pivot_iter = self.pivot3d:creation_iter()
 		end
 		if player then
-			self.player3d:clear()
+			player_iter = self.player3d:creation_iter()
 		end
 		for j=1, self.depth do
 			local i = self.depth - j + 1
@@ -139,23 +140,23 @@ function Game:_update_3D(walls, pivot, player)
 			local override_color = {self.style:get_layer_color(i)}
 			if walls then
 				for polygon in self.wall_collection:iter() do
-					self.walls3d:add(polygon:copy():transform(function(x, y)
+					wall_iter():copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, unpack(override_color)
-					end))
+					end)
 				end
 			end
 			if pivot then
 				for polygon in self.pivot.polygon_collection:iter() do
-					self.pivot3d:add(polygon:copy():transform(function(x, y)
+					pivot_iter():copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, unpack(override_color)
-					end))
+					end)
 				end
 			end
 			if player then
 				for polygon in self.player_collection:iter() do
-					self.player3d:add(polygon:copy():transform(function(x, y)
+					player_iter():copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, unpack(override_color)
-					end))
+					end)
 				end
 			end
 		end
