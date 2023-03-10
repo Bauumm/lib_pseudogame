@@ -11,7 +11,7 @@ end
 
 function suphexskew:onInput(frametime, movement, focus, swap)
 	self.game:update(frametime, movement, focus, swap)
-	local effect = s_get3dSkew() * self.game.pulse3D
+	local effect = s_get3dSkew() * self.game.style.pulse3D
 	local skew = 1 + effect 
 	self.game:draw()
 	local it = self.collection:creation_iter()
