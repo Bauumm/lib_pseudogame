@@ -10,6 +10,7 @@ Style.__index = Style
 -- 	background_colors: {{r, g, b, a}, ...},	-- the colors used for the background panels
 -- 	layer_colors: {{r, g, b, a}, ...}	-- the colors used for the 3d layers
 -- 	layer_spacing: number			-- the spacing between 3d layers
+-- 	connect_layers: bool			-- specifies if the 3d layers should be connected using extra polygons to create solid 3d
 -- }
 -- return: Style
 function Style:new(style_table)
@@ -93,6 +94,12 @@ function Style:get_layer_spacing()
 	return self.layer_spacing
 end
 
+-- gets if the 3d layers are supposed to be connected
+-- return: bool
+function Style:get_connect_layers()
+	return self.connect_layers
+end
+
 -- a table that implements the style getters using the game's style functions
 level_style = {
 	pulse3DDirection = 1,
@@ -150,4 +157,8 @@ end
 
 function level_style:get_layer_spacing()
 	return s_get3dSpacing() * s_get3dPerspectiveMult() * s_get3dSkew() * self.pulse3D * 3.6 * 1.4
+end
+
+function level_style:get_connect_layers()
+	return self.connect_layers
 end

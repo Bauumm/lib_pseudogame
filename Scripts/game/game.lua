@@ -9,11 +9,11 @@ Game.__index = Game
 function Game:new(style)
 	local obj = setmetatable({
 		-- game objects
-		background = Background:new(),
-		walls = WallSystem:new(),
-		player = CollidingPlayer:new(),
-		pivot = Pivot:new(),
-		cap = Cap:new(),
+		background = Background:new(style),
+		walls = WallSystem:new(style),
+		player = CollidingPlayer:new(style),
+		pivot = Pivot:new(style),
+		cap = Cap:new(style),
 
 		-- game data
 		depth = s_get3dDepth(),
@@ -88,6 +88,10 @@ function Game:new(style)
 
 	-- can't define at the top as it needs the player object
 	obj.death_effect = DeathEffect:new(obj.player)
+	if obj.style:get_connect_layers() then
+		obj._tmp_collection = PolygonCollection:new()
+		obj._update_3D = Game._update_connected_3D
+	end
 	return obj
 end
 
@@ -113,6 +117,68 @@ function Game:restore()
 	s_get3dDepth = self._oldGet3dDepth
 	s_set3dDepth(self.depth)
 	self.walls:restore()
+end
+
+function Game:_update_connected_3D(walls, pivot, player)
+	if self.style._update_pulse3D ~= nil then
+		self.style:_update_pulse3D(self._frametime)
+	end
+	if self.depth > 0 then
+		local rad_rot = math.rad(l_getRotation() + 90)
+		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
+		local wall_iter, pivot_iter, player_iter
+		if walls then
+			wall_iter = self.walls3d:creation_iter()
+		end
+		if pivot then
+			pivot_iter = self.pivot3d:creation_iter()
+		end
+		if player then
+			player_iter = self.player3d:creation_iter()
+		end
+		local tmp_iter = self._tmp_collection:creation_iter()
+		for j=1, self.depth do
+			local i = self.depth - j + 1
+			local offset = i * self.style:get_layer_spacing()
+			local new_pos_x = offset * cos_rot
+			local new_pos_y = offset * sin_rot
+			local override_color = {self.style:get_layer_color(i)}
+			local function process_collection(collection, creation_iter)
+				for polygon in collection:iter() do
+					local new_polygon = tmp_iter()
+					new_polygon:copy_data_transformed(polygon, function(x, y)
+						return x + new_pos_x, y + new_pos_y, 0, 0, 0, 0
+					end)
+					for i=1,polygon.vertex_count do
+						local next_i = i % polygon.vertex_count + 1
+						local side = creation_iter()
+						while side.vertex_count < 4 do
+							side:add_vertex(0, 0, 0, 0, 0, 0)
+						end
+						while side.vertex_count > 4 do
+							side:remove_vertex(1)
+						end
+						side:set_vertex_pos(1, polygon:get_vertex_pos(i))
+						side:set_vertex_pos(2, polygon:get_vertex_pos(next_i))
+						side:set_vertex_pos(3, new_polygon:get_vertex_pos(next_i))
+						side:set_vertex_pos(4, new_polygon:get_vertex_pos(i))
+						for i=1,4 do
+							side:set_vertex_color(i, unpack(override_color))
+						end
+					end
+				end
+			end
+			if walls then
+				process_collection(self.wall_collection, wall_iter)
+			end
+			if pivot then
+				process_collection(self.pivot.polygon_collection, pivot_iter)
+			end
+			if player then
+				process_collection(self.player_collection, player_iter)
+			end
+		end
+	end
 end
 
 function Game:_update_3D(walls, pivot, player)
