@@ -158,7 +158,7 @@ end
 -- Doesn't work with concave polygons
 -- clipper_polygon: Polygon	-- the polygon that will contain the newly created clipped polygon
 -- copy: bool			-- true will create a new polygon, false will modify the current one
--- return: Polygon		-- Returns the clipped polygon
+-- return: Polygon		-- Returns the clipped polygon or nil if no intersecting area exists
 function Polygon:clip(clipper_polygon, copy)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()
@@ -224,7 +224,7 @@ function Polygon:clip(clipper_polygon, copy)
 		end
 		polygon.vertex_count = #polygon._vertices / 2
 		if polygon.vertex_count == 0 then
-			break
+			return
 		end
 	end
 	return polygon

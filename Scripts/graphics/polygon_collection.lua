@@ -79,26 +79,6 @@ function PolygonCollection:ref_add(polygon_collection)
 	end
 end
 
--- get the polygons that represent the intersection of of this collection with another one
--- polygon_collection: PolygonCollection	-- the collection to intersect with
--- blend_func: function				-- this function determines the color of the new polygons based on the color of the two intersected ones, so it should take r0, g0, b0, a0, r1, g1, b1, a1 and return r, g, b, a
--- blend_collection: PolygonCollection		-- the collection the resulting polygons are added to (the collection is cleared before the operation)
-function PolygonCollection:blend(polygon_collection, blend_func, blend_collection)
-	blend_collection:clear()
-	for polygon0 in self:iter() do
-		for polygon1 in polygon_collection:iter() do
-			local clipped_polygon = polygon0:clip(polygon1, true)
-			if clipped_polygon.vertex_count > 0 then
-				local r, g, b, a = polygon0:get_vertex_color(1)
-				for index, x, y in clipped_polygon:vertex_color_pairs() do
-					clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon1:get_vertex_color(1)))
-				end
-				blend_collection:add(clipped_polygon)
-			end
-		end
-	end
-end
-
 -- iterate over all polygons like this:
 -- for polygon in mypolygoncollection:iter() do
 -- 	...

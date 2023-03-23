@@ -45,7 +45,7 @@ function desync:onInput(frametime, movement, focus, swap)
 		for polygon in collections[1]:iter() do
 			it():copy_data_transformed(polygon, self.transform)
 		end
-		collections[1]:blend(self.back_collection, self.blend, self.back_blend_collection)
+		effects.blend(collections[1], self.back_collection, self.blend, self.back_blend_collection)
 		self.main_collection:clear()
 		for i = 2, #collections do
 			if i == 6 then
@@ -57,7 +57,7 @@ function desync:onInput(frametime, movement, focus, swap)
 		self.collection:clear()
 		self.collection:copy_add(self.main_collection)
 		self.main_collection:transform(self.transform)
-		self.main_collection:blend(self.collection, self.blend, self.blend_collection)
+		effects.blend(self.main_collection, self.collection, self.blend, self.blend_collection)
 		self.collection:ref_add(self.main_collection)
 		self.collection:ref_add(self.blend_collection)
 		self.final_collection:clear()
