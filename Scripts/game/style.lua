@@ -1,3 +1,4 @@
+-- TODO: side scalings
 Style = {}
 Style.__index = Style
 

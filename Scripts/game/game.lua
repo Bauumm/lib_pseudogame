@@ -11,7 +11,7 @@ function Game:new(style)
 		-- game objects
 		background = Background:new(style),
 		walls = WallSystem:new(style),
-		player = CollidingPlayer:new(style),
+		player = Player:new(style, basic_collision_handler),
 		pivot = Pivot:new(style),
 		cap = Cap:new(style),
 
