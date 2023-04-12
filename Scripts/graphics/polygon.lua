@@ -144,6 +144,18 @@ function Polygon:get_vertex_color(index)
 	return self._colors[color_index - 3], self._colors[color_index - 2], self._colors[color_index - 1], self._colors[color_index]
 end
 
+-- creates or removes vertices until the given size (vertex count) is reached
+-- new vertices are initialized at (0, 0) with the color black
+-- size: number	-- the vertex count the polygon will have after the operation
+function Polygon:resize(size)
+	while self.vertex_count > size do
+		self:remove_vertex(1)
+	end
+	while self.vertex_count < size do
+		self:add_vertex(0, 0, 0, 0, 0, 0)
+	end
+end
+
 -- checks if the polygon is defined in clockwise order
 -- return: bool
 function Polygon:is_clockwise()

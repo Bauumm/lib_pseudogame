@@ -28,9 +28,7 @@ function Background:update()
 			end
 		end
 		local polygon = it()
-		while polygon.vertex_count < 3 do
-			polygon:add_vertex(0, 0, 0, 0, 0, 0)
-		end
+		polygon:resize(3)
 		polygon:set_vertex_pos(2, get_orbit(angle + half_div, distance))
 		polygon:set_vertex_pos(3, get_orbit(angle - half_div, distance))
 		for i=1,3 do

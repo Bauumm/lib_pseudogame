@@ -23,9 +23,7 @@ function Pivot:update()
 	for i=0, sides - 1 do
 		local s_angle = div * 2 * i
 		local polygon = it()
-		while polygon.vertex_count < 4 do
-			polygon:add_vertex(0, 0, 0, 0, 0, 0)
-		end
+		polygon:resize(4)
 		polygon:set_vertex_pos(1, get_orbit(s_angle - div, pivot_radius))
 		polygon:set_vertex_pos(2, get_orbit(s_angle + div, pivot_radius))
 		polygon:set_vertex_pos(3, get_orbit(s_angle + div, pivot_radius + 5))

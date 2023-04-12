@@ -18,12 +18,7 @@ function Cap:update()
 	local sides = l_getSides()
 	local pivot_radius = 0.75 * radius
 	local div = math.pi / sides
-	while self.polygon.vertex_count > sides do
-		self.polygon:remove_vertex(1)
-	end
-	while self.polygon.vertex_count < sides do
-		self.polygon:add_vertex(0, 0, 0, 0, 0, 0)
-	end
+	self.polygon:resize(sides)
 	for i=1, sides do
 		local s_angle = div * 2 * i
 		self.polygon:set_vertex_pos(i, get_orbit(s_angle - div, pivot_radius))

@@ -152,12 +152,7 @@ function Game:_update_connected_3D(walls, pivot, player)
 					for i=1,polygon.vertex_count do
 						local next_i = i % polygon.vertex_count + 1
 						local side = creation_iter()
-						while side.vertex_count < 4 do
-							side:add_vertex(0, 0, 0, 0, 0, 0)
-						end
-						while side.vertex_count > 4 do
-							side:remove_vertex(1)
-						end
+						side:resize(4)
 						side:set_vertex_pos(1, polygon:get_vertex_pos(i))
 						side:set_vertex_pos(2, polygon:get_vertex_pos(next_i))
 						side:set_vertex_pos(3, new_polygon:get_vertex_pos(next_i))
