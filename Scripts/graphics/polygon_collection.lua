@@ -104,21 +104,14 @@ end
 -- for i=1,100 do
 -- 	local polygon = it()
 -- 	...
--- 	-- alternatively you can also overwrite the polygon the iterator would normally return with a new one
--- 	it(some_polygon)
--- 	...
 -- end
-function PolygonCollection:creation_iter(polygon)
+function PolygonCollection:creation_iter()
 	local index = 0
 	self:clear()
 	return function()
 		index = index + 1
 		self._highest_index = index
 		self.size = index
-		if polygon ~= nil then
-			self._polygons[index] = polygon
-			return polygon
-		end
 		local polygon = self._polygons[index]
 		if polygon == nil then
 			polygon = Polygon:new()

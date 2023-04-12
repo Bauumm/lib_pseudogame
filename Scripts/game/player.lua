@@ -3,8 +3,9 @@ Player.__index = Player
 
 -- the constructor for a player that can handle collisions (without relying on the games internals)
 -- use player.polygon to draw it
--- style: Style	-- the style to use (nil will use the default level style)
--- return: CollidingPlayer
+-- style: Style (optional)			-- the style to use (nil will use the default level style)
+-- collision_handler: function	(optional)	-- the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)
+-- return: Player
 function Player:new(style, collision_handler)
 	return setmetatable({
 		style = style or level_style,
@@ -28,11 +29,11 @@ function Player:reset_swap_cooldown()
 end
 
 -- update the players position while handling collisions as well as swap
--- frametime: number				-- the time in 1/60s that passed since the last call of this function
--- move: number					-- the current movement direction, so either -1, 0 or 1
--- focus: bool					-- true if the player is focusing, false otherwise
--- swap: bool					-- true if the swap key is pressed, false otherwise
--- collide_collection: PolygonCollection	-- the collection of polygons the player should collide with
+-- frametime: number						-- the time in 1/60s that passed since the last call of this function
+-- move: number	(optional)					-- the current movement direction, so either -1, 0 or 1 (only required when using a custom collision handler)
+-- focus: bool							-- true if the player is focusing, false otherwise
+-- swap: bool	(optional)					-- true if the swap key is pressed, false otherwise (only required when using a custom collision handler)
+-- collide_collection: PolygonCollection	(optional)	-- the collection of polygons the player should collide with (only required when using a custom collision handler)
 function Player:update(frametime, move, focus, swap, collide_collection)
 	if l_getSwapEnabled() then
 		self.just_swapped = false

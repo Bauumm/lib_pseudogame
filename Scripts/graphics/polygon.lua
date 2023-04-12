@@ -3,7 +3,7 @@ u_execScript("cache.lua")
 Polygon = {}
 Polygon.__index = Polygon
 
--- The constructor for the Polygon class that represents a 2D polygon with a solid color
+-- The constructor for the Polygon class that represents a 2D polygon
 -- vertices: table = {x0, y0, x1, y1, ...}
 -- colors: table = {r0, g0, b0, a0, r1, g1, b1, a1, ...}
 -- return: Polygon
@@ -156,9 +156,9 @@ end
 
 -- Implementation of the sutherland hodgman algorithm for polygon clipping
 -- Doesn't work with concave polygons
--- clipper_polygon: Polygon	-- the polygon that will contain the newly created clipped polygon
--- copy: bool			-- true will create a new polygon, false will modify the current one
--- return: Polygon		-- Returns the clipped polygon or nil if no intersecting area exists
+-- clipper_polygon: Polygon		-- the polygon that will contain the newly created clipped polygon
+-- copy: bool				-- true will create a new polygon, false will modify the current one
+-- return: Polygon	(optional)	-- Returns the clipped polygon or nil if no intersecting area exists
 function Polygon:clip(clipper_polygon, copy)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()
@@ -237,7 +237,7 @@ end
 -- y1: number			-- the y coordinate of the second point
 -- left: bool			-- specifies if the part of the polygon on the left side of the line should be returned
 -- right: bool			-- specifies if the part of the polygon on the right side of the line should be returned
--- return: Polygon, Polygon	-- returns either one or two polygons depending on left/right
+-- return: Polygon, Polygon	-- returns either one or two polygons depending on left/right (can return empty polygons)
 function Polygon:slice(x0, y0, x1, y1, left, right)
 	local dx, dy = x1 - x0, y1 - y0
 	local left_polygon, right_polygon
@@ -402,7 +402,6 @@ end
 
 -- copy the vertex and color data of another polygon onto this one
 -- polygon: Polygon		-- the polygon to copy data from
--- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
 function Polygon:copy_data(polygon)
 	while self.vertex_count > polygon.vertex_count do
 		self:remove_vertex(1)

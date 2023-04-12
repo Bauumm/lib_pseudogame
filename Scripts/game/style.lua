@@ -130,6 +130,7 @@ end
 
 function level_style:get_wall_color()
 	-- the actual wall color is inaccessible from lua
+	-- -> TODO: change this once s_getWallColor exists
 	return s_getMainColor()
 end
 

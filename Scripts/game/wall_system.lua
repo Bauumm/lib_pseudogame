@@ -1,3 +1,4 @@
+-- ensure the w_ functions don't get overwritten by executing this file multiple times
 if WallSystem == nil then
 	WallSystem = {
 		_systems = {},
@@ -13,7 +14,7 @@ end
 
 -- the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
 -- draw it using wall_system.polygon_collection
--- style: Style	-- the style to use (nil will use the default level style)
+-- style: Style	(optional)	-- the style to use (nil will use the default level style)
 -- return: WallSystem
 function WallSystem:new(style)
 	local obj = setmetatable({
@@ -26,12 +27,12 @@ function WallSystem:new(style)
 end
 
 -- create a wall in the system
--- side: number		-- the side to spawn the wall at
--- thickness: number	-- the thickness the wall should have
--- speed_mult: number	-- the speed_mult (will be multiplied with u_getSpeedMultDM())
--- acceleration: number	-- the acceleration (it will be adjusted using the difficulty mult)
--- min_speed: number	-- the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
--- max_speed: number	-- the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+-- side: number				-- the side to spawn the wall at
+-- thickness: number			-- the thickness the wall should have
+-- speed_mult: number	(optional)	-- the speed_mult (will be multiplied with u_getSpeedMultDM())
+-- acceleration: number	(optional)	-- the acceleration (it will be adjusted using the difficulty mult)
+-- min_speed: number	(optional)	-- the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+-- max_speed: number	(optional)	-- the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 	side = math.floor(side)
 	speed_mult = speed_mult or 1

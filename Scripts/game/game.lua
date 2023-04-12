@@ -4,7 +4,7 @@ Game = {}
 Game.__index = Game
 
 -- the constructor for a game object that recreates the game and allows direct access to each renderstage for transformation
--- style: Style	-- the style the game should use (nil will use the default level style)
+-- style: Style	(optional)	-- the style the game should use (nil will use the default level style)
 -- return: Game
 function Game:new(style)
 	local obj = setmetatable({

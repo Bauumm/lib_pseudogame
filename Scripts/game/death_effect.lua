@@ -3,7 +3,7 @@ DeathEffect.__index = DeathEffect
 
 -- the constructor for a death effect
 -- use death_effect.polygon_collection to draw it
--- player: Player / CollidingPlayer	-- the player the death effect is for
+-- player: Player	-- the player the death effect is for
 -- return: DeathEffect
 function DeathEffect:new(player)
 	return setmetatable({
@@ -48,7 +48,7 @@ function DeathEffect:death()
 	self.initialized = true
 end
 
--- this function shows the death effect without handling the special workarounds in the games death screen
+-- this function shows the death effect without handling the special workarounds in the games death screen (should be called in onPreDeath)
 function DeathEffect:invincible_death()
 	self.timer = 100
 end
