@@ -43,7 +43,7 @@ function Game:new(style)
 				return self.background.polygon_collection
 			end,
 			[RenderStage.WALLQUADS] = function(self)
-				if not self.death_effect.initialized then
+				if not self.death_effect.dead then
 					self.walls:update(self._frametime)
 				end
 				self.wall_collection:clear()

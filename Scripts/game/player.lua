@@ -71,7 +71,7 @@ function Player:update(frametime, move, focus, swap, collide_collection)
 		self.angle = self.angle + math.rad(speed * move)
 	end
 	self.pos[1], self.pos[2] = get_orbit(self.angle, radius)
-	if not self._use_real_player then
+	if not self._use_real_player and collide_collection ~= nil then
 		if self.collision_handler(self, collide_collection) then
 			if self.kill_cw == nil then
 				self.kill_cw = cw_function_backup.cw_createDeadly()

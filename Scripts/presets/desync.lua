@@ -76,10 +76,8 @@ function desync:onPreDeath()
 	self.game.death_effect:invincible_death()
 end
 
-function desync:onRenderStage()
-	if self.game.death_effect.initialized then
-		self.game.death_effect:ensure_tickrate(function(frametime)
-			self:onInput(frametime, 0, false)
-		end)
+function desync:onRenderStage(rs, frametime)
+	if self.game.death_effect.dead and rs == 0 then
+		self:onInput(frametime, 0, false)
 	end
 end
