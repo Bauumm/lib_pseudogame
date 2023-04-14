@@ -141,7 +141,7 @@ end
 -- size: number	-- the vertex count the polygon will have after the operation
 function Polygon:resize(size)
 	while self.vertex_count > size do
-		self:remove_vertex(1)
+		self:remove_vertex(self.vertex_count)
 	end
 	while self.vertex_count < size do
 		self:add_vertex(0, 0, 0, 0, 0, 0)
@@ -235,22 +235,36 @@ function Polygon:clip(clipper_polygon, copy)
 end
 
 -- slice the polygon into two polygons at a line given by two points
--- x0: number			-- the x coordinate of the first point
--- y0: number			-- the y coordinate of the first point
--- x1: number			-- the x coordinate of the second point
--- y1: number			-- the y coordinate of the second point
--- left: bool			-- specifies if the part of the polygon on the left side of the line should be returned
--- right: bool			-- specifies if the part of the polygon on the right side of the line should be returned
--- return: Polygon, Polygon	-- returns either one or two polygons depending on left/right (can return empty polygons)
-function Polygon:slice(x0, y0, x1, y1, left, right)
+-- x0: number						-- the x coordinate of the first point
+-- y0: number						-- the y coordinate of the first point
+-- x1: number						-- the x coordinate of the second point
+-- y1: number						-- the y coordinate of the second point
+-- left: bool						-- specifies if the part of the polygon on the left side of the line should be returned
+-- right: bool						-- specifies if the part of the polygon on the right side of the line should be returned
+-- creation_iter_left: function (optional)		-- use a creational iterator instead of creating new left polygons (this is good for performance)
+-- creation_iter_right: function (optional)		-- use a creational iterator instead of creating new right polygons (this is good for performance)
+-- return: Polygon (optional), Polygon (optional)	-- returns either one or two polygons depending on left/right (can return empty polygons)
+function Polygon:slice(x0, y0, x1, y1, left, right, creation_iter_left, creation_iter_right)
+	local function add_vert(creation_iter, poly, index, x, y, r, g, b, a)
+		if poly == nil then
+			if creation_iter == nil then
+				poly = Polygon:new()
+			else
+				poly = creation_iter()
+			end
+		end
+		if index > poly.vertex_count then
+			poly:add_vertex(x, y, r, g, b, a)
+		else
+			poly:set_vertex_pos(index, x, y)
+			poly:set_vertex_color(index, r, g, b, a)
+		end
+		return poly
+	end
 	local dx, dy = x1 - x0, y1 - y0
+	local left_vert_count = 0
+	local right_vert_count = 0
 	local left_polygon, right_polygon
-	if left then
-		left_polygon = Polygon:new()
-	end
-	if right then
-		right_polygon = Polygon:new()
-	end
 	if not left and not right then
 		error("Polygon: slice called without specifying which polygon to return!")
 	end
@@ -260,12 +274,14 @@ function Polygon:slice(x0, y0, x1, y1, left, right)
 		if iside then
 			-- point is on the left side
 			if left then
-				left_polygon:add_vertex(ix, iy, ir, ig, ib, ia)
+				left_vert_count = left_vert_count + 1
+				left_polygon = add_vert(creation_iter_left, left_polygon, left_vert_count, ix, iy, ir, ig, ib, ia)
 			end
 		else
 			-- point is on the right side
 			if right then
-				right_polygon:add_vertex(ix, iy, ir, ig, ib, ia)
+				right_vert_count = right_vert_count + 1
+				right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, ix, iy, ir, ig, ib, ia)
 			end
 		end
 		if iside ~= kside then
@@ -289,12 +305,20 @@ function Polygon:slice(x0, y0, x1, y1, left, right)
 
 			-- add to both polygons since they share the point on the line
 			if left then
-				left_polygon:add_vertex(x, y, r, g, b, a)
+				left_vert_count = left_vert_count + 1
+				left_polygon = add_vert(creation_iter_left, left_polygon, left_vert_count, x, y, r, g, b, a)
 			end
 			if right then
-				right_polygon:add_vertex(x, y, r, g, b, a)
+				right_vert_count = right_vert_count + 1
+				right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, x, y, r, g, b, a)
 			end
 		end
+	end
+	if left and left_polygon ~= nil then
+		left_polygon:resize(left_vert_count)
+	end
+	if right and right_polygon ~= nil then
+		right_polygon:resize(right_vert_count)
 	end
 	if left and right then
 		return left_polygon, right_polygon
