@@ -3,7 +3,7 @@ Background.__index = Background
 
 -- the constructor for a games background
 -- use background.polygon_collection to draw it
--- style: Style	(optional)	-- the style to use (nil will use the default level style)
+-- style: Style (optional)	-- the style to use (nil will use the default level style)
 -- return: Background
 function Background:new(style)
 	return setmetatable({

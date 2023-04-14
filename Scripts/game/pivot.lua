@@ -3,7 +3,7 @@ Pivot.__index = Pivot
 
 -- the constructor for a pivot
 -- draw it using pivot.polygon_collection
--- style: Style	(optional)	-- the style to use (nil will use the default level style)
+-- style: Style (optional)	-- the style to use (nil will use the default level style)
 -- return: Pivot
 function Pivot:new(style)
 	return setmetatable({

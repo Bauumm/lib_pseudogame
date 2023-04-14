@@ -160,9 +160,9 @@ end
 
 -- Implementation of the sutherland hodgman algorithm for polygon clipping
 -- Doesn't work with concave polygons
--- clipper_polygon: Polygon		-- the polygon that will contain the newly created clipped polygon
--- copy: bool				-- true will create a new polygon, false will modify the current one
--- return: Polygon	(optional)	-- Returns the clipped polygon or nil if no intersecting area exists
+-- clipper_polygon: Polygon	-- the polygon that will contain the newly created clipped polygon
+-- copy: bool			-- true will create a new polygon, false will modify the current one
+-- return: Polygon (optional)	-- Returns the clipped polygon or nil if no intersecting area exists
 function Polygon:clip(clipper_polygon, copy)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()

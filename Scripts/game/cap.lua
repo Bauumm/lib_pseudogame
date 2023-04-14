@@ -3,7 +3,7 @@ Cap.__index = Cap
 
 -- the constructor for a cap
 -- use cap.polygon to draw it
--- style: Style	(optional)	-- the style to use (nil will use the default level style)
+-- style: Style (optional)	-- the style to use (nil will use the default level style)
 -- return: Cap
 function Cap:new(style)
 	return setmetatable({
