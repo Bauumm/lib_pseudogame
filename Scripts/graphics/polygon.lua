@@ -330,7 +330,7 @@ function Polygon:slice(x0, y0, x1, y1, left, right, creation_iter_left, creation
 end
 
 function Polygon:_to_cw_data(data, current_index)
-	if self.vertex_count == 0 then
+	if self.vertex_count < 3 then
 		return current_index
 	end
 	if self.vertex_count == 4 then
