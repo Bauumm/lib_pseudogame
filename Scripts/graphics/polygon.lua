@@ -1,5 +1,3 @@
-u_execScript("cache.lua")
-
 Polygon = {}
 Polygon.__index = Polygon
 
@@ -20,10 +18,8 @@ function Polygon:new(vertices, colors)
 	local obj = setmetatable({
 		_vertices = vertices,
 		_colors = colors,
-		vertex_count = vertex_count,
-		_has_changed = true
+		vertex_count = vertex_count
 	}, Polygon)
-	obj.is_clockwise = Cache:new(Polygon.is_clockwise, obj)
 	return obj
 end
 
@@ -73,7 +69,6 @@ function Polygon:add_vertex(x, y, r, g, b, a)
 	self.vertex_count = self.vertex_count + 1
 	self:set_vertex_pos(self.vertex_count, x, y)
 	self:set_vertex_color(self.vertex_count, r, g, b, a)
-	self:_changed()
 end
 
 function Polygon:_check_vert_index(index)
@@ -95,7 +90,6 @@ function Polygon:remove_vertex(index)
 	for i=0,3 do
 		table.remove(self._colors, color_index - i)
 	end
-	self:_changed()
 end
 
 -- sets the position of a vertex
@@ -107,7 +101,6 @@ function Polygon:set_vertex_pos(index, x, y)
 	local vertex_index = index * 2
 	self._vertices[vertex_index - 1] = x
 	self._vertices[vertex_index] = y
-	self:_changed()
 end
 
 -- gets a vertex position
@@ -132,7 +125,6 @@ function Polygon:set_vertex_color(index, r, g, b, a)
 	self._colors[color_index - 2] = g
 	self._colors[color_index - 1] = b
 	self._colors[color_index] = a
-	self:_changed()
 end
 
 -- gets a vertex color
@@ -467,11 +459,6 @@ function Polygon:_remove_doubles()
 	end
 end
 
-function Polygon:_changed()
-	self.is_clockwise:invalidate()
-	self._has_changed = true
-end
-
 -- x: number	-- the x coordinate of the point to check
 -- y: number	-- the y coordinate of the point to check
 -- return: bool	-- true if the point is inside the polygon
@@ -483,13 +470,4 @@ function Polygon:contains_point(x, y)
 		end
 	end
 	return result
-end
-
--- return: true if any data about the polygon has changed since the last call of this function (returns true if never called before)
-function Polygon:has_changed()
-	if self.has_changed then
-		self.has_changed = false
-		return true
-	end
-	return false
 end
