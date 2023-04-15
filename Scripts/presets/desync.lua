@@ -29,6 +29,7 @@ function desync:init()
 		end
 		return clamp(r0 + r1) / 1.3, clamp(g0 + g1) / 1.3, clamp(b0 + b1) / 1.3, 255
 	end
+	effects.draw_directly = true
 end
 
 function desync:onInput(frametime, movement, focus, swap)
@@ -39,7 +40,7 @@ function desync:onInput(frametime, movement, focus, swap)
 		gen():copy_data_transformed(polygon, self.transform)
 	end
 	local tmp_gen = self.tmp_collection:generator()
-	effects.blend(collections[1], self.back_collection, self.blend, nil, tmp_gen, true)
+	effects:blend(collections[1], self.back_collection, self.blend)
 	local main_gen = self.main_collection:generator()
 	local gen = self.collection:generator()
 	for i = 2, #collections do
@@ -55,7 +56,7 @@ function desync:onInput(frametime, movement, focus, swap)
 	end
 	screen:draw_polygon_collection(self.main_collection)
 	screen:draw_polygon_collection(self.collection)
-	effects.blend(self.main_collection, self.collection, self.blend, nil, tmp_gen, true)
+	effects:blend(self.main_collection, self.collection, self.blend)
 	screen:update()
 end
 
