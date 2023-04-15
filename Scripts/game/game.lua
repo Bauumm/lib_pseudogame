@@ -126,32 +126,32 @@ function Game:_update_connected_3D(walls, pivot, player)
 	if self.depth > 0 then
 		local rad_rot = math.rad(l_getRotation() + 90)
 		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-		local wall_iter, pivot_iter, player_iter
+		local wall_gen, pivot_gen, player_gen
 		if walls then
-			wall_iter = self.walls3d:creation_iter()
+			wall_gen = self.walls3d:generator()
 		end
 		if pivot then
-			pivot_iter = self.pivot3d:creation_iter()
+			pivot_gen = self.pivot3d:generator()
 		end
 		if player then
-			player_iter = self.player3d:creation_iter()
+			player_gen = self.player3d:generator()
 		end
-		local tmp_iter = self._tmp_collection:creation_iter()
+		local tmp_gen = self._tmp_collection:generator()
 		for j=1, self.depth do
 			local i = self.depth - j + 1
 			local offset = i * self.style:get_layer_spacing()
 			local new_pos_x = offset * cos_rot
 			local new_pos_y = offset * sin_rot
 			local override_color = {self.style:get_layer_color(i)}
-			local function process_collection(collection, creation_iter)
+			local function process_collection(collection, generator)
 				for polygon in collection:iter() do
-					local new_polygon = tmp_iter()
+					local new_polygon = tmp_gen()
 					new_polygon:copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, 0, 0, 0, 0
 					end)
 					for i=1,polygon.vertex_count do
 						local next_i = i % polygon.vertex_count + 1
-						local side = creation_iter()
+						local side = generator()
 						side:resize(4)
 						side:set_vertex_pos(1, polygon:get_vertex_pos(i))
 						side:set_vertex_pos(2, polygon:get_vertex_pos(next_i))
@@ -164,13 +164,13 @@ function Game:_update_connected_3D(walls, pivot, player)
 				end
 			end
 			if walls then
-				process_collection(self.wall_collection, wall_iter)
+				process_collection(self.wall_collection, wall_gen)
 			end
 			if pivot then
-				process_collection(self.pivot.polygon_collection, pivot_iter)
+				process_collection(self.pivot.polygon_collection, pivot_gen)
 			end
 			if player then
-				process_collection(self.player_collection, player_iter)
+				process_collection(self.player_collection, player_gen)
 			end
 		end
 	end
@@ -183,15 +183,15 @@ function Game:_update_3D(walls, pivot, player)
 	if self.depth > 0 then
 		local rad_rot = math.rad(l_getRotation() + 90)
 		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-		local wall_iter, pivot_iter, player_iter
+		local wall_gen, pivot_gen, player_gen
 		if walls then
-			wall_iter = self.walls3d:creation_iter()
+			wall_gen = self.walls3d:generator()
 		end
 		if pivot then
-			pivot_iter = self.pivot3d:creation_iter()
+			pivot_gen = self.pivot3d:generator()
 		end
 		if player then
-			player_iter = self.player3d:creation_iter()
+			player_gen = self.player3d:generator()
 		end
 		for j=1, self.depth do
 			local i = self.depth - j + 1
@@ -201,21 +201,21 @@ function Game:_update_3D(walls, pivot, player)
 			local override_color = {self.style:get_layer_color(i)}
 			if walls then
 				for polygon in self.wall_collection:iter() do
-					wall_iter():copy_data_transformed(polygon, function(x, y)
+					wall_gen():copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, unpack(override_color)
 					end)
 				end
 			end
 			if pivot then
 				for polygon in self.pivot.polygon_collection:iter() do
-					pivot_iter():copy_data_transformed(polygon, function(x, y)
+					pivot_gen():copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, unpack(override_color)
 					end)
 				end
 			end
 			if player then
 				for polygon in self.player_collection:iter() do
-					player_iter():copy_data_transformed(polygon, function(x, y)
+					player_gen():copy_data_transformed(polygon, function(x, y)
 						return x + new_pos_x, y + new_pos_y, unpack(override_color)
 					end)
 				end

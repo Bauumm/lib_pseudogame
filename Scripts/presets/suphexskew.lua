@@ -14,9 +14,9 @@ function suphexskew:onInput(frametime, movement, focus, swap)
 	local effect = s_get3dSkew() * self.game.style.pulse3D
 	local skew = 1 + effect 
 	self.game:draw()
-	local it = self.collection:creation_iter()
+	local gen = self.collection:generator()
 	for polygon in self.game.polygon_collection:iter() do
-		it():copy_data_transformed(polygon, function(x, y, r, g, b, a)
+		gen():copy_data_transformed(polygon, function(x, y, r, g, b, a)
 			return x * skew, y * (1 / skew), r, g, b, a
 		end)
 	end

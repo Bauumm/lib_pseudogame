@@ -99,13 +99,16 @@ function PolygonCollection:iter()
 end
 
 
--- recreate all polygons while reusing the old ones like this (avoids table allocation so this is good for performance):
--- local it = polygon_collection:creation_iter()
+-- recreate all polygons while reusing the old ones like this (avoids table allocation so this is verty good for performance):
+-- local gen = polygon_collection:generator()
 -- for i=1,100 do
--- 	local polygon = it()
+-- 	local polygon = gen()
+-- 	-- since it reuses old polygons and creates new empty ones if there is none we don't know what vertex count the polygon has, so it makes sense to set it
+-- 	-- setting it to the number you need directly instead of setting it to 0 and adding vertices is better for performance (less memory allocation)
+-- 	polygon:resize(4)
 -- 	...
 -- end
-function PolygonCollection:creation_iter()
+function PolygonCollection:generator()
 	local index = 0
 	self:clear()
 	return function()

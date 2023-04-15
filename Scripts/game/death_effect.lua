@@ -43,10 +43,10 @@ function DeathEffect:update(frametime)
 		local radius = self.player_hue / 8
 		local thickness = self.player_hue / 20
 		local color = get_color_from_hue(360 - self.player_hue)
-		local it = self.polygon_collection:creation_iter()
+		local gen = self.polygon_collection:generator()
 		for i=0, 5 do
 			local angle = div * i * 2
-			local polygon = it()
+			local polygon = gen()
 			polygon:resize(4)
 			polygon:set_vertex_pos(1, get_orbit(angle - div, radius, self.player.pos))
 			polygon:set_vertex_pos(2, get_orbit(angle + div, radius, self.player.pos))

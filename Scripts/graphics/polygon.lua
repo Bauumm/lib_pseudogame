@@ -164,9 +164,9 @@ end
 -- Implementation of the sutherland hodgman algorithm for polygon clipping
 -- Doesn't work with concave polygons
 -- clipper_polygon: Polygon		-- the polygon that will contain the newly created clipped polygon
--- creation_iter: function (optional)	-- use a generator instead of always creating new polygons (will create a polygon for every edge of the clipper polygon, so don't render this collection, this is just for improved performance)
+-- generator: function (optional)	-- use a generator instead of always creating new polygons (will create a polygon for every edge of the clipper polygon, so don't render this collection, this is just for improved performance)
 -- return: Polygon (optional)		-- Returns the clipped polygon or nil if no intersecting area exists
-function Polygon:clip(clipper_polygon, creation_iter)
+function Polygon:clip(clipper_polygon, generator)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()
 	if cw == nil then
@@ -174,7 +174,7 @@ function Polygon:clip(clipper_polygon, creation_iter)
 		return
 	end
 	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:double_vertex_color_pairs() do
-		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw, creation_iter, creation_iter)
+		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw, generator, generator)
 		if return_polygon == nil then
 			return
 		end
@@ -189,16 +189,16 @@ end
 -- y1: number						-- the y coordinate of the second point
 -- left: bool						-- specifies if the part of the polygon on the left side of the line should be returned
 -- right: bool						-- specifies if the part of the polygon on the right side of the line should be returned
--- creation_iter_left: function (optional)		-- use a creational iterator instead of creating new left polygons (this is good for performance)
--- creation_iter_right: function (optional)		-- use a creational iterator instead of creating new right polygons (this is good for performance)
+-- generator_left: function (optional)			-- use a generator instead of creating new left polygons (this is good for performance)
+-- generator_right: function (optional)			-- use a generator instead of creating new right polygons (this is good for performance)
 -- return: Polygon (optional), Polygon (optional)	-- returns either one or two polygons depending on left/right (can return empty polygons)
-function Polygon:slice(x0, y0, x1, y1, left, right, creation_iter_left, creation_iter_right)
-	local function add_vert(creation_iter, poly, index, x, y, r, g, b, a)
+function Polygon:slice(x0, y0, x1, y1, left, right, generator_left, generator_right)
+	local function add_vert(generator, poly, index, x, y, r, g, b, a)
 		if poly == nil then
-			if creation_iter == nil then
+			if generator == nil then
 				poly = Polygon:new()
 			else
-				poly = creation_iter()
+				poly = generator()
 			end
 		end
 		if index > poly.vertex_count then
@@ -223,13 +223,13 @@ function Polygon:slice(x0, y0, x1, y1, left, right, creation_iter_left, creation
 			-- point is on the left side
 			if left then
 				left_vert_count = left_vert_count + 1
-				left_polygon = add_vert(creation_iter_left, left_polygon, left_vert_count, ix, iy, ir, ig, ib, ia)
+				left_polygon = add_vert(generator_left, left_polygon, left_vert_count, ix, iy, ir, ig, ib, ia)
 			end
 		else
 			-- point is on the right side
 			if right then
 				right_vert_count = right_vert_count + 1
-				right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, ix, iy, ir, ig, ib, ia)
+				right_polygon = add_vert(generator_right, right_polygon, right_vert_count, ix, iy, ir, ig, ib, ia)
 			end
 		end
 		if iside ~= kside or k_pos == 0 or i_pos == 0 then
@@ -255,11 +255,11 @@ function Polygon:slice(x0, y0, x1, y1, left, right, creation_iter_left, creation
 				-- add to both polygons since they share the point on the line
 				if left then
 					left_vert_count = left_vert_count + 1
-					left_polygon = add_vert(creation_iter_left, left_polygon, left_vert_count, x, y, r, g, b, a)
+					left_polygon = add_vert(generator_left, left_polygon, left_vert_count, x, y, r, g, b, a)
 				end
 				if right then
 					right_vert_count = right_vert_count + 1
-					right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, x, y, r, g, b, a)
+					right_polygon = add_vert(generator_right, right_polygon, right_vert_count, x, y, r, g, b, a)
 				end
 			end
 		end

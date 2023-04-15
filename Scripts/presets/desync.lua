@@ -34,28 +34,28 @@ end
 function desync:onInput(frametime, movement, focus, swap)
 	self.game:update(frametime, movement, focus, swap)
 	local collections = self.game:get_render_stages({0, 1, 2, 3, 4, 5, 6, 7})
-	local it = self.back_collection:creation_iter()
+	local gen = self.back_collection:generator()
 	for polygon in collections[1]:iter() do
-		it():copy_data_transformed(polygon, self.transform)
+		gen():copy_data_transformed(polygon, self.transform)
 	end
-	local tmp_it = self.tmp_collection:creation_iter()
-	effects.blend(collections[1], self.back_collection, self.blend, nil, tmp_it, true)
-	local main_it = self.main_collection:creation_iter()
-	local it = self.collection:creation_iter()
+	local tmp_gen = self.tmp_collection:generator()
+	effects.blend(collections[1], self.back_collection, self.blend, nil, tmp_gen, true)
+	local main_gen = self.main_collection:generator()
+	local gen = self.collection:generator()
 	for i = 2, #collections do
 		if i == 6 then
-			main_it():copy_data(collections[i])
-			it():copy_data_transformed(collections[i], self.transform)
+			main_gen():copy_data(collections[i])
+			gen():copy_data_transformed(collections[i], self.transform)
 		else
 			for polygon in collections[i]:iter() do
-				main_it():copy_data(polygon)
-				it():copy_data_transformed(polygon, self.transform)
+				main_gen():copy_data(polygon)
+				gen():copy_data_transformed(polygon, self.transform)
 			end
 		end
 	end
 	screen:draw_polygon_collection(self.main_collection)
 	screen:draw_polygon_collection(self.collection)
-	effects.blend(self.main_collection, self.collection, self.blend, nil, tmp_it, true)
+	effects.blend(self.main_collection, self.collection, self.blend, nil, tmp_gen, true)
 	screen:update()
 end
 

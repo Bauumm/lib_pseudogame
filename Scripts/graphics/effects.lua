@@ -29,6 +29,31 @@ function effects.blend(polygon_collection1, polygon_collection2, blend_func, ble
 	end
 end
 
+-- creates polygons along the edges of some polygons
+-- polygon_collection: PolygonCollection	-- the polygon collection the outlines should be made for
+-- outline_collection: PolygonCollection	-- the polygon collection the outlines will be added to
+-- thickness: number				-- the thickness of the outlines
+-- color: table					-- the color of the outlines, should be formatted like this: {r, g, b, a}
+function effects.outline(polygon_collection, outline_collection, thickness, color)
+	local gen = outline_collection:generator()
+	for polygon in polygon_collection:iter() do
+		for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in polygon:double_vertex_color_pairs() do
+			local dx, dy = x1 - x0, y1 - y0
+			local len = math.sqrt(dx * dx + dy * dy)
+			local thick_x, thick_y = dx / len * thickness, dy / len * thickness
+			local new_poly = gen()
+			new_poly:resize(4)
+			new_poly:set_vertex_pos(1, x0 - thick_x - thick_y, y0 - thick_y + thick_x)
+			new_poly:set_vertex_pos(2, x0 - thick_x + thick_y, y0 - thick_y - thick_x)
+			new_poly:set_vertex_pos(3, x1 + thick_x + thick_y, y1 + thick_y - thick_x)
+			new_poly:set_vertex_pos(4, x1 + thick_x - thick_y, y1 + thick_y + thick_x)
+			for i=1,4 do
+				new_poly:set_vertex_color(i, unpack(color))
+			end
+		end
+	end
+end
+
 -- generates a transformation function that rotates vertices
 -- angle: number	-- the angle to rotate
 -- return: function	-- the transformation function
@@ -48,30 +73,5 @@ function effects.mirror(mirror_x, mirror_y)
 	mirror_y = mirror_y and -1 or 1
 	return function(x, y, r, g, b, a)
 		return x * mirror_x, y * mirror_y, r, g, b, a
-	end
-end
-
--- creates polygons along the edges of some polygons
--- polygon_collection: PolygonCollection	-- the polygon collection the outlines should be made for
--- outline_collection: PolygonCollection	-- the polygon collection the outlines will be added to
--- thickness: number				-- the thickness of the outlines
--- color: table					-- the color of the outlines, should be formatted like this: {r, g, b, a}
-function effects.outline(polygon_collection, outline_collection, thickness, color)
-	local it = outline_collection:creation_iter()
-	for polygon in polygon_collection:iter() do
-		for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in polygon:double_vertex_color_pairs() do
-			local dx, dy = x1 - x0, y1 - y0
-			local len = math.sqrt(dx * dx + dy * dy)
-			local thick_x, thick_y = dx / len * thickness, dy / len * thickness
-			local new_poly = it()
-			new_poly:resize(4)
-			new_poly:set_vertex_pos(1, x0 - thick_x - thick_y, y0 - thick_y + thick_x)
-			new_poly:set_vertex_pos(2, x0 - thick_x + thick_y, y0 - thick_y - thick_x)
-			new_poly:set_vertex_pos(3, x1 + thick_x + thick_y, y1 + thick_y - thick_x)
-			new_poly:set_vertex_pos(4, x1 + thick_x - thick_y, y1 + thick_y + thick_x)
-			for i=1,4 do
-				new_poly:set_vertex_color(i, unpack(color))
-			end
-		end
 	end
 end

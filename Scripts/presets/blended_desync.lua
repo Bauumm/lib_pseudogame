@@ -21,21 +21,21 @@ end
 function blended_desync:onInput(frametime, movement, focus, swap)
 	self.game:update(frametime, movement, focus, swap)
 	local collections = self.game:get_render_stages({0, 1, 2, 3, 4, 5, 6, 7})
-	local it = self.game.polygon_collection:creation_iter()
+	local gen = self.game.polygon_collection:generator()
 	for i = 1, 2 do
 		local transform = i == 1 and self.half_transparent or self.transform
 		for polygon in collections[1]:iter() do
-			it():copy_data_transformed(polygon, transform)
+			gen():copy_data_transformed(polygon, transform)
 		end
 	end
 	for i = 1, 2 do
 		local transform = i == 1 and self.half_transparent or self.transform
 		for i = 2, #collections do
 			if i == 6 then
-				it():copy_data_transformed(collections[i], transform)
+				gen():copy_data_transformed(collections[i], transform)
 			else
 				for polygon in collections[i]:iter() do
-					it():copy_data_transformed(polygon, transform)
+					gen():copy_data_transformed(polygon, transform)
 				end
 			end
 		end

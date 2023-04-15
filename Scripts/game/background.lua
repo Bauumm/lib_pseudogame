@@ -14,7 +14,7 @@ end
 
 -- update the backgrounds color, position and shape
 function Background:update()
-	local it = self.polygon_collection:creation_iter()
+	local gen = self.polygon_collection:generator()
 	local sides = l_getSides()
 	local div = math.pi * 2 / sides
 	local half_div = div / 2
@@ -27,7 +27,7 @@ function Background:update()
 				current_color[i] = current_color[i] / 1.4
 			end
 		end
-		local polygon = it()
+		local polygon = gen()
 		polygon:resize(3)
 		polygon:set_vertex_pos(2, get_orbit(angle + half_div, distance))
 		polygon:set_vertex_pos(3, get_orbit(angle - half_div, distance))
