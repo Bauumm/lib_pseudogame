@@ -3,7 +3,7 @@
 -- distance: number	-- the distance from the start pos
 -- start_pos: table	-- the start pos, formatted like this: {x, y}
 -- return: x, y		-- the resulting position
-function get_orbit(angle, distance, start_pos)
+function PseudoGame.game.get_orbit(angle, distance, start_pos)
 	if start_pos == nil then
 		return math.cos(angle) * distance, math.sin(angle) * distance
 	end
@@ -13,7 +13,7 @@ end
 -- get a color from a hue
 -- hue: number		-- a number between 0 and 360
 -- return: table	-- the resulting color in this format: {r, g, b, a}
-function get_color_from_hue(hue)
+function PseudoGame.game.get_color_from_hue(hue)
 	hue = hue % 360 / 360
 	local i = math.floor(hue * 6)
 

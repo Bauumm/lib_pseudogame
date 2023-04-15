@@ -1,6 +1,6 @@
 -- ensure the w_ functions don't get overwritten by executing this file multiple times
-if WallSystem == nil then
-	WallSystem = {
+if PseudoGame.game.WallSystem == nil then
+	PseudoGame.game.WallSystem = {
 		_systems = {},
 		_selected_system = nil,
 		_w_wall = w_wall,
@@ -9,20 +9,20 @@ if WallSystem == nil then
 		_u_clearWalls = u_clearWalls,
 		_has_real_wall = false
 	}
-	WallSystem.__index = WallSystem
+	PseudoGame.game.WallSystem.__index = PseudoGame.game.WallSystem
 end
 
 -- the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
 -- draw it using wall_system.polygon_collection
 -- style: Style (optional)	-- the style to use (nil will use the default level style)
 -- return: WallSystem
-function WallSystem:new(style)
+function PseudoGame.game.WallSystem:new(style)
 	local obj = setmetatable({
-		style = style or level_style,
+		style = style or PseudoGame.game.level_style,
 		_walls = {},
-		polygon_collection = PolygonCollection:new()
-	}, WallSystem)
-	WallSystem._systems[#WallSystem._systems + 1] = obj
+		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
+	}, PseudoGame.game.WallSystem)
+	PseudoGame.game.WallSystem._systems[#PseudoGame.game.WallSystem._systems + 1] = obj
 	return obj
 end
 
@@ -33,7 +33,7 @@ end
 -- acceleration: number (optional)	-- the acceleration (it will be adjusted using the difficulty mult)
 -- min_speed: number (optional)		-- the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 -- max_speed: number (optional)		-- the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
-function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
+function PseudoGame.game.WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
 	acceleration = acceleration or 0
@@ -42,11 +42,11 @@ function WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, m
 	local distance = l_getWallSpawnDistance()
 	local div = math.pi / l_getSides()
 	local angle = div * 2 * side
-	local polygon = Polygon:new()
-	polygon:add_vertex(get_orbit(angle - div, distance))
-	polygon:add_vertex(get_orbit(angle + div, distance))
-	polygon:add_vertex(get_orbit(angle + div + l_getWallAngleLeft(), distance + thickness + l_getWallSkewLeft()))
-	polygon:add_vertex(get_orbit(angle - div + l_getWallAngleRight(), distance + thickness + l_getWallSkewRight()))
+	local polygon = PseudoGame.graphics.Polygon:new()
+	polygon:add_vertex(PseudoGame.game.get_orbit(angle - div, distance))
+	polygon:add_vertex(PseudoGame.game.get_orbit(angle + div, distance))
+	polygon:add_vertex(PseudoGame.game.get_orbit(angle + div + l_getWallAngleLeft(), distance + thickness + l_getWallSkewLeft()))
+	polygon:add_vertex(PseudoGame.game.get_orbit(angle - div + l_getWallAngleRight(), distance + thickness + l_getWallSkewRight()))
 	table.insert(self._walls, {
 		polygon = self.polygon_collection:add(polygon),
 		speed = speed_mult * u_getSpeedMultDM(),
@@ -58,7 +58,7 @@ end
 
 -- update the walls position
 -- frametime: number	-- the time in 1/60s that passed since the last call of this function
-function WallSystem:update(frametime)
+function PseudoGame.game.WallSystem:update(frametime)
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
 	local outer_bounds = l_getWallSpawnDistance() * 1.1
 	local del_queue = {}
@@ -110,25 +110,25 @@ function WallSystem:update(frametime)
 	end
 	if no_walls and self._has_real_wall then
 		self._u_clearWalls()
-		WallSystem._has_real_wall = false
+		PseudoGame.game.WallSystem._has_real_wall = false
 	end
 	if not no_walls and not self._has_real_wall then
-		WallSystem._has_real_wall = true
+		PseudoGame.game.WallSystem._has_real_wall = true
 		self._w_wallAdj(0, 0, 0)
 	end
 end
 
 -- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
-function WallSystem:overwrite()
-	WallSystem._selected_system = self
+function PseudoGame.game.WallSystem:overwrite()
+	PseudoGame.game.WallSystem._selected_system = self
 	w_wall = function(side, thickness)
-		t_eval("WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ")")
+		t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ")")
 	end
 	w_wallAdj = function(side, thickness, speed_mult)
-		t_eval("WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
+		t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
 	end
 	w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
-		t_eval("WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
+		t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
 	end
 	u_clearWalls = function()
 		for i=1, #self._walls do
@@ -140,7 +140,7 @@ function WallSystem:overwrite()
 end
 
 -- restore the original w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions
-function WallSystem:restore()
+function PseudoGame.game.WallSystem:restore()
 	w_wall = self._w_wall
 	w_wallAdj = self._w_wallAdj
 	w_wallAcc = self._w_wallAcc

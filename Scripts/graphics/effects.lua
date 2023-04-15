@@ -1,8 +1,8 @@
 -- a module for using some premade effects (functions need to be called like this: `effects:<function>`)
 -- setting effects.draw_directly to true will make the effects, that take a polygon collection to output to, draw directly to the screen
-effects = {
+PseudoGame.graphics.effects = {
 	draw_directly = false,
-	_tmp_collection = PolygonCollection:new()
+	_tmp_collection = PseudoGame.graphics.PolygonCollection:new()
 }
 
 -- get the polygons that represent the intersection two collections
@@ -10,7 +10,7 @@ effects = {
 -- polygon_collection2: PolygonCollection		-- the second collection
 -- blend_func: function					-- this function determines the color of the new polygons based on the color of the two intersected ones, so it should take r0, g0, b0, a0, r1, g1, b1, a1 and return r, g, b, a
 -- blend_collection: PolygonCollection (optional)	-- the collection the resulting polygons are added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
-function effects:blend(polygon_collection1, polygon_collection2, blend_func, blend_collection)
+function PseudoGame.graphics.effects:blend(polygon_collection1, polygon_collection2, blend_func, blend_collection)
 	if not self.draw_directly then
 		blend_collection:clear()
 	end
@@ -24,7 +24,7 @@ function effects:blend(polygon_collection1, polygon_collection2, blend_func, ble
 					clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon2:get_vertex_color(1)))
 				end
 				if self.draw_directly then
-					screen:draw_polygon(clipped_polygon)
+					PseudoGame.graphics.screen:draw_polygon(clipped_polygon)
 				else
 					blend_collection:add(clipped_polygon)
 				end
@@ -38,7 +38,7 @@ end
 -- thickness: number					-- the thickness of the outlines
 -- color: table						-- the color of the outlines, should be formatted like this: {r, g, b, a}
 -- outline_collection: PolygonCollection (optional)	-- the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
-function effects:outline(polygon_collection, thickness, color, outline_collection)
+function PseudoGame.graphics.effects:outline(polygon_collection, thickness, color, outline_collection)
 	local gen
 	if self.draw_directly then
 		gen = self._tmp_collection:generator()
@@ -60,7 +60,7 @@ function effects:outline(polygon_collection, thickness, color, outline_collectio
 				new_poly:set_vertex_color(i, unpack(color))
 			end
 			if self.draw_directly then
-				screen:draw_polygon(new_poly)
+				PseudoGame.graphics.screen:draw_polygon(new_poly)
 			end
 		end
 	end
@@ -69,7 +69,7 @@ end
 -- generates a transformation function that rotates vertices
 -- angle: number	-- the angle to rotate
 -- return: function	-- the transformation function
-function effects:rotate(angle)
+function PseudoGame.graphics.effects:rotate(angle)
 	local cos, sin = math.cos(angle), math.sin(angle)
 	return function(x, y, r, g, b, a)
 		return x * cos - y * sin, x * sin + y * cos, r, g, b, a
@@ -80,7 +80,7 @@ end
 -- mirror_x: bool	-- whether it should mirror along the x axis
 -- mirror_y: bool	-- whether it should mirror along the y axis
 -- return: function	-- the transformation function
-function effects:mirror(mirror_x, mirror_y)
+function PseudoGame.graphics.effects:mirror(mirror_x, mirror_y)
 	mirror_x = mirror_x and -1 or 1
 	mirror_y = mirror_y and -1 or 1
 	return function(x, y, r, g, b, a)

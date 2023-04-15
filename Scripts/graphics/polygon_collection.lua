@@ -1,21 +1,21 @@
-PolygonCollection = {}
-PolygonCollection.__index = PolygonCollection
+PseudoGame.graphics.PolygonCollection = {}
+PseudoGame.graphics.PolygonCollection.__index = PseudoGame.graphics.PolygonCollection
 
 -- the constructor for a polygon collection which is basically a list of polygons with a few extra capabilities and more optimized for frequent clearing and refilling
 -- return: PolygonCollection	-- the newly created polygon collection
-function PolygonCollection:new()
+function PseudoGame.graphics.PolygonCollection:new()
 	return setmetatable({
 		_polygons = {},
 		_free_indices = {},
 		_highest_index = 0,
 		size = 0
-	}, PolygonCollection)
+	}, PseudoGame.graphics.PolygonCollection)
 end
 
 -- add a polygon to the collection
 -- polygon: Polygon	-- the polygon to add
 -- return: number	-- the index of the polygon in the collection
-function PolygonCollection:add(polygon)
+function PseudoGame.graphics.PolygonCollection:add(polygon)
 	local index
 	if #self._free_indices == 0 then
 		self._highest_index = self._highest_index + 1
@@ -31,19 +31,19 @@ end
 
 -- make the collection be a certain size by deleting polygons if it's too big and creating new ones if it's too small
 -- size: number	-- the amount of polygons that will be in the collection
-function PolygonCollection:resize(size)
+function PseudoGame.graphics.PolygonCollection:resize(size)
 	local diff = self._highest_index - #self._free_indices - size
 	for i=1,diff do
 		self:remove(self._highest_index)
 	end
 	for i=-1,diff,-1 do
-		self:add(Polygon:new())
+		self:add(PseudoGame.graphics.Polygon:new())
 	end
 end
 
 -- remove a polygon from the collection (this does not shift other indices)
 -- index: number	-- the index of the polygon that should be deleted
-function PolygonCollection:remove(index)
+function PseudoGame.graphics.PolygonCollection:remove(index)
 	self._polygons[index] = nil
 	if index == self._highest_index then
 		self._highest_index = self._highest_index - 1
@@ -56,7 +56,7 @@ end
 -- get a polygon from the collection
 -- index: number	-- the index of the polygon in the collection
 -- return: Polygon	-- the polygon at the index in the collection
-function PolygonCollection:get(index)
+function PseudoGame.graphics.PolygonCollection:get(index)
 	if index > self._highest_index then
 		return
 	end
@@ -65,7 +65,7 @@ end
 
 -- add the polygons from another collection to this one by copying them
 -- polygon_collection: PolygonCollection	-- the collection with the polygons that should be added
-function PolygonCollection:copy_add(polygon_collection)
+function PseudoGame.graphics.PolygonCollection:copy_add(polygon_collection)
 	for polygon in polygon_collection:iter() do
 		self:add(polygon:copy())
 	end
@@ -73,7 +73,7 @@ end
 
 -- add the polygons from another collection to this one by referencing them
 -- polygon_collection: PolygonCollection	-- the collection with the polygons that should be added
-function PolygonCollection:ref_add(polygon_collection)
+function PseudoGame.graphics.PolygonCollection:ref_add(polygon_collection)
 	for polygon in polygon_collection:iter() do
 		self:add(polygon)
 	end
@@ -83,7 +83,7 @@ end
 -- for polygon in mypolygoncollection:iter() do
 -- 	...
 -- end
-function PolygonCollection:iter()
+function PseudoGame.graphics.PolygonCollection:iter()
 	local index = 0
 	return function()
 		local polygon
@@ -108,7 +108,7 @@ end
 -- 	polygon:resize(4)
 -- 	...
 -- end
-function PolygonCollection:generator()
+function PseudoGame.graphics.PolygonCollection:generator()
 	local index = 0
 	self:clear()
 	return function()
@@ -117,7 +117,7 @@ function PolygonCollection:generator()
 		self.size = index
 		local polygon = self._polygons[index]
 		if polygon == nil then
-			polygon = Polygon:new()
+			polygon = PseudoGame.graphics.Polygon:new()
 			self._polygons[index] = polygon
 		end
 		return polygon
@@ -126,14 +126,14 @@ end
 
 -- transform the vertices and vertex colors of all polygons in the collection
 -- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
-function PolygonCollection:transform(transform_func)
+function PseudoGame.graphics.PolygonCollection:transform(transform_func)
 	for polygon in self:iter() do
 		polygon:transform(transform_func)
 	end
 end
 
 -- clear all polygons from this collection
-function PolygonCollection:clear()
+function PseudoGame.graphics.PolygonCollection:clear()
 	self._highest_index = 0
 	self._free_indices = {}
 	self.size = 0

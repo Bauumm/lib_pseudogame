@@ -1,4 +1,4 @@
-cw_function_names = {
+local cw_function_names = {
 	"cw_create",
 	"cw_createDeadly",
 	"cw_createNoCollision",
@@ -22,22 +22,22 @@ cw_function_names = {
 }
 
 if type(cw_create) == "userdata" then
-	cw_function_backup = {}
+	PseudoGame.graphics.cw_function_backup = {}
 	for _, name in pairs(cw_function_names) do
-		cw_function_backup[name] = _G[name]
+		PseudoGame.graphics.cw_function_backup[name] = _G[name]
 	end
 end
 
--- restores the real cw_* functions
-function restore_cw_functions()
+-- restores the real cw_ functions
+function PseudoGame.graphics.restore_cw_functions()
 	for _, name in pairs(cw_function_names) do
-		_G[name] = cw_function_backup[name]
+		_G[name] = PseudoGame.graphics.cw_function_backup[name]
 	end
 end
 
--- overwrite all cw_* functions to modify the given polygon collection instead of actual custom walls
+-- overwrite all cw_ functions to modify the given polygon collection instead of actual custom walls
 -- polygon_collection: PolygonCollection
-function overwrite_cw_functions(polygon_collection)
+function PseudoGame.graphics.overwrite_cw_functions(polygon_collection)
 	cw_create = function()
 		local polygon = Polygon:new({0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 		polygon.extra_data = {collision=true, deadly=false, killing_side=0}

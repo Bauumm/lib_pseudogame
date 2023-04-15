@@ -1,6 +1,6 @@
 -- TODO: side scalings
-Style = {}
-Style.__index = Style
+PseudoGame.game.Style = {}
+PseudoGame.game.Style.__index = PseudoGame.game.Style
 
 -- constructor for a style object used to overwrite the default colors and to have more control over them from lua
 -- style_table: {
@@ -14,7 +14,7 @@ Style.__index = Style
 -- 	connect_layers: bool			-- specifies if the 3d layers should be connected using extra polygons to create solid 3d
 -- }
 -- return: Style
-function Style:new(style_table)
+function PseudoGame.game.Style:new(style_table)
 	local function check_color_property(name, default)
 		if style_table[name] == nil then
 			if default == nil then
@@ -53,62 +53,62 @@ end
 
 -- gets the main color
 -- return: r, g, b, a
-function Style:get_main_color()
+function PseudoGame.game.Style:get_main_color()
 	return unpack(self.main_color)
 end
 
 -- gets the player color
 -- return: r, g, b, a
-function Style:get_player_color()
+function PseudoGame.game.Style:get_player_color()
 	return unpack(self.player_color)
 end
 
 -- gets the wall color
 -- return: r, g, b, a
-function Style:get_wall_color()
+function PseudoGame.game.Style:get_wall_color()
 	return unpack(self.wall_color)
 end
 
 -- gets the cap color
 -- return: r, g, b, a
-function Style:get_cap_color()
+function PseudoGame.game.Style:get_cap_color()
 	return unpack(self.cap_color)
 end
 
 -- gets a background color
 -- index: number	-- the index of the background panel
 -- return: r, g, b, a
-function Style:get_background_color(index)
+function PseudoGame.game.Style:get_background_color(index)
 	return unpack(self.background_colors[(index - 1) % #self.background_colors + 1])
 end
 
 -- gets a layer color
 -- index: number	-- the index of the 3d layer
 -- return: r, g, b, a
-function Style:get_layer_color(index)
+function PseudoGame.game.Style:get_layer_color(index)
 	return unpack(self.layer_colors[(index - 1) % #self.layer_colors + 1])
 end
 
 -- gets the 3d layer spacing
 -- return: number
-function Style:get_layer_spacing()
+function PseudoGame.game.Style:get_layer_spacing()
 	return self.layer_spacing
 end
 
 -- gets if the 3d layers are supposed to be connected
 -- return: bool
-function Style:get_connect_layers()
+function PseudoGame.game.Style:get_connect_layers()
 	return self.connect_layers
 end
 
 -- a table that implements the style getters using the game's style functions
-level_style = {
+PseudoGame.game.level_style = {
 	pulse3DDirection = 1,
 	pulse3D = 1,
 	last_pulse3D_update = -1
 }
 
-function level_style:_update_pulse3D(frametime)
+function PseudoGame.game.level_style:_update_pulse3D(frametime)
 	if self.last_pulse3D_update ~= l_getLevelTime() then
 		self.last_pulse3D_update = l_getLevelTime()
 		self.pulse3D = self.pulse3D + s_get3dPulseSpeed() * self.pulse3DDirection * frametime
@@ -120,29 +120,29 @@ function level_style:_update_pulse3D(frametime)
 	end
 end
 
-function level_style:get_main_color()
+function PseudoGame.game.level_style:get_main_color()
 	return s_getMainColor()
 end
 
-function level_style:get_player_color()
+function PseudoGame.game.level_style:get_player_color()
 	return s_getPlayerColor()
 end
 
-function level_style:get_wall_color()
+function PseudoGame.game.level_style:get_wall_color()
 	-- the actual wall color is inaccessible from lua
 	-- -> TODO: change this once s_getWallColor exists
 	return s_getMainColor()
 end
 
-function level_style:get_cap_color()
+function PseudoGame.game.level_style:get_cap_color()
 	return s_getCapColorResult()
 end
 
-function level_style:get_background_color(index)
+function PseudoGame.game.level_style:get_background_color(index)
 	return s_getColor(index - 1)
 end
 
-function level_style:get_layer_color(index)
+function PseudoGame.game.level_style:get_layer_color(index)
 	local r, g, b, a = s_get3DOverrideColor()
 	local darken_mult = s_get3dDarkenMult()
 	r = r / darken_mult
@@ -157,10 +157,10 @@ function level_style:get_layer_color(index)
 	return r, g, b, a
 end
 
-function level_style:get_layer_spacing()
+function PseudoGame.game.level_style:get_layer_spacing()
 	return s_get3dSpacing() * s_get3dPerspectiveMult() * s_get3dSkew() * self.pulse3D * 3.6 * 1.4
 end
 
-function level_style:get_connect_layers()
+function PseudoGame.game.level_style:get_connect_layers()
 	return self.connect_layers
 end

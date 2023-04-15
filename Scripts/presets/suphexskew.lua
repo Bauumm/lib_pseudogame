@@ -1,8 +1,12 @@
 u_execScript("main.lua")
-u_execScript("invisible.lua")
+
+local PG = PseudoGame
+
+PG.hide_default_game()
+
 suphexskew = {
-	game = Game:new(),
-	collection = PolygonCollection:new()
+	game = PG.game.Game:new(),
+	collection = PG.graphics.PolygonCollection:new()
 }
 
 function suphexskew:init()
@@ -20,8 +24,8 @@ function suphexskew:onInput(frametime, movement, focus, swap)
 			return x * skew, y * (1 / skew), r, g, b, a
 		end)
 	end
-	screen:draw_polygon_collection(self.collection)
-	screen:update()
+	PG.graphic.screen:draw_polygon_collection(self.collection)
+	PG.graphic.screen:update()
 end
 
 function suphexskew:onDeath()

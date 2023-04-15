@@ -2,7 +2,7 @@
 -- player: Player				-- the player to handle collisions for (it may be moved in the process)
 -- collide_collection: PolygonCollection	-- the collection of polygons to collide with
 -- return: bool					-- determines if the player should be killed
-function basic_collision_handler(player, collide_collection)
+function PseudoGame.game.basic_collision_handler(player, collide_collection)
 	local collides = false
 	local last_collides = false
 	local must_kill = false

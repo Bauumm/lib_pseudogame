@@ -1,4 +1,8 @@
--- this script includes the libraries components for more convenient importing
+-- this script initializes the library
+PseudoGame = {
+	graphics = {},
+	game = {}
+}
 u_execScript("graphics/polygon_collection.lua")
 u_execScript("graphics/polygon.lua")
 u_execScript("graphics/screen.lua")
@@ -14,4 +18,4 @@ u_execScript("game/death_effect.lua")
 u_execScript("game/pivot.lua")
 u_execScript("game/wall_system.lua")
 u_execScript("game/game.lua")
-u_execScript("presets/injector.lua")
+u_execScript("invisible.lua")

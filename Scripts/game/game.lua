@@ -1,33 +1,33 @@
 u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "utils.lua")
 
-Game = {}
-Game.__index = Game
+PseudoGame.game.Game = {}
+PseudoGame.game.Game.__index = PseudoGame.game.Game
 
 -- the constructor for a game object that recreates the game and allows direct access to each renderstage for transformation
 -- style: Style (optional)	-- the style the game should use (nil will use the default level style)
 -- return: Game
-function Game:new(style)
+function PseudoGame.game.Game:new(style)
 	local obj = setmetatable({
 		-- game objects
-		background = Background:new(style),
-		walls = WallSystem:new(style),
-		player = Player:new(style, basic_collision_handler),
-		pivot = Pivot:new(style),
-		cap = Cap:new(style),
+		background = PseudoGame.game.Background:new(style),
+		walls = PseudoGame.game.WallSystem:new(style),
+		player = PseudoGame.game.Player:new(style, PseudoGame.game.basic_collision_handler),
+		pivot = PseudoGame.game.Pivot:new(style),
+		cap = PseudoGame.game.Cap:new(style),
 
 		-- game data
 		depth = s_get3dDepth(),
-		style = style or level_style,
+		style = style or PseudoGame.game.level_style,
 
 		-- additional collections
-		_collide_collection = PolygonCollection:new(),
-		_cws = PolygonCollection:new(),
-		wall_collection = PolygonCollection:new(),
-		player_collection = PolygonCollection:new(),
-		walls3d = PolygonCollection:new(),
-		pivot3d = PolygonCollection:new(),
-		player3d = PolygonCollection:new(),
-		polygon_collection = PolygonCollection:new(),
+		_collide_collection = PseudoGame.graphics.PolygonCollection:new(),
+		_cws = PseudoGame.graphics.PolygonCollection:new(),
+		wall_collection = PseudoGame.graphics.PolygonCollection:new(),
+		player_collection = PseudoGame.graphics.PolygonCollection:new(),
+		walls3d = PseudoGame.graphics.PolygonCollection:new(),
+		pivot3d = PseudoGame.graphics.PolygonCollection:new(),
+		player3d = PseudoGame.graphics.PolygonCollection:new(),
+		polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
 
 		-- inputs
 		_frametime = 0,
@@ -84,20 +84,20 @@ function Game:new(style)
 				return self.player3d
 			end
 		}
-	}, Game)
+	}, PseudoGame.game.Game)
 
 	-- can't define at the top as it needs the player object
-	obj.death_effect = DeathEffect:new(obj.player)
+	obj.death_effect = PseudoGame.game.DeathEffect:new(obj.player)
 	if obj.style:get_connect_layers() then
-		obj._tmp_collection = PolygonCollection:new()
-		obj._update_3D = Game._update_connected_3D
+		obj._tmp_collection = PseudoGame.game.PolygonCollection:new()
+		obj._update_3D = PseudoGame.game.Game._update_connected_3D
 	end
 	return obj
 end
 
 -- overwrites the wall functions as well as custom walls function to modify the walls in this game
-function Game:overwrite()
-	overwrite_cw_functions(self._cws)
+function PseudoGame.game.Game:overwrite()
+	PseudoGame.graphics.overwrite_cw_functions(self._cws)
 	s_set3dDepth(0)
 	self._oldSet3dDepth = s_set3dDepth
 	self._oldGet3dDepth = s_get3dDepth
@@ -111,15 +111,15 @@ function Game:overwrite()
 end
 
 -- restores the original wall and custom wall functions
-function Game:restore()
-	restore_cw_functions()
+function PseudoGame.game.Game:restore()
+	PseudoGame.graphics.restore_cw_functions()
 	s_set3dDepth = self._oldSet3dDepth
 	s_get3dDepth = self._oldGet3dDepth
 	s_set3dDepth(self.depth)
 	self.walls:restore()
 end
 
-function Game:_update_connected_3D(walls, pivot, player)
+function PseudoGame.game.Game:_update_connected_3D(walls, pivot, player)
 	if self.style._update_pulse3D ~= nil then
 		self.style:_update_pulse3D(self._frametime)
 	end
@@ -176,7 +176,7 @@ function Game:_update_connected_3D(walls, pivot, player)
 	end
 end
 
-function Game:_update_3D(walls, pivot, player)
+function PseudoGame.game.Game:_update_3D(walls, pivot, player)
 	if self.style._update_pulse3D ~= nil then
 		self.style:_update_pulse3D(self._frametime)
 	end
@@ -228,7 +228,7 @@ end
 -- this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
 -- render_stages: table	-- a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
 -- return: table	-- a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
-function Game:get_render_stages(render_stages)
+function PseudoGame.game.Game:get_render_stages(render_stages)
 	local walls3d, pivot3d, player3d = false, false, false
 	local result = {}
 	for i=1,#render_stages do
@@ -256,7 +256,7 @@ end
 -- move: number		-- the current movement direction, so either -1, 0 or 1
 -- focus: bool		-- true if the player is focusing, false otherwise
 -- swap: bool		-- true if the swap key is pressed, false otherwise
-function Game:update(frametime, move, focus, swap)
+function PseudoGame.game.Game:update(frametime, move, focus, swap)
 	self._ticked = true
 	self._frametime = frametime
 	self._move = move
@@ -265,7 +265,7 @@ function Game:update(frametime, move, focus, swap)
 end
 
 -- puts all the renderstage's polygons into game.polygon_collection
-function Game:draw()
+function PseudoGame.game.Game:draw()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,
 		RenderStage.WALLQUADS3D,
@@ -287,7 +287,7 @@ function Game:draw()
 end
 
 -- draws all the renderstages onto the screen and updates it
-function Game:draw_to_screen()
+function PseudoGame.game.Game:draw_to_screen()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,
 		RenderStage.WALLQUADS3D,

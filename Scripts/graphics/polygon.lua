@@ -1,11 +1,11 @@
-Polygon = {}
-Polygon.__index = Polygon
+PseudoGame.graphics.Polygon = {}
+PseudoGame.graphics.Polygon.__index = PseudoGame.graphics.Polygon
 
 -- The constructor for the Polygon class that represents a 2D polygon
 -- vertices: table = {x0, y0, x1, y1, ...}
 -- colors: table = {r0, g0, b0, a0, r1, g1, b1, a1, ...}
 -- return: Polygon
-function Polygon:new(vertices, colors)
+function PseudoGame.graphics.Polygon:new(vertices, colors)
 	vertices = vertices or {}
 	colors = colors or {}
 	if #vertices % 2 ~= 0 then
@@ -19,7 +19,7 @@ function Polygon:new(vertices, colors)
 		_vertices = vertices,
 		_colors = colors,
 		vertex_count = vertex_count
-	}, Polygon)
+	}, PseudoGame.graphics.Polygon)
 	return obj
 end
 
@@ -27,7 +27,7 @@ end
 -- 	for index, x, y, r, g, b, a in mypolygon:vertex_color_pairs() do
 -- 		...
 -- 	end
-function Polygon:vertex_color_pairs()
+function PseudoGame.graphics.Polygon:vertex_color_pairs()
 	local index = 0
 	return function()
 		index = index + 1
@@ -43,7 +43,7 @@ end
 -- 	for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in mypolygon:double_vertex_color_pairs() do
 -- 		...
 -- 	end
-function Polygon:double_vertex_color_pairs()
+function PseudoGame.graphics.Polygon:double_vertex_color_pairs()
 	local index = 0
 	return function()
 		index = index + 1
@@ -65,13 +65,13 @@ end
 -- g: number	-- the g component of the vertex color
 -- b: number	-- the b component of the vertex color
 -- a: number	-- the a component of the vertex color
-function Polygon:add_vertex(x, y, r, g, b, a)
+function PseudoGame.graphics.Polygon:add_vertex(x, y, r, g, b, a)
 	self.vertex_count = self.vertex_count + 1
 	self:set_vertex_pos(self.vertex_count, x, y)
 	self:set_vertex_color(self.vertex_count, r, g, b, a)
 end
 
-function Polygon:_check_vert_index(index)
+function PseudoGame.graphics.Polygon:_check_vert_index(index)
 	if index > self.vertex_count or index <= 0 then
 		error("Polygon: the index of " .. index .. " is out of bounds!")
 	end
@@ -79,7 +79,7 @@ end
 
 -- removes a vertex and and its color from the polygon
 -- index: number	-- the index of the vertex
-function Polygon:remove_vertex(index)
+function PseudoGame.graphics.Polygon:remove_vertex(index)
 	self:_check_vert_index(index)
 	self.vertex_count = self.vertex_count - 1
 	local vertex_index = index * 2
@@ -96,7 +96,7 @@ end
 -- index: number	-- the index of the vertex
 -- x: number		-- the x coordinate the vertex should be set to
 -- y: number		-- the y coordinate the vertex should be set to
-function Polygon:set_vertex_pos(index, x, y)
+function PseudoGame.graphics.Polygon:set_vertex_pos(index, x, y)
 	self:_check_vert_index(index)
 	local vertex_index = index * 2
 	self._vertices[vertex_index - 1] = x
@@ -106,7 +106,7 @@ end
 -- gets a vertex position
 -- index: number		-- the index of the vertex
 -- returns: number, number	-- the position of the vertex
-function Polygon:get_vertex_pos(index)
+function PseudoGame.graphics.Polygon:get_vertex_pos(index)
 	self:_check_vert_index(index)
 	local vertex_index = index * 2
 	return self._vertices[vertex_index - 1], self._vertices[vertex_index]
@@ -118,7 +118,7 @@ end
 -- g: number		-- the g component of the vertex color
 -- b: number		-- the b component of the vertex color
 -- a: number		-- the a component of the vertex color
-function Polygon:set_vertex_color(index, r, g, b, a)
+function PseudoGame.graphics.Polygon:set_vertex_color(index, r, g, b, a)
 	self:_check_vert_index(index)
 	local color_index = index * 4
 	self._colors[color_index - 3] = r
@@ -130,7 +130,7 @@ end
 -- gets a vertex color
 -- index: number				-- the index of the vertex
 -- returns: number, number, number, number	-- the color of the vertex
-function Polygon:get_vertex_color(index)
+function PseudoGame.graphics.Polygon:get_vertex_color(index)
 	self:_check_vert_index(index)
 	local color_index = index * 4
 	return self._colors[color_index - 3], self._colors[color_index - 2], self._colors[color_index - 1], self._colors[color_index]
@@ -139,7 +139,7 @@ end
 -- creates or removes vertices until the given size (vertex count) is reached
 -- new vertices are initialized at (0, 0) with the color black
 -- size: number	-- the vertex count the polygon will have after the operation
-function Polygon:resize(size)
+function PseudoGame.graphics.Polygon:resize(size)
 	while self.vertex_count > size do
 		self:remove_vertex(self.vertex_count)
 	end
@@ -150,7 +150,7 @@ end
 
 -- checks if the polygon is defined in clockwise order
 -- return: bool (optional)	-- returns nil if order is undefined (polygon with no area)
-function Polygon:is_clockwise()
+function PseudoGame.graphics.Polygon:is_clockwise()
 	local area = 0
 	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
 		area = area + (x1 - x0) * (y1 + y0)
@@ -166,7 +166,7 @@ end
 -- clipper_polygon: Polygon		-- the polygon that will contain the newly created clipped polygon
 -- generator: function (optional)	-- use a generator instead of always creating new polygons (will create a polygon for every edge of the clipper polygon, so don't render this collection, this is just for improved performance)
 -- return: Polygon (optional)		-- Returns the clipped polygon or nil if no intersecting area exists
-function Polygon:clip(clipper_polygon, generator)
+function PseudoGame.graphics.Polygon:clip(clipper_polygon, generator)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()
 	if cw == nil then
@@ -192,11 +192,11 @@ end
 -- generator_left: function (optional)			-- use a generator instead of creating new left polygons (this is good for performance)
 -- generator_right: function (optional)			-- use a generator instead of creating new right polygons (this is good for performance)
 -- return: Polygon (optional), Polygon (optional)	-- returns either one or two polygons depending on left/right (can return empty polygons)
-function Polygon:slice(x0, y0, x1, y1, left, right, generator_left, generator_right)
+function PseudoGame.graphics.Polygon:slice(x0, y0, x1, y1, left, right, generator_left, generator_right)
 	local function add_vert(generator, poly, index, x, y, r, g, b, a)
 		if poly == nil then
 			if generator == nil then
-				poly = Polygon:new()
+				poly = PseudoGame.graphics.Polygon:new()
 			else
 				poly = generator()
 			end
@@ -279,7 +279,7 @@ function Polygon:slice(x0, y0, x1, y1, left, right, generator_left, generator_ri
 	end
 end
 
-function Polygon:_to_cw_data(data, current_index)
+function PseudoGame.graphics.Polygon:_to_cw_data(data, current_index)
 	if self.vertex_count < 3 then
 		return current_index
 	end
@@ -374,13 +374,13 @@ end
 
 -- copies the polygon
 -- return: Polygon
-function Polygon:copy()
-	return Polygon:new({unpack(self._vertices)}, {unpack(self._colors)})
+function PseudoGame.graphics.Polygon:copy()
+	return PseudoGame.graphics.Polygon:new({unpack(self._vertices)}, {unpack(self._colors)})
 end
 
 -- copy the vertex and color data of another polygon onto this one
 -- polygon: Polygon		-- the polygon to copy data from
-function Polygon:copy_data(polygon)
+function PseudoGame.graphics.Polygon:copy_data(polygon)
 	while self.vertex_count > polygon.vertex_count do
 		self:remove_vertex(1)
 	end
@@ -397,7 +397,7 @@ end
 -- copy the vertex and color data of another polygon onto this one after transforming it
 -- polygon: Polygon		-- the polygon to copy data from
 -- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
-function Polygon:copy_data_transformed(polygon, transform_func)
+function PseudoGame.graphics.Polygon:copy_data_transformed(polygon, transform_func)
 	while self.vertex_count > polygon.vertex_count do
 		self:remove_vertex(1)
 	end
@@ -415,7 +415,7 @@ end
 -- transform the vertices and vertex colors of the polygon
 -- transform_func: function	-- a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
 -- return: Polygon		-- returns itself for convenient chaining of operations
-function Polygon:transform(transform_func)
+function PseudoGame.graphics.Polygon:transform(transform_func)
 	for index, x, y, r, g, b, a in self:vertex_color_pairs() do
 		x, y, r, g, b, a = transform_func(x, y, r, g, b, a)
 		self:set_vertex_pos(index, x, y)
@@ -425,7 +425,7 @@ function Polygon:transform(transform_func)
 end
 
 -- remove duplicate vertices, does not respect color
-function Polygon:_remove_doubles()
+function PseudoGame.graphics.Polygon:_remove_doubles()
 	for i=self.vertex_count * 2, 1, -2 do
 		if self._vertices[i - 1] == self._vertices[i - 3] and self._vertices[i] == self._vertices[i - 2] then
 			self:remove_vertex(i / 2)
@@ -436,7 +436,7 @@ end
 -- x: number	-- the x coordinate of the point to check
 -- y: number	-- the y coordinate of the point to check
 -- return: bool	-- true if the point is inside the polygon
-function Polygon:contains_point(x, y)
+function PseudoGame.graphics.Polygon:contains_point(x, y)
 	local result = false
 	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
 		if (y0 > y) ~= (y1 > y) and x < (x1 - x0) * (y - y0) / (y1 - y0) + x0 then

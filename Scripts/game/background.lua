@@ -1,19 +1,19 @@
-Background = {}
-Background.__index = Background
+PseudoGame.game.Background = {}
+PseudoGame.game.Background.__index = PseudoGame.game.Background
 
 -- the constructor for a games background
 -- use background.polygon_collection to draw it
 -- style: Style (optional)	-- the style to use (nil will use the default level style)
 -- return: Background
-function Background:new(style)
+function PseudoGame.game.Background:new(style)
 	return setmetatable({
-		style = style or level_style,
-		polygon_collection = PolygonCollection:new()
-	}, Background)
+		style = style or PseudoGame.game.level_style,
+		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
+	}, PseudoGame.game.Background)
 end
 
 -- update the backgrounds color, position and shape
-function Background:update()
+function PseudoGame.game.Background:update()
 	local gen = self.polygon_collection:generator()
 	local sides = l_getSides()
 	local div = math.pi * 2 / sides
@@ -29,8 +29,8 @@ function Background:update()
 		end
 		local polygon = gen()
 		polygon:resize(3)
-		polygon:set_vertex_pos(2, get_orbit(angle + half_div, distance))
-		polygon:set_vertex_pos(3, get_orbit(angle - half_div, distance))
+		polygon:set_vertex_pos(2, PseudoGame.game.get_orbit(angle + half_div, distance))
+		polygon:set_vertex_pos(3, PseudoGame.game.get_orbit(angle - half_div, distance))
 		for i=1,3 do
 			polygon:set_vertex_color(i, unpack(current_color))
 		end

@@ -1,7 +1,11 @@
 u_execScript("main.lua")
-u_execScript("invisible.lua")
+
+local PG = PseudoGame
+
+PG.hide_default_game()
+
 blended_desync = {
-	game = Game:new()
+	game = PG.game.Game:new()
 }
 
 function blended_desync:init()
@@ -40,8 +44,8 @@ function blended_desync:onInput(frametime, movement, focus, swap)
 			end
 		end
 	end
-	screen:draw_polygon_collection(self.game.polygon_collection)
-	screen:update()
+	PG.graphics.screen:draw_polygon_collection(self.game.polygon_collection)
+	PG.graphics.screen:update()
 end
 
 function blended_desync:onDeath()
