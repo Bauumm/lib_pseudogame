@@ -149,11 +149,14 @@ function Polygon:resize(size)
 end
 
 -- checks if the polygon is defined in clockwise order
--- return: bool
+-- return: bool (optional)	-- returns nil if order is undefined (polygon with no area)
 function Polygon:is_clockwise()
 	local area = 0
 	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
 		area = area + (x1 - x0) * (y1 + y0)
+	end
+	if area == 0 then
+		return
 	end
 	return area > 0
 end
@@ -166,6 +169,10 @@ end
 function Polygon:clip(clipper_polygon, creation_iter)
 	local return_polygon = self
 	local cw = clipper_polygon:is_clockwise()
+	if cw == nil then
+		-- don't bother clipping if the polygon has no area
+		return
+	end
 	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:double_vertex_color_pairs() do
 		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw, creation_iter, creation_iter)
 		if return_polygon == nil then
