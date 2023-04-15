@@ -284,33 +284,35 @@ function Polygon:slice(x0, y0, x1, y1, left, right, creation_iter_left, creation
 				right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, ix, iy, ir, ig, ib, ia)
 			end
 		end
-		if iside ~= kside then
+		if iside ~= kside or k_pos == 0 or i_pos == 0 then
 			-- next point will be on the other side, so add the intersection point with the line
 			local dikx, diky = ix - kx, iy - ky
 			local num_part1 = (x0*y1 - y0*x1)
 			local num_part2 = (ix*ky - iy*kx)
 			local den = dy * dikx - dx * diky
-			local x = (num_part1 * dikx + dx * num_part2) / den
-			local y = (num_part1 * diky + dy * num_part2) / den
+			if math.abs(den) > 1e-10 then
+				local x = (num_part1 * dikx + dx * num_part2) / den
+				local y = (num_part1 * diky + dy * num_part2) / den
 
-			-- interpolate between vertex colors to keep gradients
-			local fac = (x - kx) / dikx
-			if dikx == 0 then
-				fac = 0
-			end
-			local r = ir * fac + kr * (1 - fac)
-			local g = ig * fac + kg * (1 - fac)
-			local b = ib * fac + kb * (1 - fac)
-			local a = ia * fac + ka * (1 - fac)
+				-- interpolate between vertex colors to keep gradients
+				local fac = (x - kx) / dikx
+				if dikx == 0 then
+					fac = 0
+				end
+				local r = ir * fac + kr * (1 - fac)
+				local g = ig * fac + kg * (1 - fac)
+				local b = ib * fac + kb * (1 - fac)
+				local a = ia * fac + ka * (1 - fac)
 
-			-- add to both polygons since they share the point on the line
-			if left then
-				left_vert_count = left_vert_count + 1
-				left_polygon = add_vert(creation_iter_left, left_polygon, left_vert_count, x, y, r, g, b, a)
-			end
-			if right then
-				right_vert_count = right_vert_count + 1
-				right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, x, y, r, g, b, a)
+				-- add to both polygons since they share the point on the line
+				if left then
+					left_vert_count = left_vert_count + 1
+					left_polygon = add_vert(creation_iter_left, left_polygon, left_vert_count, x, y, r, g, b, a)
+				end
+				if right then
+					right_vert_count = right_vert_count + 1
+					right_polygon = add_vert(creation_iter_right, right_polygon, right_vert_count, x, y, r, g, b, a)
+				end
 			end
 		end
 	end
