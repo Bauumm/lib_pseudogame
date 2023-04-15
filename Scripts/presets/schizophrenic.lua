@@ -37,7 +37,7 @@ function schizophrenic:onPreDeath()
 end
 
 function schizophrenic:onRenderStage(rs, frametime)
-	if self.game.death_effect.dead and rs == 0 then
+	self.game.death_effect:ensure_tickrate(rs, frametime, function(frametime)
 		self:onInput(frametime, 0, false, false)
-	end
+	end)
 end

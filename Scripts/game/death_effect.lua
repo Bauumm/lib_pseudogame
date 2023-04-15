@@ -12,7 +12,8 @@ function DeathEffect:new(player)
 		dead = false,
 		transform = nil,
 		timer = 0,
-		player = player
+		player = player,
+		post_death_frametime_accumulator = 0
 	}, DeathEffect)
 end
 
@@ -60,5 +61,20 @@ function DeathEffect:update(frametime)
 	else
 		self.polygon_collection:clear()
 		self.player.color = nil
+	end
+end
+
+-- ensures that a function is called 240 times per second in onRenderStage after death (does nothing if the death method wasn't called)
+-- (only works if shaders are loaded, but that is usually the case when using this function as there's no need for a fake death effect if the player isn't hidden)
+-- render_stage: number		-- the render stage that onRenderStage is being called for
+-- frametime: number		-- the inconsistent frametime that onRenderStage gets as second parameter
+-- draw_function: function	-- a function that will be called 240 times per second (should contain your drawing logic so the death effect can be drawn)
+function DeathEffect:ensure_tickrate(render_stage, frametime, draw_function)
+	if self.dead and render_stage == 0 then
+		self.post_death_frametime_accumulator = self.post_death_frametime_accumulator + frametime
+		while self.post_death_frametime_accumulator >= 0.25 do
+			self.post_death_frametime_accumulator = self.post_death_frametime_accumulator - 0.25
+			draw_function(0.25)
+		end
 	end
 end
