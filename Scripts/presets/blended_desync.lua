@@ -61,3 +61,7 @@ function blended_desync:onRenderStage(rs, frametime)
 		self:onInput(frametime, 0, false, false)
 	end)
 end
+
+function blended_desync:onUnload()
+	self.game:restore()
+end

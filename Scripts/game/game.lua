@@ -96,23 +96,26 @@ function PseudoGame.game.Game:new(style)
 end
 
 -- overwrites the wall functions as well as custom walls function to modify the walls in this game
+-- IMPORTANT: once this function was called, you have to call Game:restore() before exiting your level (e.g. in onUnload), otherwise it may break other levels at random, as this function overwrites some default game functions
 function PseudoGame.game.Game:overwrite()
-	PseudoGame.graphics.overwrite_cw_functions(self._cws)
-	s_set3dDepth(0)
-	self._oldSet3dDepth = s_set3dDepth
-	self._oldGet3dDepth = s_get3dDepth
-	s_set3dDepth = function(depth)
-		self.depth = depth
+	if not u_inMenu() then
+		PseudoGame.game.overwrite_cw_functions(self._cws)
+		s_set3dDepth(0)
+		self._oldSet3dDepth = s_set3dDepth
+		self._oldGet3dDepth = s_get3dDepth
+		s_set3dDepth = function(depth)
+			self.depth = depth
+		end
+		s_get3dDepth = function()
+			return self.depth
+		end
+		self.walls:overwrite()
 	end
-	s_get3dDepth = function()
-		return self.depth
-	end
-	self.walls:overwrite()
 end
 
 -- restores the original wall and custom wall functions
 function PseudoGame.game.Game:restore()
-	PseudoGame.graphics.restore_cw_functions()
+	PseudoGame.game.restore_cw_functions()
 	s_set3dDepth = self._oldSet3dDepth
 	s_get3dDepth = self._oldGet3dDepth
 	s_set3dDepth(self.depth)

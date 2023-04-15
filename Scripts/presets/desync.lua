@@ -76,3 +76,7 @@ function desync:onRenderStage(rs, frametime)
 		self:onInput(frametime, 0, false, false)
 	end)
 end
+
+function desync:onUnload()
+	self.game:restore()
+end

@@ -120,22 +120,24 @@ end
 
 -- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
 function PseudoGame.game.WallSystem:overwrite()
-	PseudoGame.game.WallSystem._selected_system = self
-	w_wall = function(side, thickness)
-		t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ")")
-	end
-	w_wallAdj = function(side, thickness, speed_mult)
-		t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
-	end
-	w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
-		t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
-	end
-	u_clearWalls = function()
-		for i=1, #self._walls do
-			local wall = self._walls[i]
-			cw_destroy(wall.cw)
+	if not u_inMenu() then
+		PseudoGame.game.WallSystem._selected_system = self
+		w_wall = function(side, thickness)
+			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ")")
 		end
-		self._walls = {}
+		w_wallAdj = function(side, thickness, speed_mult)
+			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
+		end
+		w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
+			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
+		end
+		u_clearWalls = function()
+			for i=1, #self._walls do
+				local wall = self._walls[i]
+				cw_destroy(wall.cw)
+			end
+			self._walls = {}
+		end
 	end
 end
 

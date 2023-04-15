@@ -41,3 +41,7 @@ function suphexskew:onRenderStage(rs, frametime)
 		self:onInput(frametime, 0, false, false)
 	end)
 end
+
+function suphexskew:onUnload()
+	self.game:restore()
+end

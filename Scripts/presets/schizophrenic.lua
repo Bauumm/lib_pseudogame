@@ -45,3 +45,7 @@ function schizophrenic:onRenderStage(rs, frametime)
 		self:onInput(frametime, 0, false, false)
 	end)
 end
+
+function schizophrenic:onUnload()
+	self.game:restore()
+end

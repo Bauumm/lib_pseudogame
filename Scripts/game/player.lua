@@ -74,13 +74,13 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
 	if not self._use_real_player and collide_collection ~= nil then
 		if self.collision_handler(self, collide_collection) then
 			if self.kill_cw == nil then
-				self.kill_cw = PseudoGame.graphics.cw_function_backup.cw_createDeadly()
+				self.kill_cw = PseudoGame.game.cw_function_backup.cw_createDeadly()
 			end
-			PseudoGame.graphics.cw_function_backup.cw_setVertexColor4Same(self.kill_cw, 0, 0, 0, 0)
-			PseudoGame.graphics.cw_function_backup.cw_setVertexPos4(self.kill_cw, -1600, -1600, -1600, 1600, 1600, 1600, 1600, -1600)
+			PseudoGame.game.cw_function_backup.cw_setVertexColor4Same(self.kill_cw, 0, 0, 0, 0)
+			PseudoGame.game.cw_function_backup.cw_setVertexPos4(self.kill_cw, -1600, -1600, -1600, 1600, 1600, 1600, 1600, -1600)
 		else
 			if self.kill_cw ~= nil then
-				PseudoGame.graphics.cw_function_backup.cw_destroy(self.kill_cw)
+				PseudoGame.game.cw_function_backup.cw_destroy(self.kill_cw)
 				self.kill_cw = nil
 			end
 		end

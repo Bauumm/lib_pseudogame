@@ -29,26 +29,26 @@ end
 function PseudoGame.graphics.screen:update()
 	local size = self._current_index / 2
 	while #self._cw_list < size do
-		self._cw_list[#self._cw_list + 1] = PseudoGame.graphics.cw_function_backup.cw_create()
+		self._cw_list[#self._cw_list + 1] = PseudoGame.game.cw_function_backup.cw_create()
 	end
 	while #self._cw_list > size do
-		PseudoGame.graphics.cw_function_backup.cw_destroy(self._cw_list[#self._cw_list])
+		PseudoGame.game.cw_function_backup.cw_destroy(self._cw_list[#self._cw_list])
 		self._cw_list[#self._cw_list] = nil
 	end
 	table.sort(self._cw_list)
 	for i=1,size do
 		local cw = self._cw_list[i]
 		local data_index = i * 2
-		PseudoGame.graphics.cw_function_backup.cw_setVertexPos4(cw, unpack(self._cw_data[data_index - 1]))
-		PseudoGame.graphics.cw_function_backup.cw_setVertexColor4(cw, unpack(self._cw_data[data_index]))
+		PseudoGame.game.cw_function_backup.cw_setVertexPos4(cw, unpack(self._cw_data[data_index - 1]))
+		PseudoGame.game.cw_function_backup.cw_setVertexColor4(cw, unpack(self._cw_data[data_index]))
 		local extra_data = self._extra_cw_data[i]
 		if extra_data == nil then
-			PseudoGame.graphics.cw_function_backup.cw_setCollision(cw, false)
-			PseudoGame.graphics.cw_function_backup.cw_setDeadly(cw, false)
+			PseudoGame.game.cw_function_backup.cw_setCollision(cw, false)
+			PseudoGame.game.cw_function_backup.cw_setDeadly(cw, false)
 		else
-			PseudoGame.graphics.cw_function_backup.cw_setCollision(cw, extra_data.collision)
-			PseudoGame.graphics.cw_function_backup.cw_setDeadly(cw, extra_data.deadly)
-			PseudoGame.graphics.cw_function_backup.cw_setKillingSide(cw, extra_data.killing_side)
+			PseudoGame.game.cw_function_backup.cw_setCollision(cw, extra_data.collision)
+			PseudoGame.game.cw_function_backup.cw_setDeadly(cw, extra_data.deadly)
+			PseudoGame.game.cw_function_backup.cw_setKillingSide(cw, extra_data.killing_side)
 		end
 	end
 	self._extra_index = 1
