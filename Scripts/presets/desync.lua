@@ -6,11 +6,7 @@ desync = {
 	collection = PolygonCollection:new(),
 	main_collection = PolygonCollection:new(),
 	back_collection = PolygonCollection:new(),
-	back_blend_collection = PolygonCollection:new(),
-	blend_collection = PolygonCollection:new(),
-	final_collection = PolygonCollection:new(),
-	fps_limit = 120,
-	passed_time = 0
+	tmp_collection = PolygonCollection:new()
 }
 
 function desync:init()
@@ -38,34 +34,29 @@ end
 function desync:onInput(frametime, movement, focus, swap)
 	self.game:update(frametime, movement, focus, swap)
 	local collections = self.game:get_render_stages({0, 1, 2, 3, 4, 5, 6, 7})
-	self.passed_time = self.passed_time + frametime
-	while self.passed_time >= 60 / self.fps_limit do
-		self.passed_time = self.passed_time - 60 / self.fps_limit
-		local it = self.back_collection:creation_iter()
-		for polygon in collections[1]:iter() do
-			it():copy_data_transformed(polygon, self.transform)
-		end
-		effects.blend(collections[1], self.back_collection, self.blend, self.back_blend_collection)
-		self.main_collection:clear()
-		for i = 2, #collections do
-			if i == 6 then
-				self.main_collection:add(collections[i])
-			else
-				self.main_collection:copy_add(collections[i])
+	local it = self.back_collection:creation_iter()
+	for polygon in collections[1]:iter() do
+		it():copy_data_transformed(polygon, self.transform)
+	end
+	local tmp_it = self.tmp_collection:creation_iter()
+	effects.blend(collections[1], self.back_collection, self.blend, nil, tmp_it, true)
+	local main_it = self.main_collection:creation_iter()
+	local it = self.collection:creation_iter()
+	for i = 2, #collections do
+		if i == 6 then
+			main_it():copy_data(collections[i])
+			it():copy_data_transformed(collections[i], self.transform)
+		else
+			for polygon in collections[i]:iter() do
+				main_it():copy_data(polygon)
+				it():copy_data_transformed(polygon, self.transform)
 			end
 		end
-		self.collection:clear()
-		self.collection:copy_add(self.main_collection)
-		self.main_collection:transform(self.transform)
-		effects.blend(self.main_collection, self.collection, self.blend, self.blend_collection)
-		self.collection:ref_add(self.main_collection)
-		self.collection:ref_add(self.blend_collection)
-		self.final_collection:clear()
-		self.final_collection:ref_add(self.back_blend_collection)
-		self.final_collection:ref_add(self.collection)
-		screen:draw_polygon_collection(self.final_collection)
-		screen:update()
 	end
+	screen:draw_polygon_collection(self.main_collection)
+	screen:draw_polygon_collection(self.collection)
+	effects.blend(self.main_collection, self.collection, self.blend, nil, tmp_it, true)
+	screen:update()
 end
 
 function desync:onDeath()
