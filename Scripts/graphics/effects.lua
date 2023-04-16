@@ -46,7 +46,7 @@ function PseudoGame.graphics.effects:outline(polygon_collection, thickness, colo
 		gen = outline_collection:generator()
 	end
 	for polygon in polygon_collection:iter() do
-		for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in polygon:double_vertex_color_pairs() do
+		for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in polygon:edge_color_pairs() do
 			local dx, dy = x1 - x0, y1 - y0
 			local len = math.sqrt(dx * dx + dy * dy)
 			local thick_x, thick_y = dx / len * thickness, dy / len * thickness

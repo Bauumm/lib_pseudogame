@@ -99,7 +99,7 @@ function PseudoGame.graphics.PolygonCollection:iter()
 end
 
 
--- recreate all polygons while reusing the old ones like this (avoids table allocation so this is verty good for performance):
+-- recreate all polygons while reusing the old ones like this (avoids table allocation so this is very good for performance):
 -- local gen = polygon_collection:generator()
 -- for i=1,100 do
 -- 	local polygon = gen()

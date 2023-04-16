@@ -39,11 +39,11 @@ function PseudoGame.graphics.Polygon:vertex_color_pairs()
 	end
 end
 
--- This iterator always gives the next vertex as well (and wraps around), so it can be used like this:
--- 	for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in mypolygon:double_vertex_color_pairs() do
+-- This iterator always gives both vertices of one edge, so it can be used like this:
+-- 	for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in mypolygon:edge_color_pairs() do
 -- 		...
 -- 	end
-function PseudoGame.graphics.Polygon:double_vertex_color_pairs()
+function PseudoGame.graphics.Polygon:edge_color_pairs()
 	local index = 0
 	return function()
 		index = index + 1
@@ -152,7 +152,7 @@ end
 -- return: bool (optional)	-- returns nil if order is undefined (polygon with no area)
 function PseudoGame.graphics.Polygon:is_clockwise()
 	local area = 0
-	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
+	for x0, y0, r, g, b, a, x1, y1 in self:edge_color_pairs() do
 		area = area + (x1 - x0) * (y1 + y0)
 	end
 	if area == 0 then
@@ -173,7 +173,7 @@ function PseudoGame.graphics.Polygon:clip(clipper_polygon, generator)
 		-- don't bother clipping if the polygon has no area
 		return
 	end
-	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:double_vertex_color_pairs() do
+	for x0, y0, r, g, b, a, x1, y1 in clipper_polygon:edge_color_pairs() do
 		return_polygon = return_polygon:slice(x0, y0, x1, y1, not cw, cw, generator, generator)
 		if return_polygon == nil then
 			return
@@ -191,7 +191,7 @@ end
 -- right: bool						-- specifies if the part of the polygon on the right side of the line should be returned
 -- generator_left: function (optional)			-- use a generator instead of creating new left polygons (this is good for performance)
 -- generator_right: function (optional)			-- use a generator instead of creating new right polygons (this is good for performance)
--- return: Polygon (optional), Polygon (optional)	-- returns either one or two polygons depending on left/right (can return empty polygons)
+-- return: Polygon (optional), Polygon (optional)	-- returns either one or two polygons depending on left/right (can return nil)
 function PseudoGame.graphics.Polygon:slice(x0, y0, x1, y1, left, right, generator_left, generator_right)
 	local function add_vert(generator, poly, index, x, y, r, g, b, a)
 		if poly == nil then
@@ -216,7 +216,7 @@ function PseudoGame.graphics.Polygon:slice(x0, y0, x1, y1, left, right, generato
 	if not left and not right then
 		error("Polygon: slice called without specifying which polygon to return!")
 	end
-	for ix, iy, ir, ig, ib, ia, kx, ky, kr, kg, kb, ka in self:double_vertex_color_pairs() do
+	for ix, iy, ir, ig, ib, ia, kx, ky, kr, kg, kb, ka in self:edge_color_pairs() do
 		local i_pos, k_pos = dx * (iy-y0) - dy * (ix-x0), dx * (ky-y0) - dy * (kx-x0)
 		local iside, kside = i_pos >= 0, k_pos >= 0
 		if iside then
@@ -438,7 +438,7 @@ end
 -- return: bool	-- true if the point is inside the polygon
 function PseudoGame.graphics.Polygon:contains_point(x, y)
 	local result = false
-	for x0, y0, r, g, b, a, x1, y1 in self:double_vertex_color_pairs() do
+	for x0, y0, r, g, b, a, x1, y1 in self:edge_color_pairs() do
 		if (y0 > y) ~= (y1 > y) and x < (x1 - x0) * (y - y0) / (y1 - y0) + x0 then
 			result = not result
 		end
