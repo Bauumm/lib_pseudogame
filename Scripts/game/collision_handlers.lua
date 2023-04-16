@@ -1,7 +1,10 @@
--- A function that handles collision of some polygons with a player
--- player: Player				-- the player to handle collisions for (it may be moved in the process)
--- collide_collection: PolygonCollection	-- the collection of polygons to collide with
--- return: bool					-- determines if the player should be killed
+--- Module containing premade collision handlers for use with the Player class
+-- @module PseudoGame.game.collision_handlers
+
+--- A function that handles collision of some polygons with a player
+-- @tparam Player player  the player to handle collisions for (it may be moved in the process)
+-- @tparam PolygonCollection collide_collection  the collection of polygons to collide with
+-- @treturn bool  determines if the player should be killed
 function PseudoGame.game.basic_collision_handler(player, collide_collection)
 	local collides = false
 	local last_collides = false

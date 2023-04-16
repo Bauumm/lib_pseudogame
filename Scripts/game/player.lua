@@ -1,39 +1,50 @@
+--- Class that represents a game's player
+-- @classmod PseudoGame.game.Player
 PseudoGame.game.Player = {}
 PseudoGame.game.Player.__index = PseudoGame.game.Player
 
--- the constructor for a player that can handle collisions (without relying on the games internals)
--- use player.polygon to draw it
--- style: Style (optional)			-- the style to use (nil will use the default level style)
--- collision_handler: function (optional)	-- the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)
--- return: Player
+--- the constructor for a player that can handle collisions (without relying on the games internals)
+-- @tparam[opt=level_style] Style style  the style to use (nil will use the default level style)
+-- @tparam[opt=nil] function collision_handler  the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)
+-- @treturn Player
 function PseudoGame.game.Player:new(style, collision_handler)
 	return setmetatable({
+		--- @tfield Style style  the style the player is using
 		style = style or PseudoGame.game.level_style,
+		--- @tfield number  the player's current angle
 		angle = 0,
+		--- @tfield number  the angle the player had in the last tick
 		last_angle = 0,
+		--- @field pos  the current position of the player (formatted like this: {x, y})
 		pos = {0, 0},
+		--- @field last_pos  the position the player had in the last tick (formatted like this: {x, y})
 		last_pos = {0, 0},
+		--- @tfield number  a number that indicates the current state of the swap blinking animation (the current blink hue is swap_blink_time * 36)
 		swap_blink_time = 6,
+		--- @tfield number  the time in 1/60s the player has until it can swap again after swapping
 		swap_cooldown_time = math.max(36 * l_getSwapCooldownMult(), 8),
+		--- @tfield bool  this field is true if the player swapped this tick, it's false otherwise
 		just_swapped = false,
+		--- @tfield function  the collision handler the player is currently using
 		collision_handler = collision_handler,
 		_use_real_player = collision_handler == nil,
+		--- @tfield Polygon polygon  the player triangle (use this for drawing)
 		polygon = PseudoGame.graphics.Polygon:new({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	}, PseudoGame.game.Player)
 end
 
--- reset the swap cooldown to show swap blinking effect (should be called in onCursorSwap when using the "real" player)
+--- reset the swap cooldown to show swap blinking effect (should be called in onCursorSwap when using the "real" player)
 function PseudoGame.game.Player:reset_swap_cooldown()
 	self.just_swapped = true
 	self.swap_cooldown_time = self.swap_cooldown
 end
 
--- update the players position while handling collisions as well as swap
--- frametime: number					-- the time in 1/60s that passed since the last call of this function
--- move: number (optional)				-- the current movement direction, so either -1, 0 or 1 (only required when using a custom collision handler)
--- focus: bool						-- true if the player is focusing, false otherwise
--- swap: bool (optional)				-- true if the swap key is pressed, false otherwise (only required when using a custom collision handler)
--- collide_collection: PolygonCollection (optional)	-- the collection of polygons the player should collide with (only required when using a custom collision handler)
+--- update the players position while handling collisions as well as swap
+-- @tparam number frametime  the time in 1/60s that passed since the last call of this function
+-- @tparam[opt] number move  the current movement direction, so either -1, 0 or 1 (only required when using a custom collision handler)
+-- @tparam bool focus  true if the player is focusing, false otherwise
+-- @tparam[opt] bool swap  true if the swap key is pressed, false otherwise (only required when using a custom collision handler)
+-- @tparam[opt] PolygonCollection collide_collection  the collection of polygons the player should collide with (only required when using a custom collision handler)
 function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_collection)
 	if l_getSwapEnabled() then
 		self.just_swapped = false

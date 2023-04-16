@@ -1,18 +1,22 @@
+--- Class representing a game's background
+-- @classmod PseudoGame.game.Background
 PseudoGame.game.Background = {}
 PseudoGame.game.Background.__index = PseudoGame.game.Background
 
--- the constructor for a games background
--- use background.polygon_collection to draw it
--- style: Style (optional)	-- the style to use (nil will use the default level style)
--- return: Background
+
+--- the constructor for a game's background
+-- @tparam[opt=level_style] Style style  the style to use
+-- @treturn Background
 function PseudoGame.game.Background:new(style)
 	return setmetatable({
+		--- @tfield Style style  The style object the background is using
 		style = style or PseudoGame.game.level_style,
+		--- @tfield PolygonCollection polygon_collection  The collection of polygons representing the visual background (use this for drawing)
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
 	}, PseudoGame.game.Background)
 end
 
--- update the backgrounds color, position and shape
+--- update the backgrounds color, position and shape
 function PseudoGame.game.Background:update()
 	local gen = self.polygon_collection:generator()
 	local sides = l_getSides()

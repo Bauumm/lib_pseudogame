@@ -6,8 +6,8 @@ PseudoGame.graphics.screen = {
 	_cw_list = {}
 }
 
--- draw a polygon to the screen (only shown once screen:update() is called)
--- polygon: Polygon	-- the polygon to draw
+--- draw a polygon to the screen (only shown once screen:update() is called)
+-- @tparam Polygon polygon  the polygon to draw
 function PseudoGame.graphics.screen:draw_polygon(polygon)
 	local last_index = self._current_index
 	self._current_index = polygon:_to_cw_data(self._cw_data, self._current_index)
@@ -17,15 +17,15 @@ function PseudoGame.graphics.screen:draw_polygon(polygon)
 	end
 end
 
--- draw a polygon collection to the screen (only shown once screen:update() is called)
--- polygon_collection: PolygonCollection	-- the polygon collection to draw
+--- draw a polygon collection to the screen (only shown once screen:update() is called)
+-- @tparam PolygonCollection polygon_collection  the polygon collection to draw
 function PseudoGame.graphics.screen:draw_polygon_collection(polygon_collection)
 	for polygon in polygon_collection:iter() do
 		self:draw_polygon(polygon)
 	end
 end
 
--- update the screen after drawing, this applies the purely virtual data onto real cws
+--- update the screen after drawing, this applies the purely virtual data onto real cws
 function PseudoGame.graphics.screen:update()
 	local size = self._current_index / 2
 	while #self._cw_list < size do

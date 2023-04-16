@@ -1,8 +1,11 @@
--- this function converts polar coordinates into cartesian ones and adds a start position
--- angle: number		-- the angle in radians
--- distance: number		-- the distance from the start pos
--- start_pos: table		-- the start pos, formatted like this: {x, y}
--- return: number, number	-- the resulting position
+--- Some functions that are commonly used in the game logic
+-- @module PseudoGame.game.common
+
+--- this function converts polar coordinates into cartesian ones and adds a start position
+-- @tparam number angle  the angle in radians
+-- @tparam number distance  the distance from the start pos
+-- @tparam tab start_pos  the start pos, formatted like this: {x, y}
+-- @treturn number,number  the resulting position
 function PseudoGame.game.get_orbit(angle, distance, start_pos)
 	if start_pos == nil then
 		return math.cos(angle) * distance, math.sin(angle) * distance
@@ -10,9 +13,9 @@ function PseudoGame.game.get_orbit(angle, distance, start_pos)
 	return math.cos(angle) * distance + start_pos[1], math.sin(angle) * distance + start_pos[2]
 end
 
--- get a color from a hue
--- hue: number		-- a number between 0 and 360
--- return: table	-- the resulting color in this format: {r, g, b, a}
+--- get a color from a hue
+-- @tparam number hue  a number between 0 and 360
+-- @treturn tab  the resulting color in this format: {r, g, b, a}
 function PseudoGame.game.get_color_from_hue(hue)
 	hue = hue % 360 / 360
 	local i = math.floor(hue * 6)

@@ -12,10 +12,12 @@ if PseudoGame.game.WallSystem == nil then
 	PseudoGame.game.WallSystem.__index = PseudoGame.game.WallSystem
 end
 
--- the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
--- draw it using wall_system.polygon_collection
--- style: Style (optional)	-- the style to use (nil will use the default level style)
--- return: WallSystem
+--[[--
+the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
+draw it using wall_system.polygon_collection
+]]
+-- @tparam[opt] Style style  the style to use (nil will use the default level style)
+-- @treturn WallSystem
 function PseudoGame.game.WallSystem:new(style)
 	local obj = setmetatable({
 		style = style or PseudoGame.game.level_style,
@@ -26,13 +28,13 @@ function PseudoGame.game.WallSystem:new(style)
 	return obj
 end
 
--- create a wall in the system
--- side: number				-- the side to spawn the wall at
--- thickness: number			-- the thickness the wall should have
--- speed_mult: number (optional)	-- the speed_mult (will be multiplied with u_getSpeedMultDM())
--- acceleration: number (optional)	-- the acceleration (it will be adjusted using the difficulty mult)
--- min_speed: number (optional)		-- the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
--- max_speed: number (optional)		-- the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+--- create a wall in the system
+-- @tparam number side  the side to spawn the wall at
+-- @tparam number thickness  the thickness the wall should have
+-- @tparam[opt] number speed_mult  the speed_mult (will be multiplied with u_getSpeedMultDM())
+-- @tparam[opt] number acceleration  the acceleration (it will be adjusted using the difficulty mult)
+-- @tparam[opt] number min_speed  the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+-- @tparam[opt] number max_speed  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 function PseudoGame.game.WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
@@ -56,8 +58,8 @@ function PseudoGame.game.WallSystem:wall(side, thickness, speed_mult, accelerati
 	})
 end
 
--- update the walls position
--- frametime: number	-- the time in 1/60s that passed since the last call of this function
+--- update the walls position
+-- @tparam number frametime  the time in 1/60s that passed since the last call of this function
 function PseudoGame.game.WallSystem:update(frametime)
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
 	local outer_bounds = l_getWallSpawnDistance() * 1.1
@@ -118,7 +120,7 @@ function PseudoGame.game.WallSystem:update(frametime)
 	end
 end
 
--- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
+--- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
 function PseudoGame.game.WallSystem:overwrite()
 	if not u_inMenu() then
 		PseudoGame.game.WallSystem._selected_system = self
@@ -141,7 +143,7 @@ function PseudoGame.game.WallSystem:overwrite()
 	end
 end
 
--- restore the original w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions
+--- restore the original w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions
 function PseudoGame.game.WallSystem:restore()
 	w_wall = self._w_wall
 	w_wallAdj = self._w_wallAdj

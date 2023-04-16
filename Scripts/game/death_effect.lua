@@ -1,35 +1,43 @@
+--- Class to create the blinking hexagonal death effects around a player
+-- @classmod PseudoGame.game.DeathEffect
 PseudoGame.game.DeathEffect = {}
 PseudoGame.game.DeathEffect.__index = PseudoGame.game.DeathEffect
 
--- the constructor for a death effect
--- use death_effect.polygon_collection to draw it
--- player: Player	-- the player the death effect is for
--- return: DeathEffect
+
+--- the constructor for a death effect
+-- @tparam Player player  the player the death effect is for
+-- @treturn DeathEffect
 function PseudoGame.game.DeathEffect:new(player)
 	return setmetatable({
+		--- @tfield PolygonCollection polygon_collection  The collection of polygons representing the visual death effect (use this for drawing)
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield number player_hue  The hue the player and the death effect currently have
 		player_hue = 0,
+		--- @tfield bool dead  True if the player has died
 		dead = false,
-		transform = nil,
+		--- @tfield number timer  The time the death effect is going to be shown for in invincible mode (counts down and stops showing the death effect once it reaches 0)
 		timer = 0,
+		--- @tfield Player player  The player the death effect is for
 		player = player,
-		post_death_frametime_accumulator = 0
+		_post_death_frametime_accumulator = 0
 	}, PseudoGame.game.DeathEffect)
 end
 
--- this function causes the death effect ot be shown permanently (should be called in onDeath)
--- make sure to update and draw the death effect in onRenderStage as the other functions aren't called after death
+--[[--
+this function causes the death effect ot be shown permanently (should be called in onDeath)
+make sure to update and draw the death effect in onRenderStage as the other functions aren't called after death
+]]
 function PseudoGame.game.DeathEffect:death()
 	self.dead = true
 end
 
--- this function shows the death effect for a moment (should be called in onPreDeath)
+--- this function shows the death effect for a moment (should be called in onPreDeath)
 function PseudoGame.game.DeathEffect:invincible_death()
 	self.timer = 100
 end
 
--- update the death effects shape and color
--- frametime: number	-- the time in 1/60s that passed since the last call to this function
+--- update the death effects shape and color
+-- @tparam number frametime  the time in 1/60s that passed since the last call to this function
 function PseudoGame.game.DeathEffect:update(frametime)
 	self.timer = self.timer - frametime
 	if self.timer < 0 then
@@ -64,16 +72,18 @@ function PseudoGame.game.DeathEffect:update(frametime)
 	end
 end
 
--- ensures that a function is called 240 times per second in onRenderStage after death (does nothing if the death method wasn't called)
--- (only works if shaders are loaded, but that is usually the case when using this function as there's no need for a fake death effect if the player isn't hidden)
--- render_stage: number		-- the render stage that onRenderStage is being called for
--- frametime: number		-- the inconsistent frametime that onRenderStage gets as second parameter
--- draw_function: function	-- a function that will be called 240 times per second (should contain your drawing logic so the death effect can be drawn)
+--[[--
+ensures that a function is called 240 times per second in onRenderStage after death (does nothing if the death method wasn't called)
+(only works if shaders are loaded, but that is usually the case when using this function as there's no need for a fake death effect if the player isn't hidden)
+]]
+-- @tparam number render_stage  the render stage that onRenderStage is being called for
+-- @tparam number frametime  the inconsistent frametime that onRenderStage gets as second parameter
+-- @tparam function draw_function  a function that will be called 240 times per second (should contain your drawing logic so the death effect can be drawn)
 function PseudoGame.game.DeathEffect:ensure_tickrate(render_stage, frametime, draw_function)
 	if self.dead and render_stage == 0 then
-		self.post_death_frametime_accumulator = self.post_death_frametime_accumulator + frametime
-		while self.post_death_frametime_accumulator >= 0.25 do
-			self.post_death_frametime_accumulator = self.post_death_frametime_accumulator - 0.25
+		self._post_death_frametime_accumulator = self._post_death_frametime_accumulator + frametime
+		while self._post_death_frametime_accumulator >= 0.25 do
+			self._post_death_frametime_accumulator = self._post_death_frametime_accumulator - 0.25
 			draw_function(0.25)
 		end
 	end

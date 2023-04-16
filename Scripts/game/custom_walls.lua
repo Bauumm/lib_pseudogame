@@ -1,3 +1,6 @@
+--- A module that overwrites the cw_ functions to modify a PolygonCollection
+-- @module PseudoGame.game.custom_walls
+
 local cw_function_names = {
 	"cw_create",
 	"cw_createDeadly",
@@ -28,15 +31,15 @@ if type(cw_create) == "userdata" then
 	end
 end
 
--- restores the real cw_ functions
+--- restores the real cw_ functions
 function PseudoGame.game.restore_cw_functions()
 	for _, name in pairs(cw_function_names) do
 		_G[name] = PseudoGame.game.cw_function_backup[name]
 	end
 end
 
--- overwrite all cw_ functions to modify the given polygon collection instead of actual custom walls
--- polygon_collection: PolygonCollection
+--- overwrite all cw_ functions to modify the given polygon collection instead of actual custom walls
+-- @tparam PolygonCollection polygon_collection  the collection to store cw data in
 function PseudoGame.game.overwrite_cw_functions(polygon_collection)
 	if not u_inMenu() then
 		cw_create = function()

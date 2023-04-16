@@ -1,18 +1,21 @@
+--- Class that represents a game's pivot
+-- @classmod PseudoGame.game.Pivot
 PseudoGame.game.Pivot = {}
 PseudoGame.game.Pivot.__index = PseudoGame.game.Pivot
 
--- the constructor for a pivot
--- draw it using pivot.polygon_collection
--- style: Style (optional)	-- the style to use (nil will use the default level style)
--- return: Pivot
+--- the constructor for a pivot
+-- @tparam[opt=level_style] Style style  the style to use (nil will use the default level style)
+-- @treturn Pivot
 function PseudoGame.game.Pivot:new(style)
 	return setmetatable({
+		--- @tfield Style  the style the pivot is using
 		style = style or PseudoGame.game.level_style,
+		--- @tfield PolygonCollection  the polygons representing the visual pivot (use this for drawing)
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
 	}, PseudoGame.game.Pivot)
 end
 
--- update the pivots shape and color
+--- update the pivots shape and color
 function PseudoGame.game.Pivot:update()
 	self.polygon_collection:resize(l_getSides())
 	local it = self.polygon_collection:iter()

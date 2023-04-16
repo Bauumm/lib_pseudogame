@@ -2,18 +2,28 @@
 PseudoGame.game.Style = {}
 PseudoGame.game.Style.__index = PseudoGame.game.Style
 
--- constructor for a style object used to overwrite the default colors and to have more control over them from lua
--- style_table: {
--- 	main_color: {r, g, b, a},		-- the main color of the style
--- 	player_color: {r, g, b, a},		-- the player color, will use the main color if not specified
--- 	wall_color: {r, g, b, a},		-- the wall color, will use the main color if not specified
--- 	cap_color: {r, g, b, a},		-- the cap color of the style
--- 	background_colors: {{r, g, b, a}, ...},	-- the colors used for the background panels
--- 	layer_colors: {{r, g, b, a}, ...}	-- the colors used for the 3d layers
--- 	layer_spacing: number			-- the spacing between 3d layers
--- 	connect_layers: bool			-- specifies if the 3d layers should be connected using extra polygons to create solid 3d
--- }
--- return: Style
+--[[--
+constructor for a style object used to overwrite the default colors and to have more control over them from lua
+style_table: {
+	main_color: {r, g, b, a},		-- the main color of the style
+	player_color: {r, g, b, a},		-- the player color, will use the main color if not specified
+	wall_color: {r, g, b, a},		-- the wall color, will use the main color if not specified
+	cap_color: {r, g, b, a},		-- the cap color of the style
+	background_colors: {{r, g, b, a}, ...},	-- the colors used for the background panels
+	layer_colors: {{r, g, b, a}, ...}	-- the colors used for the 3d layers
+	layer_spacing: number			-- the spacing between 3d layers
+	connect_layers: bool			-- specifies if the 3d layers should be connected using extra polygons to create solid 3d
+}
+]]
+-- @tparam {r, g, b, a}, 	main_color  the main color of the style
+-- @tparam {r, g, b, a}, 	player_color  the player color, will use the main color if not specified
+-- @tparam {r, g, b, a}, 	wall_color  the wall color, will use the main color if not specified
+-- @tparam {r, g, b, a}, 	cap_color  the cap color of the style
+-- @tparam {{r, g, b, a}, ...}, 	background_colors  the colors used for the background panels
+-- @tparam {{r, g, b, a}, ...} 	layer_colors  the colors used for the 3d layers
+-- @tparam number 	layer_spacing  the spacing between 3d layers
+-- @tparam bool 	connect_layers  specifies if the 3d layers should be connected using extra polygons to create solid 3d
+-- @treturn Style
 function PseudoGame.game.Style:new(style_table)
 	local function check_color_property(name, default)
 		if style_table[name] == nil then
@@ -51,52 +61,52 @@ function PseudoGame.game.Style:new(style_table)
 	return setmetatable(style_table, Style)
 end
 
--- gets the main color
--- return: r, g, b, a
+--- gets the main color
+-- @treturn {r, g, b, a}
 function PseudoGame.game.Style:get_main_color()
 	return unpack(self.main_color)
 end
 
--- gets the player color
--- return: r, g, b, a
+--- gets the player color
+-- @treturn {r, g, b, a}
 function PseudoGame.game.Style:get_player_color()
 	return unpack(self.player_color)
 end
 
--- gets the wall color
--- return: r, g, b, a
+--- gets the wall color
+-- @treturn {r, g, b, a}
 function PseudoGame.game.Style:get_wall_color()
 	return unpack(self.wall_color)
 end
 
--- gets the cap color
--- return: r, g, b, a
+--- gets the cap color
+-- @treturn {r, g, b, a}
 function PseudoGame.game.Style:get_cap_color()
 	return unpack(self.cap_color)
 end
 
--- gets a background color
--- index: number	-- the index of the background panel
--- return: r, g, b, a
+--- gets a background color
+-- @tparam number index  the index of the background panel
+-- @treturn {r, g, b, a}
 function PseudoGame.game.Style:get_background_color(index)
 	return unpack(self.background_colors[(index - 1) % #self.background_colors + 1])
 end
 
--- gets a layer color
--- index: number	-- the index of the 3d layer
--- return: r, g, b, a
+--- gets a layer color
+-- @tparam number index  the index of the 3d layer
+-- @treturn {r, g, b, a}
 function PseudoGame.game.Style:get_layer_color(index)
 	return unpack(self.layer_colors[(index - 1) % #self.layer_colors + 1])
 end
 
--- gets the 3d layer spacing
--- return: number
+--- gets the 3d layer spacing
+-- @treturn number
 function PseudoGame.game.Style:get_layer_spacing()
 	return self.layer_spacing
 end
 
--- gets if the 3d layers are supposed to be connected
--- return: bool
+--- gets if the 3d layers are supposed to be connected
+-- @treturn bool
 function PseudoGame.game.Style:get_connect_layers()
 	return self.connect_layers
 end

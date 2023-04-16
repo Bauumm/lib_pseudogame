@@ -5,11 +5,11 @@ PseudoGame.graphics.effects = {
 	_tmp_collection = PseudoGame.graphics.PolygonCollection:new()
 }
 
--- get the polygons that represent the intersection two collections
--- polygon_collection1: PolygonCollection		-- the first collection
--- polygon_collection2: PolygonCollection		-- the second collection
--- blend_func: function					-- this function determines the color of the new polygons based on the color of the two intersected ones, so it should take r0, g0, b0, a0, r1, g1, b1, a1 and return r, g, b, a
--- blend_collection: PolygonCollection (optional)	-- the collection the resulting polygons are added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
+--- get the polygons that represent the intersection two collections
+-- @tparam PolygonCollection polygon_collection1  the first collection
+-- @tparam PolygonCollection polygon_collection2  the second collection
+-- @tparam function blend_func  this function determines the color of the new polygons based on the color of the two intersected ones, so it should take r0, g0, b0, a0, r1, g1, b1, a1 and return r, g, b, a
+-- @tparam[opt] PolygonCollection blend_collection  the collection the resulting polygons are added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
 function PseudoGame.graphics.effects:blend(polygon_collection1, polygon_collection2, blend_func, blend_collection)
 	if not self.draw_directly then
 		blend_collection:clear()
@@ -33,11 +33,11 @@ function PseudoGame.graphics.effects:blend(polygon_collection1, polygon_collecti
 	end
 end
 
--- creates polygons along the edges of some polygons
--- polygon_collection: PolygonCollection		-- the polygon collection the outlines should be made for
--- thickness: number					-- the thickness of the outlines
--- color: table						-- the color of the outlines, should be formatted like this: {r, g, b, a}
--- outline_collection: PolygonCollection (optional)	-- the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
+--- creates polygons along the edges of some polygons
+-- @tparam PolygonCollection polygon_collection  the polygon collection the outlines should be made for
+-- @tparam number thickness  the thickness of the outlines
+-- @tparam tab color  the color of the outlines, should be formatted like this: {r, g, b, a}
+-- @tparam[opt] PolygonCollection outline_collection  the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
 function PseudoGame.graphics.effects:outline(polygon_collection, thickness, color, outline_collection)
 	local gen
 	if self.draw_directly then
@@ -66,9 +66,9 @@ function PseudoGame.graphics.effects:outline(polygon_collection, thickness, colo
 	end
 end
 
--- generates a transformation function that rotates vertices
--- angle: number	-- the angle to rotate
--- return: function	-- the transformation function
+--- generates a transformation function that rotates vertices
+-- @tparam number angle  the angle to rotate
+-- @treturn function  the transformation function
 function PseudoGame.graphics.effects:rotate(angle)
 	local cos, sin = math.cos(angle), math.sin(angle)
 	return function(x, y, r, g, b, a)
@@ -76,10 +76,10 @@ function PseudoGame.graphics.effects:rotate(angle)
 	end
 end
 
--- generates a transformation function that mirrors vertices
--- mirror_x: bool	-- whether it should mirror along the x axis
--- mirror_y: bool	-- whether it should mirror along the y axis
--- return: function	-- the transformation function
+--- generates a transformation function that mirrors vertices
+-- @tparam bool mirror_x  whether it should mirror along the x axis
+-- @tparam bool mirror_y  whether it should mirror along the y axis
+-- @treturn function  the transformation function
 function PseudoGame.graphics.effects:mirror(mirror_x, mirror_y)
 	mirror_x = mirror_x and -1 or 1
 	mirror_y = mirror_y and -1 or 1

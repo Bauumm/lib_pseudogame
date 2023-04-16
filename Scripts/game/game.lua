@@ -1,32 +1,45 @@
-u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "utils.lua")
-
+--- Class that creates and manages all the game components allowing direct access to each renderstage for transformation
+-- @classmod PseudoGame.game.Game
 PseudoGame.game.Game = {}
 PseudoGame.game.Game.__index = PseudoGame.game.Game
 
--- the constructor for a game object that recreates the game and allows direct access to each renderstage for transformation
--- style: Style (optional)	-- the style the game should use (nil will use the default level style)
--- return: Game
+--- the constructor for a game object 
+-- @tparam[opt=level_style] Style style  the style the game should use (nil will use the default level style)
+-- @treturn Game
 function PseudoGame.game.Game:new(style)
 	local obj = setmetatable({
 		-- game objects
+		--- @tfield Background background  the game's background
 		background = PseudoGame.game.Background:new(style),
+		--- @tfield WallSystem walls  the game's wall system
 		walls = PseudoGame.game.WallSystem:new(style),
+		--- @tfield Player player  the game's player (uses `PseudoGame.game.basic_collision_handler` by default)
 		player = PseudoGame.game.Player:new(style, PseudoGame.game.basic_collision_handler),
+		--- @tfield Pivot pivot  the game's pivot
 		pivot = PseudoGame.game.Pivot:new(style),
+		--- @tfield Cap cap  the game's cap
 		cap = PseudoGame.game.Cap:new(style),
 
 		-- game data
+		--- @tfield number depth  the game's 3d depth
 		depth = s_get3dDepth(),
+		--- @tfield Style style  the game's style
 		style = style or PseudoGame.game.level_style,
 
 		-- additional collections
 		_collide_collection = PseudoGame.graphics.PolygonCollection:new(),
 		_cws = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield PolygonCollection wall_collection  a collection containing all walls (and custom walls) of the game
 		wall_collection = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield PolygonCollection player_collection  a collection containing the game's player and its death effect
 		player_collection = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield PolygonCollection walls3d  a collection containing the 3d layers of all walls (and custom walls)
 		walls3d = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield PolygonCollection pivot3d  a collection containing the 3d layers of the pivot
 		pivot3d = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield PolygonCollection player3d  a collection containing the 3d layers of the player (and its death effect)
 		player3d = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield PolygonCollection polygon_collection  the collection the `Game:draw()` method draws into
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
 
 		-- inputs
@@ -95,8 +108,10 @@ function PseudoGame.game.Game:new(style)
 	return obj
 end
 
--- overwrites the wall functions as well as custom walls function to modify the walls in this game
--- IMPORTANT: once this function was called, you have to call Game:restore() before exiting your level (e.g. in onUnload), otherwise it may break other levels at random, as this function overwrites some default game functions
+--[[--
+overwrites the wall functions as well as custom walls function to modify the walls in this game
+IMPORTANT: once this function was called, you have to call Game:restore() before exiting your level (e.g. in onUnload), otherwise it may break other levels at random, as this function overwrites some default game functions
+]]
 function PseudoGame.game.Game:overwrite()
 	if not u_inMenu() then
 		PseudoGame.game.overwrite_cw_functions(self._cws)
@@ -113,7 +128,7 @@ function PseudoGame.game.Game:overwrite()
 	end
 end
 
--- restores the original wall and custom wall functions
+--- restores the original wall and custom wall functions
 function PseudoGame.game.Game:restore()
 	PseudoGame.game.restore_cw_functions()
 	s_set3dDepth = self._oldSet3dDepth
@@ -227,10 +242,12 @@ function PseudoGame.game.Game:_update_3D(walls, pivot, player)
 	end
 end
 
--- get the polygon / polygon collection of a renderstage (the enum can be found in utils.lua in the base pack)
--- this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
--- render_stages: table	-- a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
--- return: table	-- a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
+--[[--
+get the polygon / polygon collection of a renderstage (the enum can be found in utils.lua in the base pack)
+this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
+]]
+-- @tparam tab render_stages  a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
+-- @treturn tab  a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
 function PseudoGame.game.Game:get_render_stages(render_stages)
 	local walls3d, pivot3d, player3d = false, false, false
 	local result = {}
@@ -254,11 +271,11 @@ function PseudoGame.game.Game:get_render_stages(render_stages)
 	return result
 end
 
--- update the game
--- frametime: number	-- the time in 1/60s that passed since the last call of this function
--- move: number		-- the current movement direction, so either -1, 0 or 1
--- focus: bool		-- true if the player is focusing, false otherwise
--- swap: bool		-- true if the swap key is pressed, false otherwise
+--- update the game
+-- @tparam number frametime  the time in 1/60s that passed since the last call of this function
+-- @tparam number move  the current movement direction, so either -1, 0 or 1
+-- @tparam bool focus  true if the player is focusing, false otherwise
+-- @tparam bool swap  true if the swap key is pressed, false otherwise
 function PseudoGame.game.Game:update(frametime, move, focus, swap)
 	self._ticked = true
 	self._frametime = frametime
@@ -267,7 +284,7 @@ function PseudoGame.game.Game:update(frametime, move, focus, swap)
 	self._swap = swap
 end
 
--- puts all the renderstage's polygons into game.polygon_collection
+--- puts all the renderstage's polygons into game.polygon_collection
 function PseudoGame.game.Game:draw()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,
@@ -289,7 +306,7 @@ function PseudoGame.game.Game:draw()
 	end
 end
 
--- draws all the renderstages onto the screen and updates it
+--- draws all the renderstages onto the screen and updates it
 function PseudoGame.game.Game:draw_to_screen()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,
@@ -303,10 +320,10 @@ function PseudoGame.game.Game:draw_to_screen()
 	})
 	for i=1,8 do
 		if i == 6 then
-			screen:draw_polygon(collections[i])
+			PseudoGame.graphics.screen:draw_polygon(collections[i])
 		else
-			screen:draw_polygon_collection(collections[i])
+			PseudoGame.graphics.screen:draw_polygon_collection(collections[i])
 		end
 	end
-	screen:update()
+	PseudoGame.graphics.screen:update()
 end
