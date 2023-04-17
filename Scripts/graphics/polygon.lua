@@ -1,11 +1,11 @@
+--- Class that represents a simple convex 2D Polygon
+-- @classmod PseudoGame.graphics.Polygon
 PseudoGame.graphics.Polygon = {}
 PseudoGame.graphics.Polygon.__index = PseudoGame.graphics.Polygon
 
---[[--
-The constructor for the Polygon class that represents a 2D polygon
-vertices: table = {x0, y0, x1, y1, ...}
-colors: table = {r0, g0, b0, a0, r1, g1, b1, a1, ...}
-]]
+--- The constructor for a Polygon
+-- @tparam table vertices  the polygon's vertices in this format: `{x0, y0, x1, y1, ...}`
+-- @tparam table colors  the vertex colors in this format: `{r0, g0, b0, a0, r1, g1, b1, a1, ...}`
 -- @treturn Polygon
 function PseudoGame.graphics.Polygon:new(vertices, colors)
 	vertices = vertices or {}
@@ -25,12 +25,11 @@ function PseudoGame.graphics.Polygon:new(vertices, colors)
 	return obj
 end
 
---[[--
-This iterator can be used like this:
-	for index, x, y, r, g, b, a in mypolygon:vertex_color_pairs() do
-		...
-	end
-]]
+--- Iterate over vertices and colors
+-- @usage
+-- for index, x, y, r, g, b, a in mypolygon:vertex_color_pairs() do
+--    ...
+-- end
 function PseudoGame.graphics.Polygon:vertex_color_pairs()
 	local index = 0
 	return function()
@@ -43,12 +42,11 @@ function PseudoGame.graphics.Polygon:vertex_color_pairs()
 	end
 end
 
---[[--
-This iterator always gives both vertices of one edge, so it can be used like this:
-	for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in mypolygon:edge_color_pairs() do
-		...
-	end
-]]
+--- Iterate over edges and their colors
+-- @usage
+-- for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in mypolygon:edge_color_pairs() do
+--    ...
+-- end
 function PseudoGame.graphics.Polygon:edge_color_pairs()
 	local index = 0
 	return function()
@@ -135,7 +133,7 @@ end
 
 --- gets a vertex color
 -- @tparam number index  the index of the vertex
--- @tparam number, number, number, number returns  the color of the vertex
+-- @treturn number,number,number,number  the color of the vertex
 function PseudoGame.graphics.Polygon:get_vertex_color(index)
 	self:_check_vert_index(index)
 	local color_index = index * 4
@@ -169,10 +167,7 @@ function PseudoGame.graphics.Polygon:is_clockwise()
 	return area > 0
 end
 
---[[--
-Implementation of the sutherland hodgman algorithm for polygon clipping
-Doesn't work with concave polygons
-]]
+--- Implementation of the sutherland hodgman algorithm for polygon clipping
 -- @tparam Polygon clipper_polygon  the polygon that will contain the newly created clipped polygon
 -- @tparam[opt] function generator  use a generator instead of always creating new polygons (will create a polygon for every edge of the clipper polygon, so don't render this collection, this is just for improved performance)
 -- @treturn ?Polygon  Returns the clipped polygon or nil if no intersecting area exists
@@ -201,7 +196,7 @@ end
 -- @tparam bool right  specifies if the part of the polygon on the right side of the line should be returned
 -- @tparam[opt] function generator_left  use a generator instead of creating new left polygons (this is good for performance)
 -- @tparam[opt] function generator_right  use a generator instead of creating new right polygons (this is good for performance)
--- @treturn {?Polygon, ?Polygon}  returns either one or two polygons depending on left/right (can return nil)
+-- @treturn ?|Polygon,Polygon|Polygon|nil  returns either no, one or two polygons depending on left/right (returns nil when no part of the polygon is on a return side)
 function PseudoGame.graphics.Polygon:slice(x0, y0, x1, y1, left, right, generator_left, generator_right)
 	local function add_vert(generator, poly, index, x, y, r, g, b, a)
 		if poly == nil then
@@ -382,7 +377,7 @@ function PseudoGame.graphics.Polygon:_to_cw_data(data, current_index)
 	return current_index
 end
 
---- copies the polygon
+--- copies the polygon (this function is bad for performance if used a lot)
 -- @treturn Polygon
 function PseudoGame.graphics.Polygon:copy()
 	return PseudoGame.graphics.Polygon:new({unpack(self._vertices)}, {unpack(self._colors)})
@@ -406,7 +401,7 @@ end
 
 --- copy the vertex and color data of another polygon onto this one after transforming it
 -- @tparam Polygon polygon  the polygon to copy data from
--- @tparam function transform_func  a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+-- @tparam function transform_func  a function that takes `x, y, r, g, b, a` and returns `x, y, r, g, b, a`
 function PseudoGame.graphics.Polygon:copy_data_transformed(polygon, transform_func)
 	while self.vertex_count > polygon.vertex_count do
 		self:remove_vertex(1)
@@ -423,7 +418,7 @@ function PseudoGame.graphics.Polygon:copy_data_transformed(polygon, transform_fu
 end
 
 --- transform the vertices and vertex colors of the polygon
--- @tparam function transform_func  a function that takes x, y, r, g, b, a and returns x, y, r, g, b, a
+-- @tparam function transform_func  a function that takes `x, y, r, g, b, a` and returns `x, y, r, g, b, a`
 -- @treturn Polygon  returns itself for convenient chaining of operations
 function PseudoGame.graphics.Polygon:transform(transform_func)
 	for index, x, y, r, g, b, a in self:vertex_color_pairs() do

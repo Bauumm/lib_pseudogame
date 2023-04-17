@@ -15,9 +15,9 @@ function PseudoGame.game.Player:new(style, collision_handler)
 		angle = 0,
 		--- @tfield number  the angle the player had in the last tick
 		last_angle = 0,
-		--- @field pos  the current position of the player (formatted like this: {x, y})
+		--- @tfield table pos  the current position of the player (formatted like this: {x, y})
 		pos = {0, 0},
-		--- @field last_pos  the position the player had in the last tick (formatted like this: {x, y})
+		--- @tfield table last_pos  the position the player had in the last tick (formatted like this: {x, y})
 		last_pos = {0, 0},
 		--- @tfield number  a number that indicates the current state of the swap blinking animation (the current blink hue is swap_blink_time * 36)
 		swap_blink_time = 6,

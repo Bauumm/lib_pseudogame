@@ -246,8 +246,8 @@ end
 get the polygon / polygon collection of a renderstage (the enum can be found in utils.lua in the base pack)
 this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
 ]]
--- @tparam tab render_stages  a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
--- @treturn tab  a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
+-- @tparam table render_stages  a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
+-- @treturn table  a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
 function PseudoGame.game.Game:get_render_stages(render_stages)
 	local walls3d, pivot3d, player3d = false, false, false
 	local result = {}

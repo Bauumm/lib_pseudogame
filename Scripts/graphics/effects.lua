@@ -1,6 +1,7 @@
--- a module for using some premade effects (functions need to be called like this: `effects:<function>`)
--- setting effects.draw_directly to true will make the effects, that take a polygon collection to output to, draw directly to the screen
+--- a module for using some premade effects
+-- @module PseudoGame.graphics.effects
 PseudoGame.graphics.effects = {
+	--- setting `effects.draw_directly` to true will make the effects, that take a polygon collection to output to, draw directly to the screen
 	draw_directly = false,
 	_tmp_collection = PseudoGame.graphics.PolygonCollection:new()
 }
@@ -8,7 +9,7 @@ PseudoGame.graphics.effects = {
 --- get the polygons that represent the intersection two collections
 -- @tparam PolygonCollection polygon_collection1  the first collection
 -- @tparam PolygonCollection polygon_collection2  the second collection
--- @tparam function blend_func  this function determines the color of the new polygons based on the color of the two intersected ones, so it should take r0, g0, b0, a0, r1, g1, b1, a1 and return r, g, b, a
+-- @tparam function blend_func  this function determines the color of the new polygons based on the color of the two intersected ones, so it should take `r0, g0, b0, a0, r1, g1, b1, a1` and return `r, g, b, a`
 -- @tparam[opt] PolygonCollection blend_collection  the collection the resulting polygons are added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
 function PseudoGame.graphics.effects:blend(polygon_collection1, polygon_collection2, blend_func, blend_collection)
 	if not self.draw_directly then
@@ -36,7 +37,7 @@ end
 --- creates polygons along the edges of some polygons
 -- @tparam PolygonCollection polygon_collection  the polygon collection the outlines should be made for
 -- @tparam number thickness  the thickness of the outlines
--- @tparam tab color  the color of the outlines, should be formatted like this: {r, g, b, a}
+-- @tparam table color  the color of the outlines, should be formatted like this: `{r, g, b, a}`
 -- @tparam[opt] PolygonCollection outline_collection  the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
 function PseudoGame.graphics.effects:outline(polygon_collection, thickness, color, outline_collection)
 	local gen

@@ -1,3 +1,8 @@
+--- Class that handles a game's walls by implementing `w_wall`, `w_wallAdj` and `w_wallAcc`
+-- @classmod PseudoGame.game.WallSystem
+
+-- TODO: Support curving walls
+
 -- ensure the w_ functions don't get overwritten by executing this file multiple times
 if PseudoGame.game.WallSystem == nil then
 	PseudoGame.game.WallSystem = {
@@ -12,16 +17,15 @@ if PseudoGame.game.WallSystem == nil then
 	PseudoGame.game.WallSystem.__index = PseudoGame.game.WallSystem
 end
 
---[[--
-the constructor for a wall system that implements w_wall, w_wallAdj and w_wallAcc
-draw it using wall_system.polygon_collection
-]]
--- @tparam[opt] Style style  the style to use (nil will use the default level style)
+--- the constructor for a wall system
+-- @tparam[opt=level_style] Style style  the style to use
 -- @treturn WallSystem
 function PseudoGame.game.WallSystem:new(style)
 	local obj = setmetatable({
+		--- @tfield Style  the style the wall system is using
 		style = style or PseudoGame.game.level_style,
 		_walls = {},
+		--- @tfield PolygonCollection  the collection of polygons representing the walls (use this for drawing)
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
 	}, PseudoGame.game.WallSystem)
 	PseudoGame.game.WallSystem._systems[#PseudoGame.game.WallSystem._systems + 1] = obj
@@ -31,10 +35,10 @@ end
 --- create a wall in the system
 -- @tparam number side  the side to spawn the wall at
 -- @tparam number thickness  the thickness the wall should have
--- @tparam[opt] number speed_mult  the speed_mult (will be multiplied with u_getSpeedMultDM())
--- @tparam[opt] number acceleration  the acceleration (it will be adjusted using the difficulty mult)
--- @tparam[opt] number min_speed  the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
--- @tparam[opt] number max_speed  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+-- @tparam[opt=1] number speed_mult  the speed_mult (will be multiplied with u_getSpeedMultDM())
+-- @tparam[opt=0] number acceleration  the acceleration (it will be adjusted using the difficulty mult)
+-- @tparam[opt=0] number min_speed  the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
+-- @tparam[opt=0] number max_speed  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 function PseudoGame.game.WallSystem:wall(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
@@ -120,7 +124,7 @@ function PseudoGame.game.WallSystem:update(frametime)
 	end
 end
 
---- overwrite the w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions to create/clear walls in this system
+--- overwrite the `w_wall`, `w_wallAdj`, `w_wallAcc` and `u_clearWalls` functions to create/clear walls in this system
 function PseudoGame.game.WallSystem:overwrite()
 	if not u_inMenu() then
 		PseudoGame.game.WallSystem._selected_system = self
@@ -143,7 +147,7 @@ function PseudoGame.game.WallSystem:overwrite()
 	end
 end
 
---- restore the original w_wall, w_wallAdj, w_wallAcc and u_clearWalls functions
+--- restore the original `w_wall`, `w_wallAdj`, `w_wallAcc` and `u_clearWalls` functions
 function PseudoGame.game.WallSystem:restore()
 	w_wall = self._w_wall
 	w_wallAdj = self._w_wallAdj
