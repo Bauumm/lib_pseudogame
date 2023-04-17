@@ -49,7 +49,7 @@ function PseudoGame.game.Style:new(style_table)
 	check_color_list_property("background_colors")
 	check_color_list_property("layer_colors")
 	style_table.layer_spacing = style_table.layer_spacing or 10
-	return setmetatable(style_table, Style)
+	return setmetatable(style_table, PseudoGame.game.Style)
 end
 
 --- gets the main color
