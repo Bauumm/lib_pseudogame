@@ -1,3 +1,5 @@
+--- Module for drawing polygon objects to the screen (by converting them to cw data which is applied on real custom walls in the right render order)
+-- @module PseudoGame.graphics.screen
 PseudoGame.graphics.screen = {
 	_current_index = 0,
 	_extra_index = 1,
@@ -6,7 +8,7 @@ PseudoGame.graphics.screen = {
 	_cw_list = {}
 }
 
---- draw a polygon to the screen (only shown once screen:update() is called)
+--- draw a polygon to the screen (only shown once `screen:update()` is called)
 -- @tparam Polygon polygon  the polygon to draw
 function PseudoGame.graphics.screen:draw_polygon(polygon)
 	local last_index = self._current_index
@@ -17,7 +19,7 @@ function PseudoGame.graphics.screen:draw_polygon(polygon)
 	end
 end
 
---- draw a polygon collection to the screen (only shown once screen:update() is called)
+--- draw a polygon collection to the screen (only shown once `screen:update()` is called)
 -- @tparam PolygonCollection polygon_collection  the polygon collection to draw
 function PseudoGame.graphics.screen:draw_polygon_collection(polygon_collection)
 	for polygon in polygon_collection:iter() do
@@ -25,7 +27,7 @@ function PseudoGame.graphics.screen:draw_polygon_collection(polygon_collection)
 	end
 end
 
---- update the screen after drawing, this applies the purely virtual data onto real cws
+--- update the screen after drawing, this applies the purely virtual data onto real custom walls
 function PseudoGame.graphics.screen:update()
 	local size = self._current_index / 2
 	while #self._cw_list < size do

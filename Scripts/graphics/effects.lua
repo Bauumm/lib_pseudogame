@@ -1,12 +1,12 @@
---- a module for using some premade effects
+--- a module with some premade visual effects
 -- @module PseudoGame.graphics.effects
 PseudoGame.graphics.effects = {
-	--- setting `effects.draw_directly` to true will make the effects, that take a polygon collection to output to, draw directly to the screen
+	--- setting `effects.draw_directly` to true will make the effects, that take a polygon collection to output to, draw directly to the screen instead
 	draw_directly = false,
 	_tmp_collection = PseudoGame.graphics.PolygonCollection:new()
 }
 
---- get the polygons that represent the intersection two collections
+--- get the polygons that represent the intersection of two collections
 -- @tparam PolygonCollection polygon_collection1  the first collection
 -- @tparam PolygonCollection polygon_collection2  the second collection
 -- @tparam function blend_func  this function determines the color of the new polygons based on the color of the two intersected ones, so it should take `r0, g0, b0, a0, r1, g1, b1, a1` and return `r, g, b, a`

@@ -20,6 +20,7 @@ function PseudoGame.graphics.Polygon:new(vertices, colors)
 	local obj = setmetatable({
 		_vertices = vertices,
 		_colors = colors,
+		--- @tfield number vertex_count  the amount of vertexes the polygon has
 		vertex_count = vertex_count
 	}, PseudoGame.graphics.Polygon)
 	return obj
@@ -109,7 +110,7 @@ end
 
 --- gets a vertex position
 -- @tparam number index  the index of the vertex
--- @tparam number, number returns  the position of the vertex
+-- @treturn number,number  the position of the vertex
 function PseudoGame.graphics.Polygon:get_vertex_pos(index)
 	self:_check_vert_index(index)
 	local vertex_index = index * 2

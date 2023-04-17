@@ -4,7 +4,7 @@
 --- this function converts polar coordinates into cartesian ones and adds a start position
 -- @tparam number angle  the angle in radians
 -- @tparam number distance  the distance from the start pos
--- @tparam table start_pos  the start pos, formatted like this: {x, y}
+-- @tparam table start_pos  the start pos, formatted like this: `{x, y}`
 -- @treturn number,number  the resulting position
 function PseudoGame.game.get_orbit(angle, distance, start_pos)
 	if start_pos == nil then

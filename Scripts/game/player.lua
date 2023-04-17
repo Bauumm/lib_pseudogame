@@ -3,8 +3,8 @@
 PseudoGame.game.Player = {}
 PseudoGame.game.Player.__index = PseudoGame.game.Player
 
---- the constructor for a player that can handle collisions (without relying on the games internals)
--- @tparam[opt=level_style] Style style  the style to use (nil will use the default level style)
+--- the constructor for a player that can handle collisions (without relying on the game's internals)
+-- @tparam[opt=level_style] Style style  the style to use
 -- @tparam[opt=nil] function collision_handler  the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)
 -- @treturn Player
 function PseudoGame.game.Player:new(style, collision_handler)
@@ -33,7 +33,7 @@ function PseudoGame.game.Player:new(style, collision_handler)
 	}, PseudoGame.game.Player)
 end
 
---- reset the swap cooldown to show swap blinking effect (should be called in onCursorSwap when using the "real" player)
+--- reset the swap cooldown to show swap blinking effect (should be called in `onCursorSwap` when using the "real" player)
 function PseudoGame.game.Player:reset_swap_cooldown()
 	self.just_swapped = true
 	self.swap_cooldown_time = self.swap_cooldown

@@ -4,7 +4,7 @@ PseudoGame.game.Game = {}
 PseudoGame.game.Game.__index = PseudoGame.game.Game
 
 --- the constructor for a game object 
--- @tparam[opt=level_style] Style style  the style the game should use (nil will use the default level style)
+-- @tparam[opt=level_style] Style style  the style the game should use
 -- @treturn Game
 function PseudoGame.game.Game:new(style)
 	local obj = setmetatable({
@@ -110,7 +110,7 @@ end
 
 --[[--
 overwrites the wall functions as well as custom walls function to modify the walls in this game
-IMPORTANT: once this function was called, you have to call Game:restore() before exiting your level (e.g. in onUnload), otherwise it may break other levels at random, as this function overwrites some default game functions
+IMPORTANT: once this function was called, you have to call `Game:restore()` before exiting your level (e.g. in `onUnload`), otherwise it may break other levels at random, as this function overwrites some default game functions
 ]]
 function PseudoGame.game.Game:overwrite()
 	if not u_inMenu() then
@@ -243,11 +243,11 @@ function PseudoGame.game.Game:_update_3D(walls, pivot, player)
 end
 
 --[[--
-get the polygon / polygon collection of a renderstage (the enum can be found in utils.lua in the base pack)
+get the polygon / polygon collection of a renderstage (the enum can be found in `utils.lua` in the `base` pack)
 this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
 ]]
--- @tparam table render_stages  a table of numbers that represent the render stages (e.g. {RenderStage.WALLQUADS, RenderStage.PLAYERTRIS})
--- @treturn table  a table of polygon collections or polygons depending on the renderstage (CAPTRIS is the only render stage that only consists of a single polygon)
+-- @tparam table render_stages  a table of numbers that represent the render stages (e.g. `{RenderStage.WALLQUADS, RenderStage.PLAYERTRIS}`)
+-- @treturn table  a table of polygon collections or polygons depending on the renderstage (`CAPTRIS` is the only render stage that only consists of a single polygon)
 function PseudoGame.game.Game:get_render_stages(render_stages)
 	local walls3d, pivot3d, player3d = false, false, false
 	local result = {}
@@ -284,7 +284,7 @@ function PseudoGame.game.Game:update(frametime, move, focus, swap)
 	self._swap = swap
 end
 
---- puts all the renderstage's polygons into game.polygon_collection
+--- puts all the renderstage's polygons into `Game.polygon_collection`
 function PseudoGame.game.Game:draw()
 	local collections = self:get_render_stages({
 		RenderStage.BACKGROUNDTRIS,

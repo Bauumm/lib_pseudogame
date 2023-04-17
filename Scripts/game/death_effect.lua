@@ -24,14 +24,14 @@ function PseudoGame.game.DeathEffect:new(player)
 end
 
 --[[--
-this function causes the death effect ot be shown permanently (should be called in onDeath)
+this function causes the death effect ot be shown permanently (should be called in `onDeath`)
 make sure to update and draw the death effect in onRenderStage as the other functions aren't called after death
 ]]
 function PseudoGame.game.DeathEffect:death()
 	self.dead = true
 end
 
---- this function shows the death effect for a moment (should be called in onPreDeath)
+--- this function shows the death effect for a moment (should be called in `onPreDeath`)
 function PseudoGame.game.DeathEffect:invincible_death()
 	self.timer = 100
 end
