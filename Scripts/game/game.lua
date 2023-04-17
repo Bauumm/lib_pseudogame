@@ -102,7 +102,7 @@ function PseudoGame.game.Game:new(style)
 	-- can't define at the top as it needs the player object
 	obj.death_effect = PseudoGame.game.DeathEffect:new(obj.player)
 	if obj.style:get_connect_layers() then
-		obj._tmp_collection = PseudoGame.game.PolygonCollection:new()
+		obj._tmp_collection = PseudoGame.graphics.PolygonCollection:new()
 		obj._update_3D = PseudoGame.game.Game._update_connected_3D
 	end
 	return obj
