@@ -29,16 +29,10 @@ function PseudoGame.game.Game:new(style)
 		-- additional collections
 		_collide_collection = PseudoGame.graphics.PolygonCollection:new(),
 		_cws = PseudoGame.graphics.PolygonCollection:new(),
-		--- @tfield PolygonCollection wall_collection  a collection containing all walls (and custom walls) of the game
-		wall_collection = PseudoGame.graphics.PolygonCollection:new(),
-		--- @tfield PolygonCollection player_collection  a collection containing the game's player and its death effect
-		player_collection = PseudoGame.graphics.PolygonCollection:new(),
-		--- @tfield PolygonCollection walls3d  a collection containing the 3d layers of all walls (and custom walls)
-		walls3d = PseudoGame.graphics.PolygonCollection:new(),
-		--- @tfield PolygonCollection pivot3d  a collection containing the 3d layers of the pivot
-		pivot3d = PseudoGame.graphics.PolygonCollection:new(),
-		--- @tfield PolygonCollection player3d  a collection containing the 3d layers of the player (and its death effect)
-		player3d = PseudoGame.graphics.PolygonCollection:new(),
+		_wall_collection = PseudoGame.graphics.PolygonCollection:new(),
+		_player_collection = PseudoGame.graphics.PolygonCollection:new(),
+		_pivot_collection = PseudoGame.graphics.PolygonCollection:new(),
+		_3d_collection = PseudoGame.graphics.PolygonCollection:new(),
 		--- @tfield PolygonCollection polygon_collection  the collection the `Game:draw()` method draws into
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
 
@@ -50,12 +44,12 @@ function PseudoGame.game.Game:new(style)
 		_ticked = false,
 
 		-- collection update/getting
-		_render_stages = {
-			[RenderStage.BACKGROUNDTRIS] = function(self)
+		render_stages = {
+			background = function(self)
 				self.background:update()
 				return self.background.polygon_collection
 			end,
-			[RenderStage.WALLQUADS] = function(self)
+			walls = function(self)
 				if not self.death_effect.dead then
 					self.walls:update(self._frametime)
 				end
@@ -64,15 +58,15 @@ function PseudoGame.game.Game:new(style)
 				self.wall_collection:ref_add(self._cws)
 				return self.wall_collection
 			end,
-			[RenderStage.CAPTRIS] = function(self)
+			pivot = function(self)
 				self.cap:update()
-				return self.cap.polygon
-			end,
-			[RenderStage.PIVOTQUADS] = function(self)
 				self.pivot:update()
-				return self.pivot.polygon_collection
+				self._pivot_collection:clear()
+				self._pivot_collection:ref_add(self.pivot.polygon_collection)
+				self._pivot_collection:add(self.cap.polygon)
+				return self._pivot_collection
 			end,
-			[RenderStage.PLAYERTRIS] = function(self)
+			player = function(self)
 				self.death_effect:update(self._frametime)
 				self._collide_collection:clear()
 				self._collide_collection:ref_add(self.walls.polygon_collection)
@@ -87,14 +81,9 @@ function PseudoGame.game.Game:new(style)
 				self.player_collection:ref_add(self.death_effect.polygon_collection)
 				return self.player_collection
 			end,
-			[RenderStage.WALLQUADS3D] = function(self)
-				return self.walls3d
-			end,
-			[RenderStage.PIVOTQUADS3D] = function(self)
-				return self.pivot3d
-			end,
-			[RenderStage.PLAYERTRIS3D] = function(self)
-				return self.player3d
+			pseudo3d = function(self)
+				self._update_3D()
+				return self._3d_collection
 			end
 		}
 	}, PseudoGame.game.Game)
@@ -242,42 +231,12 @@ function PseudoGame.game.Game:_update_3D(walls, pivot, player)
 	end
 end
 
---[[--
-get the polygon / polygon collection of a renderstage (the enum can be found in `utils.lua` in the `base` pack)
-this function also updates the renderstages using the data provided to the update method, renderstages that aren't required also won't be updated
-]]
--- @tparam table render_stages  a table of numbers that represent the render stages (e.g. `{RenderStage.WALLQUADS, RenderStage.PLAYERTRIS}`)
--- @treturn table  a table of polygon collections or polygons depending on the renderstage (`CAPTRIS` is the only render stage that only consists of a single polygon)
-function PseudoGame.game.Game:get_render_stages(render_stages)
-	local walls3d, pivot3d, player3d = false, false, false
-	local result = {}
-	for i=1,#render_stages do
-		local render_stage = render_stages[i]
-		result[i] = self._render_stages[render_stage](self)
-		if render_stage == RenderStage.WALLQUADS3D then
-			walls3d = true
-		end
-		if render_stage == RenderStage.PIVOTQUADS3D then
-			pivot3d = true
-		end
-		if render_stage == RenderStage.PLAYERTRIS3D then
-			player3d = true
-		end
-	end
-	if (walls3d or pivot3d or player3d) and self._ticked then
-		self._ticked = false
-		self:_update_3D(walls3d, pivot3d, player3d)
-	end
-	return result
-end
-
---- update the game
+--- give the game the data it needs to update (it doesn't update anything in this function)
 -- @tparam number frametime  the time in 1/60s that passed since the last call of this function
 -- @tparam number move  the current movement direction, so either -1, 0 or 1
 -- @tparam bool focus  true if the player is focusing, false otherwise
 -- @tparam bool swap  true if the swap key is pressed, false otherwise
-function PseudoGame.game.Game:update(frametime, move, focus, swap)
-	self._ticked = true
+function PseudoGame.game.Game:set_inputs(frametime, move, focus, swap)
 	self._frametime = frametime
 	self._move = move
 	self._focus = focus
