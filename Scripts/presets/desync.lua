@@ -5,7 +5,13 @@ local PG = PseudoGame
 PG.hide_default_game()
 
 desync = {
-	game = PG.game.Game:new(),
+	game = PG.game.Game:new({
+		background = true,
+		walls = true,
+		pivot = true,
+		player = true,
+		pseudo3d = false
+	}),
 	collection = PG.graphics.PolygonCollection:new(),
 	main_collection = PG.graphics.PolygonCollection:new(),
 	back_collection = PG.graphics.PolygonCollection:new(),
@@ -37,24 +43,18 @@ end
 
 function desync:onInput(frametime, movement, focus, swap)
 	self.game:update(frametime, movement, focus, swap)
-	local collections = self.game:get_render_stages({0, 1, 2, 3, 4, 5, 6, 7})
 	local gen = self.back_collection:generator()
-	for polygon in collections[1]:iter() do
+	for polygon in self.game.component_collections.background:iter() do
 		gen():copy_data_transformed(polygon, self.transform)
 	end
 	local tmp_gen = self.tmp_collection:generator()
-	PG.graphics.effects:blend(collections[1], self.back_collection, self.blend)
+	PG.graphics.effects:blend(self.game.component_collections.background, self.back_collection, self.blend)
 	local main_gen = self.main_collection:generator()
 	local gen = self.collection:generator()
-	for i = 2, #collections do
-		if i == 6 then
-			main_gen():copy_data(collections[i])
-			gen():copy_data_transformed(collections[i], self.transform)
-		else
-			for polygon in collections[i]:iter() do
-				main_gen():copy_data(polygon)
-				gen():copy_data_transformed(polygon, self.transform)
-			end
+	for i=2, #self.game.collections do
+		for polygon in self.game.collections[i]:iter() do
+			main_gen():copy_data(polygon)
+			gen():copy_data_transformed(polygon, self.transform)
 		end
 	end
 	PG.graphics.screen:draw_polygon_collection(self.main_collection)
