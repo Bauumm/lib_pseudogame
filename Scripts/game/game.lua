@@ -62,14 +62,14 @@ function PseudoGame.game.Game:new(components, style)
 			player = true,
 			pivot = true,
 			pseudo3d = true
-		})
+		}, style)
 	else
-		obj:_init(components)
+		obj:_init(components, style)
 	end
 	return obj
 end
 
-function PseudoGame.game.Game:_init(components)
+function PseudoGame.game.Game:_init(components, style)
 	-- initialize game objects
 	if components.background then
 		self.background = PseudoGame.game.Background:new(style)
@@ -107,16 +107,19 @@ function PseudoGame.game.Game:_init(components)
 	-- initialize connected layers
 	if self.style:get_connect_layers() then
 		self._tmp_collection = PseudoGame.graphics.PolygonCollection:new()
+		self._tmp_collection2 = PseudoGame.graphics.PolygonCollection:new()
 		self._update_3D = PseudoGame.game.Game._update_connected_3D
 	end
 end
 
 -- update functions for game components for internal use
 PseudoGame.game.Game._component_update = {
-	background = function(self)
+	-- background
+	function(self)
 		self.background:update()
 	end,
-	walls = function(self)
+	-- walls
+	function(self)
 		if not self.death_effect.dead then
 			self.walls:update(self._frametime)
 		end
@@ -124,14 +127,16 @@ PseudoGame.game.Game._component_update = {
 		self._wall_collection:ref_add(self.walls.polygon_collection)
 		self._wall_collection:ref_add(self._cws)
 	end,
-	pivot = function(self)
+	-- pivot
+	function(self)
 		self.cap:update()
 		self.pivot:update()
 		self._pivot_collection:clear()
 		self._pivot_collection:ref_add(self.pivot.polygon_collection)
 		self._pivot_collection:add(self.cap.polygon)
 	end,
-	player = function(self)
+	-- player
+	function(self)
 		self.death_effect:update(self._frametime)
 		self._collide_collection:clear()
 		self._collide_collection:ref_add(self.walls.polygon_collection)
@@ -145,7 +150,8 @@ PseudoGame.game.Game._component_update = {
 		self._player_collection:add(self.player.polygon)
 		self._player_collection:ref_add(self.death_effect.polygon_collection)
 	end,
-	pseudo3d = function(self)
+	-- pseudo3d
+	function(self)
 		self:_update_3D()
 	end
 }
@@ -190,52 +196,182 @@ function PseudoGame.game.Game:_update_connected_3D(walls, pivot, player)
 	if self.depth > 0 then
 		local rad_rot = math.rad(l_getRotation() + 90)
 		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-		local wall_gen, pivot_gen, player_gen
-		if walls then
-			wall_gen = self.walls3d:generator()
-		end
-		if pivot then
-			pivot_gen = self.pivot3d:generator()
-		end
-		if player then
-			player_gen = self.player3d:generator()
-		end
+		local gen = self._3d_collection:generator()
 		local tmp_gen = self._tmp_collection:generator()
+		local function sort_collection_by_rot(c, g)
+			local rottrans = PseudoGame.graphics.effects:rotate(math.rad(l_getRotation()))
+			local nrottrans = PseudoGame.graphics.effects:rotate(math.rad(-l_getRotation()))
+			local dt = {}
+			for p in c:iter() do
+				p:transform(rottrans)
+				local miny = math.huge
+				for i, x, y in p:vertex_color_pairs() do
+					miny = math.min(miny, y)
+				end
+				if miny ~= math.huge then
+					if dt[miny] == nil then
+						dt[miny] = {p:transform(nrottrans)}
+					else
+						dt[miny][#dt[miny] + 1] = p:transform(nrottrans)
+					end
+				end
+			end
+			local dtk = {}
+			local dtki = 1
+			for d in pairs(dt) do
+				dtk[dtki] = d
+				dtki = dtki + 1
+			end
+			table.sort(dtk)
+			for i=1,#dtk do
+				for k, poly in pairs(dt[dtk[i]]) do
+					g():copy_data(poly)
+				end
+			end
+		end
 		for j=1, self.depth do
 			local i = self.depth - j + 1
 			local offset = i * self.style:get_layer_spacing()
 			local new_pos_x = offset * cos_rot
 			local new_pos_y = offset * sin_rot
 			local override_color = {self.style:get_layer_color(i)}
-			local function process_collection(collection, generator)
-				for polygon in collection:iter() do
-					local new_polygon = tmp_gen()
-					new_polygon:copy_data_transformed(polygon, function(x, y)
-						return x + new_pos_x, y + new_pos_y, 0, 0, 0, 0
-					end)
-					for i=1,polygon.vertex_count do
-						local next_i = i % polygon.vertex_count + 1
-						local side = generator()
-						side:resize(4)
-						side:set_vertex_pos(1, polygon:get_vertex_pos(i))
-						side:set_vertex_pos(2, polygon:get_vertex_pos(next_i))
-						side:set_vertex_pos(3, new_polygon:get_vertex_pos(next_i))
-						side:set_vertex_pos(4, new_polygon:get_vertex_pos(i))
-						for i=1,4 do
-							side:set_vertex_color(i, unpack(override_color))
+			local tmp_gen2 = self._tmp_collection2:generator()
+			local function process_collection(collection)
+				if collection ~= nil then
+					for polygon in collection:iter() do
+						local new_polygon = tmp_gen()
+						new_polygon:copy_data_transformed(polygon, function(x, y)
+							return x + new_pos_x, y + new_pos_y, 0, 0, 0, 0
+						end)
+						for i=1,polygon.vertex_count do
+							local next_i = i % polygon.vertex_count + 1
+							local side = tmp_gen2()
+							side:resize(4)
+							side:set_vertex_pos(1, polygon:get_vertex_pos(i))
+							side:set_vertex_pos(2, polygon:get_vertex_pos(next_i))
+							side:set_vertex_pos(3, new_polygon:get_vertex_pos(next_i))
+							side:set_vertex_pos(4, new_polygon:get_vertex_pos(i))
+							side:set_vertex_color(1, polygon:get_vertex_color(i))
+							side:set_vertex_color(2, polygon:get_vertex_color(next_i))
+							side:set_vertex_color(3, unpack(override_color))
+							side:set_vertex_color(4, unpack(override_color))
 						end
 					end
 				end
 			end
-			if walls then
-				process_collection(self.wall_collection, wall_gen)
+			process_collection(self._wall_collection)
+			if self.pivot ~= nil then
+				process_collection(self.pivot.polygon_collection)
 			end
-			if pivot then
-				process_collection(self.pivot.polygon_collection, pivot_gen)
+			process_collection(self._player_collection)
+			sort_collection_by_rot(self._tmp_collection2, gen)
+		end
+	end
+end
+
+function PseudoGame.game.Game:_update_connected_3D()
+	if self.style._update_pulse3D ~= nil then
+		self.style:_update_pulse3D(self._frametime)
+	end
+	if self.depth > 0 then
+		local function get_sorted_edges(collections, cb)
+			local tmp_gen2 = self._tmp_collection2:generator()
+			local rottrans = PseudoGame.graphics.effects:rotate(math.rad(-l_getRotation()))
+			local nrottrans = PseudoGame.graphics.effects:rotate(math.rad(l_getRotation()))
+			local edges = {}
+			for i=1,#collections do
+				for p in collections[i]:iter() do
+					p:transform(rottrans)
+					for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in p:edge_color_pairs() do
+						edges[#edges + 1] = {x0, y0, x1, y1}
+					end
+					p:transform(nrottrans)
+				end
 			end
-			if player then
-				process_collection(self.player_collection, player_gen)
+			table.sort(edges, function(e0, e1)
+				--return (e0[2]+e0[4])/2>(e1[2]+e1[4])/2
+				local function show_line(x0, y0, x1, y1)
+					local p=tmp_gen2()
+					p:resize(4)
+					p:set_vertex_pos(1, x0, y0)
+					p:set_vertex_pos(2, x0, y0)
+					p:set_vertex_pos(3, x1, y1)
+					p:set_vertex_pos(4, x1, y1)
+					for i=1,4 do
+						p:set_vertex_color(i, 0, 0, 255, 255)
+					end
+					p:transform(nrottrans)
+				end
+				local function getyofx(x, e)
+					return (e[4] - e[2]) / (e[3] - e[1]) * (x - e[1]) + e[2]
+				end
+				local isecta_start = math.max(math.min(e0[1], e0[3]), math.min(e1[1], e1[3]))
+				local isecta_end = math.min(math.max(e0[1], e0[3]), math.max(e1[1], e1[3]))
+				if isecta_start >= isecta_end then
+					local avgy0 = (e0[2] + e0[4]) / 2
+					local avgy1 = (e1[2] + e1[4]) / 2
+					return avgy0 < avgy1
+				else
+				--	show_line(isecta_start, getyofx(isecta_start, e0), isecta_start, getyofx(isecta_start, e1))
+					local function check_weird(num)
+						if num ~= num then
+							print("nan")
+						elseif num >= math.huge then
+							print("inf")
+						end
+					end
+					check_weird(getyofx(isecta_start, e0))
+					check_weird(getyofx(isecta_start, e1))
+					check_weird(getyofx(isecta_end, e0))
+					check_weird(getyofx(isecta_end, e1))
+					return (getyofx(isecta_start, e0) - getyofx(isecta_start, e1) + getyofx(isecta_end, e0) - getyofx(isecta_end, e1)) < 0
+				end
+			end)
+			for i=1,#edges do
+				e = edges[i]
+				e[1], e[2] = nrottrans(e[1], e[2])
+				e[3], e[4] = nrottrans(e[3], e[4])
+				cb(unpack(e))
 			end
+		end
+		local rad_rot = math.rad(l_getRotation() + 90)
+		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
+		local gen = self._3d_collection:generator()
+		local tmp_gen = self._tmp_collection:generator()
+		for j=1, self.depth do
+			local i = self.depth - j + 1
+			local offset = i * self.style:get_layer_spacing()
+			local new_pos_x = offset * cos_rot
+			local new_pos_y = offset * sin_rot
+			local next_offset = (i - 1) * self.style:get_layer_spacing()
+			local next_new_pos_x = next_offset * cos_rot
+			local next_new_pos_y = next_offset * sin_rot
+			local override_color = {self.style:get_layer_color(i)}
+			local next_override_color = {self.style:get_layer_color(i - 1)}
+			local cs = {}
+			if self._wall_collection ~= nil then
+				cs[#cs + 1] = self._wall_collection
+			end
+			if self.pivot ~= nil then
+				cs[#cs + 1] = self.pivot.polygon_collection
+			end
+			if self._player_collection ~= nil then
+				cs[#cs + 1] = self._player_collection
+			end
+			get_sorted_edges(cs, function(x0, y0, x1, y1)
+				local side = gen()
+				side:resize(4)
+				side:set_vertex_pos(1, x0 + next_new_pos_x, y0 + next_new_pos_y)
+				side:set_vertex_pos(2, x1 + next_new_pos_x, y1 + next_new_pos_y)
+				side:set_vertex_pos(3, x1 + new_pos_x, y1 + new_pos_y)
+				side:set_vertex_pos(4, x0 + new_pos_x, y0 + new_pos_y)
+				for i=1,2 do
+					side:set_vertex_color(i, unpack(next_override_color))
+				end
+				for i=3,4 do
+					side:set_vertex_color(i, unpack(override_color))
+				end
+			end)
 		end
 	end
 end
@@ -283,8 +419,8 @@ function PseudoGame.game.Game:update(frametime, move, focus, swap)
 	self._focus = focus
 	self._swap = swap
 
-	for collection_name, _ in pairs(self.component_collections) do
-		self._component_update[collection_name](self)
+	for i = 1, #self._component_update do
+		self._component_update[i](self)
 	end
 end
 
