@@ -39,7 +39,10 @@ function PseudoGame.game.Game:new(components, style)
 		component_collections = {},
 
 		--- @tfield table collections  same as `Game.component_collections` but instead of having named keys it's an ordered list that has the collections in the following order: background, pseudo3d, walls, pivot, player (if one of these components is not defined the list will be shorter and the other components are moved (use `Game.component_collections` for constant keys))
-		collections = {}
+		collections = {},
+
+		-- update functions for game components for internal use
+		_component_update = {}
 
 		-- ldoc doesn't like the comments if i put them to the actual definitions
 
@@ -75,6 +78,9 @@ function PseudoGame.game.Game:_init(components, style)
 		self.background = PseudoGame.game.Background:new(style)
 		self.component_collections.background = self.background.polygon_collection
 		self.collections[#self.collections + 1] = self.background.polygon_collection
+		self._component_update[#self._component_update + 1] = function(self)
+			self.background:update()
+		end
 	end
 	if components.pseudo3d then
 		self._3d_collection = PseudoGame.graphics.PolygonCollection:new()
@@ -87,6 +93,14 @@ function PseudoGame.game.Game:_init(components, style)
 		self._wall_collection = PseudoGame.graphics.PolygonCollection:new()
 		self.component_collections.walls = self._wall_collection
 		self.collections[#self.collections + 1] = self._wall_collection
+		self._component_update[#self._component_update + 1] = function(self)
+			if not self.death_effect.dead then
+				self.walls:update(self._frametime)
+			end
+			self._wall_collection:clear()
+			self._wall_collection:ref_add(self.walls.polygon_collection)
+			self._wall_collection:ref_add(self._cws)
+		end
 	end
 	if components.pivot then
 		self.pivot = PseudoGame.game.Pivot:new(style)
@@ -94,6 +108,13 @@ function PseudoGame.game.Game:_init(components, style)
 		self._pivot_collection = PseudoGame.graphics.PolygonCollection:new()
 		self.component_collections.pivot = self._pivot_collection
 		self.collections[#self.collections + 1] = self._pivot_collection
+		self._component_update[#self._component_update + 1] = function(self)
+			self.cap:update()
+			self.pivot:update()
+			self._pivot_collection:clear()
+			self._pivot_collection:ref_add(self.pivot.polygon_collection)
+			self._pivot_collection:add(self.cap.polygon)
+		end
 	end
 	if components.player then
 		self.player = PseudoGame.game.Player:new(style, PseudoGame.game.basic_collision_handler)
@@ -102,6 +123,27 @@ function PseudoGame.game.Game:_init(components, style)
 		self._player_collection = PseudoGame.graphics.PolygonCollection:new()
 		self.component_collections.player = self._player_collection
 		self.collections[#self.collections + 1] = self._player_collection
+		self._component_update[#self._component_update + 1] = function(self)
+			self.death_effect:update(self._frametime)
+			self._collide_collection:clear()
+			self._collide_collection:ref_add(self.walls.polygon_collection)
+			for polygon in self._cws:iter() do
+				if polygon.extra_data.collision or polygon.extra_data.deadly then
+					self._collide_collection:add(polygon)
+				end
+			end
+			self.player:update(self._frametime, self._move, self._focus, self._swap, self._collide_collection)
+			self._player_collection:clear()
+			self._player_collection:add(self.player.polygon)
+			self._player_collection:ref_add(self.death_effect.polygon_collection)
+		end
+	end
+
+	-- add later for proper update order while retaining render order
+	if components.pseudo3d then
+		self._component_update[#self._component_update + 1] = function(self)
+			self:_update_3D()
+		end
 	end
 
 	-- initialize connected layers
@@ -111,50 +153,6 @@ function PseudoGame.game.Game:_init(components, style)
 		self._update_3D = PseudoGame.game.Game._update_connected_3D
 	end
 end
-
--- update functions for game components for internal use
-PseudoGame.game.Game._component_update = {
-	-- background
-	function(self)
-		self.background:update()
-	end,
-	-- walls
-	function(self)
-		if not self.death_effect.dead then
-			self.walls:update(self._frametime)
-		end
-		self._wall_collection:clear()
-		self._wall_collection:ref_add(self.walls.polygon_collection)
-		self._wall_collection:ref_add(self._cws)
-	end,
-	-- pivot
-	function(self)
-		self.cap:update()
-		self.pivot:update()
-		self._pivot_collection:clear()
-		self._pivot_collection:ref_add(self.pivot.polygon_collection)
-		self._pivot_collection:add(self.cap.polygon)
-	end,
-	-- player
-	function(self)
-		self.death_effect:update(self._frametime)
-		self._collide_collection:clear()
-		self._collide_collection:ref_add(self.walls.polygon_collection)
-		for polygon in self._cws:iter() do
-			if polygon.extra_data.collision or polygon.extra_data.deadly then
-				self._collide_collection:add(polygon)
-			end
-		end
-		self.player:update(self._frametime, self._move, self._focus, self._swap, self._collide_collection)
-		self._player_collection:clear()
-		self._player_collection:add(self.player.polygon)
-		self._player_collection:ref_add(self.death_effect.polygon_collection)
-	end,
-	-- pseudo3d
-	function(self)
-		self:_update_3D()
-	end
-}
 
 --[[--
 overwrites the wall functions as well as custom walls function to modify the walls in this game (only if walls were specified in the components)
@@ -186,86 +184,6 @@ function PseudoGame.game.Game:restore()
 	if self.walls ~= nil then
 		self.walls:restore()
 		PseudoGame.game.restore_cw_functions()
-	end
-end
-
-function PseudoGame.game.Game:_update_connected_3D(walls, pivot, player)
-	if self.style._update_pulse3D ~= nil then
-		self.style:_update_pulse3D(self._frametime)
-	end
-	if self.depth > 0 then
-		local rad_rot = math.rad(l_getRotation() + 90)
-		local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-		local gen = self._3d_collection:generator()
-		local tmp_gen = self._tmp_collection:generator()
-		local function sort_collection_by_rot(c, g)
-			local rottrans = PseudoGame.graphics.effects:rotate(math.rad(l_getRotation()))
-			local nrottrans = PseudoGame.graphics.effects:rotate(math.rad(-l_getRotation()))
-			local dt = {}
-			for p in c:iter() do
-				p:transform(rottrans)
-				local miny = math.huge
-				for i, x, y in p:vertex_color_pairs() do
-					miny = math.min(miny, y)
-				end
-				if miny ~= math.huge then
-					if dt[miny] == nil then
-						dt[miny] = {p:transform(nrottrans)}
-					else
-						dt[miny][#dt[miny] + 1] = p:transform(nrottrans)
-					end
-				end
-			end
-			local dtk = {}
-			local dtki = 1
-			for d in pairs(dt) do
-				dtk[dtki] = d
-				dtki = dtki + 1
-			end
-			table.sort(dtk)
-			for i=1,#dtk do
-				for k, poly in pairs(dt[dtk[i]]) do
-					g():copy_data(poly)
-				end
-			end
-		end
-		for j=1, self.depth do
-			local i = self.depth - j + 1
-			local offset = i * self.style:get_layer_spacing()
-			local new_pos_x = offset * cos_rot
-			local new_pos_y = offset * sin_rot
-			local override_color = {self.style:get_layer_color(i)}
-			local tmp_gen2 = self._tmp_collection2:generator()
-			local function process_collection(collection)
-				if collection ~= nil then
-					for polygon in collection:iter() do
-						local new_polygon = tmp_gen()
-						new_polygon:copy_data_transformed(polygon, function(x, y)
-							return x + new_pos_x, y + new_pos_y, 0, 0, 0, 0
-						end)
-						for i=1,polygon.vertex_count do
-							local next_i = i % polygon.vertex_count + 1
-							local side = tmp_gen2()
-							side:resize(4)
-							side:set_vertex_pos(1, polygon:get_vertex_pos(i))
-							side:set_vertex_pos(2, polygon:get_vertex_pos(next_i))
-							side:set_vertex_pos(3, new_polygon:get_vertex_pos(next_i))
-							side:set_vertex_pos(4, new_polygon:get_vertex_pos(i))
-							side:set_vertex_color(1, polygon:get_vertex_color(i))
-							side:set_vertex_color(2, polygon:get_vertex_color(next_i))
-							side:set_vertex_color(3, unpack(override_color))
-							side:set_vertex_color(4, unpack(override_color))
-						end
-					end
-				end
-			end
-			process_collection(self._wall_collection)
-			if self.pivot ~= nil then
-				process_collection(self.pivot.polygon_collection)
-			end
-			process_collection(self._player_collection)
-			sort_collection_by_rot(self._tmp_collection2, gen)
-		end
 	end
 end
 
