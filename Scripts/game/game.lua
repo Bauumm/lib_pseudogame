@@ -155,15 +155,8 @@ function PseudoGame.game.Game:_init(components, style)
 			if components.player then
 				self._3d_collection:ref_add(self._player_collection)
 			end
-			self.pseudo3d:update_layered(self._frametime)
+			self.pseudo3d:update(self._frametime)
 		end
-	end
-
-	-- initialize connected layers
-	if self.style:get_connect_layers() then
-		self._tmp_collection = PseudoGame.graphics.PolygonCollection:new()
-		self._tmp_collection2 = PseudoGame.graphics.PolygonCollection:new()
-		self._update_3D = PseudoGame.game.Game._update_connected_3D
 	end
 end
 
@@ -173,14 +166,8 @@ IMPORTANT: once this function was called, you have to call `Game:restore()` befo
 ]]
 function PseudoGame.game.Game:overwrite()
 	if not u_inMenu() then
-		s_set3dDepth(0)
-		self._oldSet3dDepth = s_set3dDepth
-		self._oldGet3dDepth = s_get3dDepth
-		s_set3dDepth = function(depth)
-			self.depth = depth
-		end
-		s_get3dDepth = function()
-			return self.depth
+		if self.style._overwrite ~= nil then
+			self.style:_overwrite()
 		end
 		if self.walls ~= nil then
 			self.walls:overwrite()
@@ -191,9 +178,9 @@ end
 
 --- restores the original wall and custom wall functions
 function PseudoGame.game.Game:restore()
-	s_set3dDepth = self._oldSet3dDepth
-	s_get3dDepth = self._oldGet3dDepth
-	s_set3dDepth(self.depth)
+	if self.style._overwrite ~= nil then
+		self.style:_restore()
+	end
 	if self.walls ~= nil then
 		self.walls:restore()
 		PseudoGame.game.restore_cw_functions()

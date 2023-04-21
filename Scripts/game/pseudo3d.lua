@@ -1,4 +1,5 @@
 --- Class for creating a pseudo 3d effect for a polygon collection
+-- @classmod PseudoGame.game.Pseudo3D
 PseudoGame.game.Pseudo3D = {}
 PseudoGame.game.Pseudo3D.__index = PseudoGame.game.Pseudo3D
 
@@ -8,7 +9,7 @@ PseudoGame.game.Pseudo3D.__index = PseudoGame.game.Pseudo3D
 function PseudoGame.game.Pseudo3D:new(polygon_collection, style)
 	return setmetatable({
 		--- @tfield Style style  the 3d effect's style
-		style = style or level_style,
+		style = style or PseudoGame.game.level_style,
 		--- @tfield PolygonCollection source_collection  the collection it's making a 3d effect for
 		source_collection = polygon_collection,
 		--- @tfield PolygonCollection polygon_collection  the polygons representing the 3d effect (use this for drawing)
@@ -16,23 +17,32 @@ function PseudoGame.game.Pseudo3D:new(polygon_collection, style)
 	}, PseudoGame.game.Pseudo3D)
 end
 
---- function to refill the polygon collection with the traditional layered 3d effect
+--- function to refill the polygon collection with the a 3d effect (which one is specified in the style)
 -- @tparam number frametime  the time in 1/60s that passed since the last call of this function
-function PseudoGame.game.Pseudo3D:update_layered(frametime)
+function PseudoGame.game.Pseudo3D:update(frametime)
 	if self.style._update_pulse3D ~= nil then
-		self.style._update_pulse3D(frametime)
+		self.style:_update_pulse3D(frametime)
 	end
+	if self.style:get_connect_layers() then
+		self:_update_gradient()
+	else
+		self:_update_layered()
+	end
+end
+
+function PseudoGame.game.Pseudo3D:_update_layered()
 	local spacing = self.style:get_layer_spacing()
+	local depth = self.style:get_depth()
 	local rad_rot = math.rad(l_getRotation() + 90)
 	local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
 	local gen = self.polygon_collection:generator()
-	for j=1, self._depth do
-		local i = self._depth - j + 1
+	for j=1, depth do
+		local i = depth - j + 1
 		local offset = i * spacing
 		local new_pos_x = offset * cos_rot
 		local new_pos_y = offset * sin_rot
 		local override_color = {self.style:get_layer_color(i)}
-		for polygon in collection:iter() do
+		for polygon in self.source_collection:iter() do
 			gen():copy_data_transformed(polygon, function(x, y)
 				return x + new_pos_x, y + new_pos_y, unpack(override_color)
 			end)
@@ -40,12 +50,7 @@ function PseudoGame.game.Pseudo3D:update_layered(frametime)
 	end
 end
 
---- function to refill the polygon colection with a solid gradient 3d effect
--- @tparam number frametime  the time in 1/60s that passed since the last call of this function
-function PseudoGame.game.Pseudo3D:update_gradient(frametime)
-	if self.style._update_pulse3D ~= nil then
-		self.style._update_pulse3D(frametime)
-	end
+function PseudoGame.game.Pseudo3D:_update_gradient()
 	local function get_sorted_edges(collections, cb)
 		local tmp_gen2 = self._tmp_collection2:generator()
 		local rottrans = PseudoGame.graphics.effects:rotate(math.rad(-l_getRotation()))
@@ -109,8 +114,8 @@ function PseudoGame.game.Pseudo3D:update_gradient(frametime)
 	local rad_rot = math.rad(l_getRotation() + 90)
 	local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
 	local gen = self.polygon_collection:generator()
-	for j=1, self.depth do
-		local i = self.depth - j + 1
+	for j=1, depth do
+		local i = depth - j + 1
 		local offset = i * self.style:get_layer_spacing()
 		local new_pos_x = offset * cos_rot
 		local new_pos_y = offset * sin_rot

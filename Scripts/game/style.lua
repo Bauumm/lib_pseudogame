@@ -104,7 +104,7 @@ end
 
 --- gets the style's 3d depth
 -- @treturn number
-function PseudoGame.game.level_style:get_depth()
+function PseudoGame.game.Style:get_depth()
 	return #self.layer_colors
 end
 
