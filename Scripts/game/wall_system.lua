@@ -1,8 +1,6 @@
 --- Class that handles a game's walls by implementing `w_wall`, `w_wallAdj` and `w_wallAcc`
 -- @classmod PseudoGame.game.WallSystem
 
--- TODO: Support curving walls
-
 -- ensure the w_ functions don't get overwritten by executing this file multiple times
 if PseudoGame.game.WallSystem == nil then
 	PseudoGame.game.WallSystem = {
@@ -12,6 +10,7 @@ if PseudoGame.game.WallSystem == nil then
 		_w_wallAdj = w_wallAdj,
 		_w_wallAcc = w_wallAcc,
 		_w_wallHModSpeedData = w_wallHModSpeedData,
+		_w_wallHModCurveData = w_wallHModCurveData,
 		_u_clearWalls = u_clearWalls,
 		_has_real_wall = false
 	}
@@ -42,7 +41,8 @@ end
 -- @tparam[opt=0] number min_speed  the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 -- @tparam[opt=0] number max_speed  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 -- @tparam[opt=false] ping_pong bool  will bounce between max and min speed if true
-function PseudoGame.game.WallSystem:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+-- @tparam[opt=false] curving bool  will make the wall a curving wall if true (uses speed_mult, acceleration, min/max_speed for curve speed instead of wall speed)
+function PseudoGame.game.WallSystem:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, curving)
 	hue_modifier = hue_modifier or 0
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
@@ -57,14 +57,19 @@ function PseudoGame.game.WallSystem:wall(hue_modifier, side, thickness, speed_mu
 	polygon:add_vertex(PseudoGame.game.get_orbit(angle + div, distance))
 	polygon:add_vertex(PseudoGame.game.get_orbit(angle + div + l_getWallAngleLeft(), distance + thickness + l_getWallSkewLeft()))
 	polygon:add_vertex(PseudoGame.game.get_orbit(angle - div + l_getWallAngleRight(), distance + thickness + l_getWallSkewRight()))
+	if not curving then
+		speed_mult = speed_mult * u_getSpeedMultDM()
+	end
 	table.insert(self._walls, {
 		polygon = self.polygon_collection:add(polygon),
-		speed = speed_mult * u_getSpeedMultDM(),
+		speed = speed_mult,
 		accel = acceleration / (u_getDifficultyMult() ^ 0.65),
 		min_speed = min_speed * u_getSpeedMultDM(),
 		max_speed = max_speed * u_getSpeedMultDM(),
 		hue_modifier = hue_modifier,
-		ping_pong = ping_pong and -1 or 1
+		ping_pong = ping_pong and -1 or 1,
+		old_speed_dm = u_getSpeedMultDM(),	-- used for curving walls actual speed
+		curving = curving
 	})
 end
 
@@ -98,7 +103,12 @@ function PseudoGame.game.WallSystem:update(frametime)
 				points_on_center = points_on_center + 1
 			else
 				local magnitude = math.sqrt(x ^ 2 + y ^ 2)
-				local move_distance = wall.speed * 5 * frametime
+				local move_distance
+				if wall.curving then
+					move_distance = wall.old_speed_dm * 5 * frametime
+				else
+					move_distance = wall.speed * 5 * frametime
+				end
 				polygon:set_vertex_pos(vertex, x - x / magnitude * move_distance, y - y / magnitude * move_distance)
 			end
 			if wall.hue_modifier == 0 then
@@ -110,6 +120,9 @@ function PseudoGame.game.WallSystem:update(frametime)
 		if points_on_center == 4 or points_out_of_bounds == 4 then
 			table.insert(del_queue, 1, i)
 			self.polygon_collection:remove(wall.polygon)
+		end
+		if wall.curving and wall.speed ~= 0 then
+			polygon:transform(PseudoGame.graphics.effects:rotate(wall.speed / 60 * frametime))
 		end
 	end
 	for _, i in pairs(del_queue) do
@@ -146,6 +159,9 @@ function PseudoGame.game.WallSystem:overwrite()
 		w_wallHModSpeedData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
 			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ")")
 		end
+		w_wallHModCurveData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ", true)")
+		end
 		u_clearWalls = function()
 			for i=1, #self._walls do
 				local wall = self._walls[i]
@@ -162,5 +178,6 @@ function PseudoGame.game.WallSystem:restore()
 	w_wallAdj = self._w_wallAdj
 	w_wallAcc = self._w_wallAcc
 	w_wallHModSpeedData = self._w_wallHModSpeedData
+	w_wallHModCurveData = self._w_wallHModCurveData
 	u_clearWalls = self._u_clearWalls
 end
