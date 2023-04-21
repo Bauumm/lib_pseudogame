@@ -36,3 +36,32 @@ function PseudoGame.game.get_color_from_hue(hue)
 	else return ret(1, 0, q)
 	end
 end
+
+--- transform a color by a hue
+-- @tparam number hue  the hue to transform by
+-- @tparam number r  the r component of the color to transform
+-- @tparam number g  the g component of the color to transform
+-- @tparam number b  the b component of the color to transform
+-- @tparam number a  the a component of the color to transform
+-- @treturn number,number,number,number  the resulting color
+function PseudoGame.game.transform_hue(hue, r, g, b, a)
+	-- using 3.14 instead of pi for parity with the OH code
+	local u = math.cos(hue * 3.14 / 180)
+	local w = math.sin(hue * 3.14 / 180)
+        return math.floor(
+		(0.701 * u + 0.168 * w) * r +
+		(-0.587 * u + 0.330 * w) * g +
+		(-0.114 * u - 0.497 * w) * b
+	) % 256,
+        math.floor(
+		(-0.299 * u - 0.328 * w) * r +
+		(0.413 * u + 0.035 * w) * g +
+		(-0.114 * u + 0.292 * w) * b
+	) % 256,
+        math.floor(
+		(-0.3 * u + 1.25 * w) * r +
+		(-0.588 * u - 1.05 * w) * g +
+		(0.886 * u - 0.203 * w) * b
+	) % 256,
+	255
+end
