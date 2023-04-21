@@ -102,15 +102,41 @@ function PseudoGame.game.Style:get_connect_layers()
 	return self.connect_layers
 end
 
+--- gets the style's 3d depth
+-- @treturn number
+function PseudoGame.game.level_style:get_depth()
+	return #self.layer_colors
+end
+
 --- a table that implements the style getters using the game's style functions (use this if you want to keep your existing style)
 -- @tfield Style PseudoGame.game.level_style
 PseudoGame.game.level_style = {
 	_pulse3DDirection = 1,
 	_pulse3D = 1,
-	_last_pulse3D_update = -1
+	_last_pulse3D_update = -1,
+	_depth = depth,
+	_s_get3dDepth = s_get3dDepth,
+	_s_set3dDepth = s_set3dDepth
 }
 
-function PseudoGame.game.level_style:_update__pulse3D(frametime)
+function PseudoGame.game.level_style:_overwrite()
+	self._depth = s_get3dDepth()
+	s_set3dDepth(0)
+	s_get3dDepth = function()
+		return self._depth
+	end
+	s_set3dDepth = function(depth)
+		self._depth = depth
+	end
+end
+
+function PseudoGame.game.level_style:_restore()
+	s_get3dDepth = self._s_get3dDepth
+	s_set3dDepth = self._s_set3dDepth
+	s_set3dDepth(self._depth)
+end
+
+function PseudoGame.game.level_style:_update_pulse3D(frametime)
 	if self._last_pulse3D_update ~= l_getLevelTime() then
 		self._last_pulse3D_update = l_getLevelTime()
 		self._pulse3D = self._pulse3D + s_get3dPulseSpeed() * self._pulse3DDirection * frametime
@@ -165,4 +191,8 @@ end
 
 function PseudoGame.game.level_style:get_connect_layers()
 	return self.connect_layers
+end
+
+function PseudoGame.game.level_style:get_depth()
+	return self._depth
 end
