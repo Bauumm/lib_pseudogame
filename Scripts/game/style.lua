@@ -14,6 +14,7 @@ PseudoGame.game.Style.__index = PseudoGame.game.Style
 -- @tparam table style_table.layer_colors  3d layer colors (formatted like this: `{{r, g, b, a}, {r, g, b, a}, ...}`)
 -- @tparam[opt=10] number style_table.layer_spacing  the spacing between 3d layers
 -- @tparam[opt=false] bool style_table.connect_layers  specifies if the 3d layers should be connected using extra polygons to create solid 3d
+-- @tparam[opt=false] bool style_table.gradient  specifies if the connected 3d layers should have gradients between the layers
 -- @treturn Style
 function PseudoGame.game.Style:new(style_table)
 	local function check_color_property(name, default)
