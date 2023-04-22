@@ -115,7 +115,7 @@ PseudoGame.game.level_style = {
 	_pulse3DDirection = 1,
 	_pulse3D = 1,
 	_last_pulse3D_update = -1,
-	_depth = depth,
+	_depth = s_get3dDepth(),
 	_s_get3dDepth = s_get3dDepth,
 	_s_set3dDepth = s_set3dDepth
 }

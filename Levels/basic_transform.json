@@ -3,7 +3,7 @@
     "name": "Basic Transformation",
     "description": "example level using pseudogame to make a basic transformation",
     "author": "Baum (Original example by vee)",
-    "menuPriority": 0,
+    "menuPriority": 1,
     "selectable": true,
     "styleId": "examplelevel",
     "musicId": "jackRussel",

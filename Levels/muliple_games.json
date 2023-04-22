@@ -1,0 +1,12 @@
+{
+    "id": "pg_multiple_games",
+    "name": "Multiple Games",
+    "description": "example level using pseudogame to make multiple games",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 7,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/multiple_games.lua",
+    "difficultyMults": [0.99, 1.01]
+}

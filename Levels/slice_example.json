@@ -3,7 +3,7 @@
     "name": "Slice Example",
     "description": "example level using pseudogame to slice polygons",
     "author": "Baum (Original example by vee)",
-    "menuPriority": 0,
+    "menuPriority": 2,
     "selectable": true,
     "styleId": "examplelevel",
     "musicId": "jackRussel",

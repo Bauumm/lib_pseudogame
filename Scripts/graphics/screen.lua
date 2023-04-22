@@ -5,8 +5,21 @@ PseudoGame.graphics.screen = {
 	_extra_index = 1,
 	_cw_data = {},
 	_extra_cw_data = {},
-	_cw_list = {}
+	_cw_list = {},
+	_zoom_factor = math.max(1024 / u_getWidth(), 768 / u_getHeight())
 }
+
+--- get the width of the screen, so you put polygons directly on the edge
+-- @treturn number
+function PseudoGame.graphics.screen:get_width()
+	return u_getWidth() * self._zoom_factor
+end
+
+--- get the height of the screen, so you put polygons directly on the edge (not adjusted for skew)
+-- @treturn number
+function PseudoGame.graphics.screen:get_height()
+	return u_getHeight() * self._zoom_factor
+end
 
 --- draw a polygon to the screen (only shown once `screen:update()` is called)
 -- @tparam Polygon polygon  the polygon to draw

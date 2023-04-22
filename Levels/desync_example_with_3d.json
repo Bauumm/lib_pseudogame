@@ -3,7 +3,7 @@
     "name": "Desync Example with proper 3D",
     "description": "example level using pseudogame to make desync with individual 3d effects",
     "author": "Baum (Original example by vee)",
-    "menuPriority": 0,
+    "menuPriority": 5,
     "selectable": true,
     "styleId": "examplelevel",
     "musicId": "jackRussel",
