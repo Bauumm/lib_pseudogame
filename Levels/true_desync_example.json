@@ -1,0 +1,12 @@
+{
+    "id": "pg_true_desync_example",
+    "name": "True Desync Example",
+    "description": "example level using pseudogame to make true desync (this may be very laggy)",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 0,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/true_desync_example.lua",
+    "difficultyMults": []
+}

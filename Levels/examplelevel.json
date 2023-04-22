@@ -1,0 +1,12 @@
+{
+    "id": "pgexamplelevel",
+    "name": "examplelevel",
+    "description": "example level using pseudogame",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 0,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/examplelevel.lua",
+    "difficultyMults": []
+}

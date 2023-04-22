@@ -8,6 +8,12 @@
 	"dependencies":
 	[
 		{
+			"disambiguator": "library_pseudogame",
+			"name": "pseudogame",
+			"author": "Baum",
+			"min_version": 1
+		},
+		{
 			"disambiguator": "ohvrvanilla",
 			"name": "base",
 			"author": "vittorio romeo",

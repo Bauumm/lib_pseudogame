@@ -33,15 +33,15 @@ function PseudoGame.game.WallSystem:new(style)
 end
 
 --- create a wall in the system
--- @tparam[opt=0] hue_modifier number  the modifier the hue of the wall will be adjusted by
+-- @tparam[opt=0] number hue_modifier  the modifier the hue of the wall will be adjusted by
 -- @tparam number side  the side to spawn the wall at
 -- @tparam number thickness  the thickness the wall should have
 -- @tparam[opt=1] number speed_mult  the speed_mult (will be multiplied with u_getSpeedMultDM())
 -- @tparam[opt=0] number acceleration  the acceleration (it will be adjusted using the difficulty mult)
 -- @tparam[opt=0] number min_speed  the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 -- @tparam[opt=0] number max_speed  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
--- @tparam[opt=false] ping_pong bool  will bounce between max and min speed if true
--- @tparam[opt=false] curving bool  will make the wall a curving wall if true (uses speed_mult, acceleration, min/max_speed for curve speed instead of wall speed)
+-- @tparam[opt=false] bool ping_pong  will bounce between max and min speed if true
+-- @tparam[opt=false] bool curving  will make the wall a curving wall if true (uses speed_mult, acceleration, min/max_speed for curve speed instead of wall speed)
 function PseudoGame.game.WallSystem:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, curving)
 	hue_modifier = hue_modifier or 0
 	side = math.floor(side)

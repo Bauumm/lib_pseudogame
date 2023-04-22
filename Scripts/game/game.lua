@@ -150,7 +150,7 @@ function PseudoGame.game.Game:_init(components, style)
 				self._3d_collection:ref_add(self._wall_collection)
 			end
 			if components.pivot then
-				self._3d_collection:ref_add(self._pivot_collection)
+				self._3d_collection:ref_add(self.pivot.polygon_collection)
 			end
 			if components.player then
 				self._3d_collection:ref_add(self._player_collection)

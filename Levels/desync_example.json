@@ -1,0 +1,12 @@
+{
+    "id": "pg_desync_example",
+    "name": "Desync Example",
+    "description": "example level using pseudogame to make desync",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 0,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/desync_example.lua",
+    "difficultyMults": []
+}

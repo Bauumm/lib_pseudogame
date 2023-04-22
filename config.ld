@@ -6,3 +6,4 @@ file = "Scripts"
 format = "markdown"
 style = true
 template = true
+examples = {"Scripts/Levels"}

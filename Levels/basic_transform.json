@@ -1,0 +1,12 @@
+{
+    "id": "pg_basic_transform",
+    "name": "Basic Transformation",
+    "description": "example level using pseudogame to make a basic transformation",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 0,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/basic_transform.lua",
+    "difficultyMults": []
+}
