@@ -20,6 +20,7 @@ end
 --- the constructor for a wall system
 -- @tparam[opt] table options  some options for the wall system
 -- @tparam[opt=nil] Timeline options.timeline  the timeline to use (nil will use the default t_ functions)
+-- @tparam[opt=`l_getWallSpawnDistance() * 1.1`] Timeline options.despawn_distance  the distance at which walls are removed
 -- @tparam[opt=level_style] Style style  the style to use
 -- @treturn WallSystem
 function PseudoGame.game.WallSystem:new(options, style)
@@ -30,13 +31,16 @@ function PseudoGame.game.WallSystem:new(options, style)
 		options = options or {},
 		_walls = {},
 		--- @tfield PolygonCollection  the collection of polygons representing the walls (use this for drawing)
-		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
+		polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
+		--- @tfield number  the distance of the center to the highest wall in the system
+		wall_height = 0
 	}, PseudoGame.game.WallSystem)
 	PseudoGame.game.WallSystem._systems[#PseudoGame.game.WallSystem._systems + 1] = obj
 	return obj
 end
 
 --- create a wall in the system
+-- @tparam[opt=`l_getWallSpawnDistance()`] number height  the height the wall will be spawned at
 -- @tparam[opt=0] number hue_modifier  the modifier the hue of the wall will be adjusted by
 -- @tparam number side  the side to spawn the wall at
 -- @tparam number thickness  the thickness the wall should have
@@ -46,14 +50,14 @@ end
 -- @tparam[opt=0] number max_speed  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())
 -- @tparam[opt=false] bool ping_pong  will bounce between max and min speed if true
 -- @tparam[opt=false] bool curving  will make the wall a curving wall if true (uses speed_mult, acceleration, min/max_speed for curve speed instead of wall speed)
-function PseudoGame.game.WallSystem:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, curving)
+function PseudoGame.game.WallSystem:wall(height, hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, curving)
 	hue_modifier = hue_modifier or 0
 	side = math.floor(side)
 	speed_mult = speed_mult or 1
 	acceleration = acceleration or 0
 	min_speed = min_speed or 0
 	max_speed = max_speed or 0
-	local distance = l_getWallSpawnDistance()
+	local distance = height or l_getWallSpawnDistance()
 	local div = math.pi / l_getSides()
 	local angle = div * 2 * side
 	local polygon = PseudoGame.graphics.Polygon:new()
@@ -73,7 +77,8 @@ function PseudoGame.game.WallSystem:wall(hue_modifier, side, thickness, speed_mu
 		hue_modifier = hue_modifier,
 		ping_pong = ping_pong and -1 or 1,
 		old_speed_dm = u_getSpeedMultDM(),	-- used for curving walls actual speed
-		curving = curving
+		curving = curving,
+		distance = distance + thickness
 	})
 end
 
@@ -84,8 +89,9 @@ function PseudoGame.game.WallSystem:update(frametime)
 		self.options.timeline:update(frametime)
 	end
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
-	local outer_bounds = l_getWallSpawnDistance() * 1.1
+	local outer_bounds = self.options.despawn_distance or l_getWallSpawnDistance() * 1.1
 	local del_queue = {}
+	self.wall_height = 0
 	for i, wall in pairs(self._walls) do
 		if wall.accel ~= 0 then
 			wall.speed = wall.speed + wall.accel * frametime
@@ -100,6 +106,12 @@ function PseudoGame.game.WallSystem:update(frametime)
 		local points_on_center = 0
 		local points_out_of_bounds = 0
 		local polygon = self.polygon_collection:get(wall.polygon)
+		local move_distance
+		if wall.curving then
+			move_distance = wall.old_speed_dm * 5 * frametime
+		else
+			move_distance = wall.speed * 5 * frametime
+		end
 		for vertex=1,4 do
 			local x, y = polygon:get_vertex_pos(vertex)
 			local x_dist, y_dist = math.abs(x), math.abs(y)
@@ -110,12 +122,6 @@ function PseudoGame.game.WallSystem:update(frametime)
 				points_on_center = points_on_center + 1
 			else
 				local magnitude = math.sqrt(x ^ 2 + y ^ 2)
-				local move_distance
-				if wall.curving then
-					move_distance = wall.old_speed_dm * 5 * frametime
-				else
-					move_distance = wall.speed * 5 * frametime
-				end
 				polygon:set_vertex_pos(vertex, x - x / magnitude * move_distance, y - y / magnitude * move_distance)
 			end
 			if wall.hue_modifier == 0 then
@@ -124,6 +130,8 @@ function PseudoGame.game.WallSystem:update(frametime)
 				polygon:set_vertex_color(vertex, PseudoGame.game.transform_hue(wall.hue_modifier, self.style:get_wall_color()))
 			end
 		end
+		wall.distance = wall.distance - move_distance
+		self.wall_height = math.max(self.wall_height, wall.distance)
 		if points_on_center == 4 or points_out_of_bounds == 4 then
 			table.insert(del_queue, 1, i)
 			self.polygon_collection:remove(wall.polygon)
@@ -158,27 +166,27 @@ function PseudoGame.game.WallSystem:overwrite()
 			self.options.timeline:overwrite()
 			w_wall = function(side, thickness)
 				self.options.timeline:eval(function()
-					self:wall(0, side, thickness)
+					self:wall(nil, 0, side, thickness)
 				end)
 			end
 			w_wallAdj = function(side, thickness, speed_mult)
 				self.options.timeline:eval(function()
-					self:wall(0, side, thickness, speed_mult)
+					self:wall(nil, 0, side, thickness, speed_mult)
 				end)
 			end
 			w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
 				self.options.timeline:eval(function()
-					self:wall(0, side, thickness, speed_mult, acceleration, min_speed, max_speed)
+					self:wall(nil, 0, side, thickness, speed_mult, acceleration, min_speed, max_speed)
 				end)
 			end
 			w_wallHModSpeedData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
 				self.options.timeline:eval(function()
-					self:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+					self:wall(nil, hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
 				end)
 			end
 			w_wallHModCurveData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
 				self.options.timeline:eval(function()
-					self:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, true)
+					self:wall(nil, hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, true)
 				end)
 			end
 			u_clearWalls = function()
@@ -190,19 +198,19 @@ function PseudoGame.game.WallSystem:overwrite()
 			end
 		else
 			w_wall = function(side, thickness)
-				t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ")")
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(nil, 0, " .. side .. ", " .. thickness .. ")")
 			end
 			w_wallAdj = function(side, thickness, speed_mult)
-				t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(nil, 0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
 			end
 			w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
-				t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(nil, 0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
 			end
 			w_wallHModSpeedData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
-				t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ")")
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(nil, " .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ")")
 			end
 			w_wallHModCurveData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
-				t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ", true)")
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(nil, " .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ", true)")
 			end
 			u_clearWalls = function()
 				for i=1, #self._walls do

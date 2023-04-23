@@ -3,7 +3,7 @@
     "name": "Multiple Games",
     "description": "example level using pseudogame to make multiple games",
     "author": "Baum (Original example by vee)",
-    "menuPriority": 7,
+    "menuPriority": 5,
     "selectable": true,
     "styleId": "examplelevel",
     "musicId": "jackRussel",

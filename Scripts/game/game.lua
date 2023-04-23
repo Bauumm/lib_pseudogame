@@ -165,7 +165,7 @@ end
 
 --[[--
 overwrites the wall functions as well as custom walls function to modify the walls in this game (only if walls were specified in the components)
-IMPORTANT: once this function was called, you have to call `Game:restore()` before exiting your level (e.g. in `onUnload`), otherwise it may break other levels at random, as this function overwrites some default game functions
+IMPORTANT: once this function was called, you have to call `Game:restore()` before exiting your level (e.g. in `onPreUnload`), otherwise it may break other levels at random, as this function overwrites some default game functions
 ]]
 function PseudoGame.game.Game:overwrite()
 	if not u_inMenu() then

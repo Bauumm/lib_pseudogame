@@ -3,7 +3,7 @@
     "name": "Desync Example",
     "description": "example level using pseudogame to make desync",
     "author": "Baum (Original example by vee)",
-    "menuPriority": 4,
+    "menuPriority": 3,
     "selectable": true,
     "styleId": "examplelevel",
     "musicId": "jackRussel",

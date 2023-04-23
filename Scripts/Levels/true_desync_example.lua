@@ -145,7 +145,7 @@ end
 -- `onLoad` is an hardcoded function that is called when the level is started
 -- or restarted.
 function onLoad()
-    e_messageAdd("welcome to the sixth PseudoGame example level", 150)
+    e_messageAdd("welcome to the fifth PseudoGame example level", 150)
     e_messageAdd("Here transformations are used in a more\nadvanced way to create a desync level!", 200)
     e_messageAdd("Additionally custom color blending is used here!", 200)
 end

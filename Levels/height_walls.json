@@ -1,0 +1,12 @@
+{
+    "id": "pg_height_walls",
+    "name": "Height based walls",
+    "description": "example level using pseudogame to make walls spawn based on height",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 6,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/height_walls.lua",
+    "difficultyMults": []
+}

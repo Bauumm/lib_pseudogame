@@ -3,7 +3,7 @@
     "name": "True Desync Example",
     "description": "example level using pseudogame to make true desync (this may be very laggy)",
     "author": "Baum (Original example by vee)",
-    "menuPriority": 6,
+    "menuPriority": 4,
     "selectable": true,
     "styleId": "examplelevel",
     "musicId": "jackRussel",
