@@ -1,0 +1,12 @@
+{
+    "id": "pg_outline_example",
+    "name": "outline example",
+    "description": "example level using pseudogame to make an outline around all polygons",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 10,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/outline_example.lua",
+    "difficultyMults": []
+}
