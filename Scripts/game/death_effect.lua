@@ -29,6 +29,7 @@ make sure to update and draw the death effect in onRenderStage as the other func
 ]]
 function PseudoGame.game.DeathEffect:death()
 	self.dead = true
+	self.player.dead = true
 end
 
 --- this function shows the death effect for a moment (should be called in `onPreDeath`)

@@ -20,6 +20,10 @@ function PseudoGame.game.Player:new(options, style)
 		last_angle = 0,
 		--- @tfield table pos  the current position of the player (formatted like this: {x, y})
 		pos = {0, 0},
+		--- @tfield number  the current movement direction
+		movement_dir = 0,
+		--- @tfield number  the current movement speed
+		speed = 0,
 		--- @tfield table last_pos  the position the player had in the last tick (formatted like this: {x, y})
 		last_pos = {0, 0},
 		--- @tfield number  a number that indicates the current state of the swap blinking animation (the current blink hue is swap_blink_time * 36)
@@ -30,6 +34,10 @@ function PseudoGame.game.Player:new(options, style)
 		just_swapped = false,
 		--- @tfield table  the player's options
 		options = options or {},
+		--- @tfield bool  true if the player is dead (set by the death effects function)
+		dead = false,
+		--- @tfield number  the player's radius
+		radius = 0,
 		--- @tfield Polygon polygon  the player triangle (use this for drawing)
 		polygon = PseudoGame.graphics.Polygon:new({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	}, PseudoGame.game.Player)
@@ -50,6 +58,8 @@ end
 -- @tparam[opt] bool swap  true if the swap key is pressed, false otherwise (only required when using a custom collision handler)
 -- @tparam[opt] PolygonCollection collide_collection  the collection of polygons the player should collide with (only required when using a custom collision handler)
 function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_collection)
+	self.movement_dir = move
+	self.speed = (focus and 4.625 or 9.45) * l_getPlayerSpeedMult() * frametime
 	if l_getSwapEnabled() then
 		self.just_swapped = false
 		self.swap_cooldown = math.max(36 * l_getSwapCooldownMult(), 8)
@@ -69,15 +79,14 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
 			self.color = nil
 		end
 	end
-	local radius
 	if self.options.radius == nil then
 		if self.options.reverse then
-			radius = radius - math.min(PseudoGame.graphics.screen:get_width(), PseudoGame.graphics.screen:get_height()) * 0.5
+			self.radius = -math.min(PseudoGame.graphics.screen:get_width(), PseudoGame.graphics.screen:get_height()) * 0.5
 		else
-			radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
+			self.radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
 		end
 	else
-		radius = self.options.radius
+		self.radius = self.options.radius
 	end
 	self.last_angle = self.angle
 	for i=1, 2 do
@@ -91,12 +100,11 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
 			u_setPlayerAngle(self.angle)
 		end
 	else
-		local speed = (focus and 4.625 or 9.45) * l_getPlayerSpeedMult() * frametime
-		self.angle = self.angle + math.rad(speed * move)
+		self.angle = self.angle + math.rad(self.speed * move)
 	end
-	self.pos[1], self.pos[2] = PseudoGame.game.get_orbit(self.angle, radius)
-	if not self._use_real_player and collide_collection ~= nil then
-		if self.options.collision_handler(self, collide_collection) then
+	self.pos[1], self.pos[2] = PseudoGame.game.get_orbit(self.angle, self.radius)
+	if not self._use_real_player and collide_collection ~= nil and not self.dead then
+		if self.options.collision_handler(frametime, self, collide_collection) then
 			if self.kill_cw == nil then
 				self.kill_cw = PseudoGame.game.cw_function_backup.cw_createDeadly()
 			end
@@ -107,6 +115,9 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
 				PseudoGame.game.cw_function_backup.cw_destroy(self.kill_cw)
 				self.kill_cw = nil
 			end
+		end
+		if self.angle ~= self.angle then
+			self.angle = self.last_angle
 		end
 	end
 	local size = 7.3 + (focus and -1.5 or 3)

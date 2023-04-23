@@ -73,7 +73,7 @@ function PseudoGame.game.WallSystem:wall(height, hue_modifier, side, thickness, 
 	if not curving then
 		speed_mult = speed_mult * u_getSpeedMultDM()
 	end
-	table.insert(self._walls, {
+	local wall_table = {
 		polygon = self.polygon_collection:add(polygon),
 		speed = speed_mult,
 		accel = acceleration / (u_getDifficultyMult() ^ 0.65),
@@ -91,7 +91,12 @@ function PseudoGame.game.WallSystem:wall(height, hue_modifier, side, thickness, 
 		angle_right = l_getWallAngleRight(),
 		skew_left = l_getWallSkewLeft(),
 		skew_right = l_getWallSkewRight()
-	})
+	}
+
+	-- save wall info in polygon for use in collision handlers
+	polygon.wall = wall_table
+
+	table.insert(self._walls, wall_table)
 end
 
 --- update the walls position
