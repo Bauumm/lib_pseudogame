@@ -1,0 +1,12 @@
+{
+    "id": "pg_style_example",
+    "name": "Style example",
+    "description": "example level using pseudogame's custom styles to make some modifications to the game",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 8,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/style_example.lua",
+    "difficultyMults": []
+}

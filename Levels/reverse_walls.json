@@ -1,0 +1,12 @@
+{
+    "id": "pg_reverse_walls",
+    "name": "Reverse Walls",
+    "description": "example level using pseudogame to make walls go in the other direction",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 7,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/reverse_walls.lua",
+    "difficultyMults": []
+}

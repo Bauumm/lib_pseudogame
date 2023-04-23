@@ -2,7 +2,6 @@
 -- @classmod PseudoGame.game.Style
 PseudoGame.game.Style = {}
 PseudoGame.game.Style.__index = PseudoGame.game.Style
--- TODO: side scalings
 
 --- constructor for a style object
 -- @tparam table style_table  the table with the initial style options

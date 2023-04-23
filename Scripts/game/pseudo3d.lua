@@ -52,81 +52,7 @@ function PseudoGame.game.Pseudo3D:_update_layered()
 	end
 end
 
-function PseudoGame.game.Pseudo3D:_update_gradient()
-	local undo_rot = PseudoGame.graphics.effects:rotate(math.rad(-l_getRotation()))
-	local do_rot = PseudoGame.graphics.effects:rotate(math.rad(l_getRotation()))
-	local edge_index = 0
-	for p in self.source_collection:iter() do
-		p:transform(undo_rot)
-		for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in p:edge_color_pairs() do
-			edge_index = edge_index + 1
-			local e = self._edges[edge_index]
-			if e == nil then
-				self._edges[edge_index] = {x0, y0, x1, y1}
-			else
-				e[1] = x0
-				e[2] = y0
-				e[3] = x1
-				e[4] = y1
-			end
-		end
-		p:transform(do_rot)
-	end
-	for i=#self._edges,edge_index + 1,-1 do
-		self._edges[i] = nil
-	end
-	table.sort(self._edges, function(e0, e1)
-		local function getyofx(x, e)
-			return (e[4] - e[2]) / (e[3] - e[1]) * (x - e[1]) + e[2]
-		end
-		local isecta_start = math.max(math.min(e0[1], e0[3]), math.min(e1[1], e1[3]))
-		local isecta_end = math.min(math.max(e0[1], e0[3]), math.max(e1[1], e1[3]))
-		if isecta_start >= isecta_end then
-			local avgy0 = (e0[2] + e0[4]) / 2
-			local avgy1 = (e1[2] + e1[4]) / 2
-			return avgy0 < avgy1
-		else
-			return (getyofx(isecta_start, e0) - getyofx(isecta_start, e1) + getyofx(isecta_end, e0) - getyofx(isecta_end, e1)) < 0
-		end
-	end)
-	for i=1,edge_index do
-		e = self._edges[i]
-		e[1], e[2] = do_rot(e[1], e[2])
-		e[3], e[4] = do_rot(e[3], e[4])
-	end
-	local spacing = self.style:get_layer_spacing()
-	local depth = self.style:get_depth()
-	local rad_rot = math.rad(l_getRotation() + 90)
-	local cos_rot, sin_rot = math.cos(rad_rot), math.sin(rad_rot)
-	local gen = self.polygon_collection:generator()
-	for j=1, depth do
-		local i = depth - j + 1
-		local offset = i * spacing
-		local new_pos_x = offset * cos_rot
-		local new_pos_y = offset * sin_rot
-		local next_offset = (i - 1) * spacing
-		local next_new_pos_x = next_offset * cos_rot
-		local next_new_pos_y = next_offset * sin_rot
-		local override_color = {self.style:get_layer_color(i)}
-		local next_override_color = {self.style:get_layer_color(i - 1)}
-		for i=1,edge_index do
-			local x0, y0, x1, y1 = unpack(self._edges[i])
-			local side = gen()
-			side:resize(4)
-			side:set_vertex_pos(1, x0 + next_new_pos_x, y0 + next_new_pos_y)
-			side:set_vertex_pos(2, x1 + next_new_pos_x, y1 + next_new_pos_y)
-			side:set_vertex_pos(3, x1 + new_pos_x, y1 + new_pos_y)
-			side:set_vertex_pos(4, x0 + new_pos_x, y0 + new_pos_y)
-			for i=1,2 do
-				side:set_vertex_color(i, unpack(next_override_color))
-			end
-			for i=3,4 do
-				side:set_vertex_color(i, unpack(override_color))
-			end
-		end
-	end
-end
-
+-- this code is pretty messy and experimental
 function PseudoGame.game.Pseudo3D:_update_gradient()
 	local undo_rot = PseudoGame.graphics.effects:rotate(math.rad(-l_getRotation()))
 	local do_rot = PseudoGame.graphics.effects:rotate(math.rad(l_getRotation()))
@@ -193,7 +119,12 @@ function PseudoGame.game.Pseudo3D:_update_gradient()
 			side:set_vertex_pos(3, x1 + new_pos_x, y1 + new_pos_y)
 			side:set_vertex_pos(4, x0 + new_pos_x, y0 + new_pos_y)
 			if self.style.gradient then
-				local next_override_color = {self.style:get_layer_color(next_i)}
+				local next_override_color
+				if next_i == 0 then
+					next_override_color = {self.style:get_main_color()}
+				else
+					next_override_color = {self.style:get_layer_color(next_i)}
+				end
 				for i=1,2 do
 					side:set_vertex_color(i, unpack(next_override_color))
 				end
