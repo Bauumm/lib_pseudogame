@@ -21,6 +21,7 @@ u_execScript("game/death_effect.lua")
 u_execScript("game/pivot.lua")
 u_execScript("game/wall_system.lua")
 u_execScript("game/pseudo3d.lua")
+u_execScript("game/timeline.lua")
 u_execScript("game/game.lua")
 
 --- this function hides the default game components using a shader and default functions

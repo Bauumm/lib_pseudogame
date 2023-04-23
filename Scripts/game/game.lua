@@ -4,21 +4,25 @@ PseudoGame.game.Game = {}
 PseudoGame.game.Game.__index = PseudoGame.game.Game
 
 --- the constructor for a game object 
--- @tparam[opt] table components  table telling the game what game components it needs to update, draw and which collections to return from `Game:update` (helps reducing lag if e.g. 3D isn't needed), just sets every component to true when not given
--- @tparam[opt=false] bool components.background  update and draw the background
--- @tparam[opt=false] bool components.walls  update and draw the walls
--- @tparam[opt=false] bool components.pivot  update and draw the pivot (including cap)
--- @tparam[opt=false] bool components.player  update and draw the player (including death effect)
--- @tparam[opt=false] bool components.pseudo3d  update and draw the 3d
--- @tparam[opt=level_style] Style style  the style the game should use
+-- @tparam[opt] table options  options for the game object
+-- @tparam[opt] table options.components  table telling the game what game components it needs to update, draw and which collections to return from `Game:update` (helps reducing lag if e.g. 3D isn't needed), just sets every component to true when not given
+-- @tparam[opt=false] bool options.components.background  update and draw the background
+-- @tparam[opt=false] bool options.components.walls  update and draw the walls
+-- @tparam[opt=false] bool options.components.pivot  update and draw the pivot (including cap)
+-- @tparam[opt=false] bool options.components.player  update and draw the player (including death effect)
+-- @tparam[opt=false] bool options.components.pseudo3d  update and draw the 3d
+-- @tparam[opt=level_style] Style options.style  the style the game should use
+-- @tparam[opt] table options.walls  wall system options
+-- @tparam[opt=nil] Timeline options.walls.timeline  the timeline the wall system should use
 -- @treturn Game
-function PseudoGame.game.Game:new(components, style)
+function PseudoGame.game.Game:new(options)
+	if options == nil then
+		options = {}
+	end
 	local obj = setmetatable({
 		-- game data
-		--- @tfield number depth  the game's 3d depth
-		depth = s_get3dDepth(),
 		--- @tfield Style style  the game's style
-		style = style or PseudoGame.game.level_style,
+		style = options.style or PseudoGame.game.level_style,
 
 		--- @tfield PolygonCollection polygon_collection  the collection the `Game:draw()` method draws into
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
@@ -60,21 +64,20 @@ function PseudoGame.game.Game:new(components, style)
 
 		--- @tfield Pseudo3D pseudo3d  the game's 3d effect (only exists if `components.pseudo3d == true`)
 	}, PseudoGame.game.Game)
-	if components == nil then
-		obj:_init({
+	if options.components == nil then
+		options.components = {
 			background = true,
 			walls = true,
 			player = true,
 			pivot = true,
 			pseudo3d = true
-		}, style)
-	else
-		obj:_init(components, style)
+		}
 	end
+	obj:_init(options.components, options.walls, options.style)
 	return obj
 end
 
-function PseudoGame.game.Game:_init(components, style)
+function PseudoGame.game.Game:_init(components, wall_options, style)
 	-- initialize game objects
 	if components.background then
 		self.background = PseudoGame.game.Background:new(style)
@@ -91,7 +94,7 @@ function PseudoGame.game.Game:_init(components, style)
 		self.collections[#self.collections + 1] = self.pseudo3d.polygon_collection
 	end
 	if components.walls then
-		self.walls = PseudoGame.game.WallSystem:new(style)
+		self.walls = PseudoGame.game.WallSystem:new(wall_options, style)
 		self._cws = PseudoGame.graphics.PolygonCollection:new()
 		self._wall_collection = PseudoGame.graphics.PolygonCollection:new()
 		self.component_collections.walls = self._wall_collection

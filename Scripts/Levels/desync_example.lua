@@ -6,7 +6,8 @@ u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "commonpatterns.
 u_execDependencyScript("library_pseudogame", "pseudogame", "Baum", "main.lua")
 
 -- remove 3d as it would look very weird
-s_set3dDepth(0)
+s_set3dDepth(3)
+s_set3dSpacing(10)
 
 -- hide the real game
 PseudoGame.hide_default_game()
@@ -21,7 +22,7 @@ game:overwrite()
 transforms = {
 	function(x, y, r, g, b, a)
 		local rotate_other_dir = PseudoGame.graphics.effects:rotate(math.rad(2 * l_getRotation()))
-		x, y = rotate_other_dir(x, y)
+		x, y = rotate_other_dir(-x, y)
 		return x, y, 255 - r, 255 - g, 255 - b, a / 2
 	end,
 	function(x, y, r, g, b, a)
@@ -149,9 +150,7 @@ function onIncrement()
     -- ...
 end
 
--- `onUnload` is an hardcoded function that is called when the level is
--- closed/restarted.
-function onUnload()
+function onPreUnload()
 	-- overwriting game functions may cause issues, so it's important to undo it
 	game:restore()
 end

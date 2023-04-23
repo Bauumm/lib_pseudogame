@@ -1,4 +1,4 @@
---- Class that handles a game's walls by implementing `w_wall`, `w_wallAdj` and `w_wallAcc`
+--- Class that handles a game's walls
 -- @classmod PseudoGame.game.WallSystem
 
 -- ensure the w_ functions don't get overwritten by executing this file multiple times
@@ -18,12 +18,16 @@ if PseudoGame.game.WallSystem == nil then
 end
 
 --- the constructor for a wall system
+-- @tparam[opt] table options  some options for the wall system
+-- @tparam[opt=nil] Timeline options.timeline  the timeline to use (nil will use the default t_ functions)
 -- @tparam[opt=level_style] Style style  the style to use
 -- @treturn WallSystem
-function PseudoGame.game.WallSystem:new(style)
+function PseudoGame.game.WallSystem:new(options, style)
 	local obj = setmetatable({
 		--- @tfield Style  the style the wall system is using
 		style = style or PseudoGame.game.level_style,
+		--- @tfield table  the options that were passed to the constructor
+		options = options or {},
 		_walls = {},
 		--- @tfield PolygonCollection  the collection of polygons representing the walls (use this for drawing)
 		polygon_collection = PseudoGame.graphics.PolygonCollection:new()
@@ -76,6 +80,9 @@ end
 --- update the walls position
 -- @tparam number frametime  the time in 1/60s that passed since the last call of this function
 function PseudoGame.game.WallSystem:update(frametime)
+	if self.options.timeline ~= nil then
+		self.options.timeline:update(frametime)
+	end
 	local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
 	local outer_bounds = l_getWallSpawnDistance() * 1.1
 	local del_queue = {}
@@ -147,33 +154,72 @@ end
 function PseudoGame.game.WallSystem:overwrite()
 	if not u_inMenu() then
 		PseudoGame.game.WallSystem._selected_system = self
-		w_wall = function(side, thickness)
-			t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ")")
-		end
-		w_wallAdj = function(side, thickness, speed_mult)
-			t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
-		end
-		w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
-			t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
-		end
-		w_wallHModSpeedData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
-			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ")")
-		end
-		w_wallHModCurveData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
-			t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ", true)")
-		end
-		u_clearWalls = function()
-			for i=1, #self._walls do
-				local wall = self._walls[i]
-				cw_destroy(wall.cw)
+		if self.options.timeline ~= nil then
+			self.options.timeline:overwrite()
+			w_wall = function(side, thickness)
+				self.options.timeline:eval(function()
+					self:wall(0, side, thickness)
+				end)
 			end
-			self._walls = {}
+			w_wallAdj = function(side, thickness, speed_mult)
+				self.options.timeline:eval(function()
+					self:wall(0, side, thickness, speed_mult)
+				end)
+			end
+			w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
+				self.options.timeline:eval(function()
+					self:wall(0, side, thickness, speed_mult, acceleration, min_speed, max_speed)
+				end)
+			end
+			w_wallHModSpeedData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+				self.options.timeline:eval(function()
+					self:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+				end)
+			end
+			w_wallHModCurveData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+				self.options.timeline:eval(function()
+					self:wall(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong, true)
+				end)
+			end
+			u_clearWalls = function()
+				for i=1, #self._walls do
+					local wall = self._walls[i]
+					cw_destroy(wall.cw)
+				end
+				self._walls = {}
+			end
+		else
+			w_wall = function(side, thickness)
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ")")
+			end
+			w_wallAdj = function(side, thickness, speed_mult)
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ")")
+			end
+			w_wallAcc = function(side, thickness, speed_mult, acceleration, min_speed, max_speed)
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(0, " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ")")
+			end
+			w_wallHModSpeedData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ")")
+			end
+			w_wallHModCurveData = function(hue_modifier, side, thickness, speed_mult, acceleration, min_speed, max_speed, ping_pong)
+				t_eval("PseudoGame.game.WallSystem._selected_system:wall(" .. hue_modifier .. ", " .. side .. ", " .. thickness .. ", " .. speed_mult .. ", " .. acceleration .. ", " .. min_speed .. ", " .. max_speed .. ", " .. (ping_pong and "true" or "false") .. ", true)")
+			end
+			u_clearWalls = function()
+				for i=1, #self._walls do
+					local wall = self._walls[i]
+					cw_destroy(wall.cw)
+				end
+				self._walls = {}
+			end
 		end
 	end
 end
 
 --- restore the original `w_wall`, `w_wallAdj`, `w_wallAcc` and `u_clearWalls` functions
 function PseudoGame.game.WallSystem:restore()
+	if self.options.timeline ~= nil then
+		self.options.timeline:restore()
+	end
 	w_wall = self._w_wall
 	w_wallAdj = self._w_wallAdj
 	w_wallAcc = self._w_wallAcc

@@ -5,81 +5,151 @@ u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "common.lua")
 u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "commonpatterns.lua")
 u_execDependencyScript("library_pseudogame", "pseudogame", "Baum", "main.lua")
 
-if not u_inMenu() then
-	-- adjust 3d
-	s_set3dDepth(0)
-	s_set3dSkew(0)
+-- This function adds a pattern to the level "timeline" based on a numeric key.
+function addPattern(mKey)
+        if mKey == 0 then pAltBarrage(u_rndInt(3, 5), 2)
+    elseif mKey == 1 then pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
+    elseif mKey == 2 then pBarrageSpiral(u_rndInt(0, 3), 1, 1)
+    elseif mKey == 3 then pInverseBarrage(0)
+    elseif mKey == 4 then pTunnel(u_rndInt(1, 3))
+    elseif mKey == 5 then pSpiral(l_getSides() * u_rndInt(1, 2), 0)
+    end
+end
 
-	-- hide the real game
-	PseudoGame.hide_default_game()
+-- Shuffle the keys, and then call them to add all the patterns.
+-- Shuffling is better than randomizing - it guarantees all the patterns will
+-- be called.
+keys = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5 }
+shuffle(keys)
+index = 0
+achievementUnlocked = false
 
-	-- grid size
-	if u_getDifficultyMult() < 1 then
-		w = 1
-		h = 2
-	elseif u_getDifficultyMult() > 1 then
-		w = 3
-		h = 3
-		rot_disabled = true
-	else
-		w = 2
-		h = 2
-	end
+-- onStep for custom timeline, not calling it onStep as it would be called by the default game
+function onFakeStep()
+    addPattern(keys[index])
+    index = index + 1
 
-	-- create games
-	games = {}
-	-- make games rotate individually
-	rotation_values = {}
-	for i = 1, w * h do
-		table.insert(games, PseudoGame.game.Game:new())
-		table.insert(rotation_values, 0)
-	end
+    if index - 1 == #keys then
+        index = 1
+        shuffle(keys)
+    end
+end
 
-	-- position them in a grid
-	game_grid = {{}}
-	for i = 1, #games do
-		-- update every game once so there's something to draw
-		games[i]:update(0, 0, false, false)
+-- `onInit` is an hardcoded function that is called when the level is first
+-- loaded. This can be used to setup initial level parameters.
+function onInit()
+	l_setSpeedMult(1.55)
+	l_setSpeedInc(0.125)
+	l_setSpeedMax(3.5)
+	l_setRotationSpeed(0)
+	l_setRotationSpeedMax(0)
+	l_setRotationSpeedInc(0)
+	l_setDelayMult(1.0)
+	l_setDelayInc(-0.01)
+	l_setFastSpin(0.0)
+	l_setSides(6)
+	l_setSidesMin(5)
+	l_setSidesMax(6)
+	l_setIncTime(15)
 
-		-- start a new grid line every 3rd element
-		if #game_grid[#game_grid] == w then
-			game_grid[#game_grid + 1] = {}
+	-- would wait until all games don't have walls, which is a pretty long time
+	l_setIncEnabled(false)
+
+	l_setPulseMin(75)
+	l_setPulseMax(75)
+	l_setPulseSpeed(1.2)
+	l_setPulseSpeedR(1)
+	l_setPulseDelayMax(23.9)
+
+	l_setBeatPulseMax(17)
+	l_setBeatPulseDelayMax(24.8)
+
+	enableSwapIfDMGreaterThan(2.5)
+	disableIncIfDMGreaterThan(3)
+	if not u_inMenu() then
+		-- adjust 3d
+		s_set3dDepth(0)
+		s_set3dSkew(0)
+
+		-- hide the real game
+		PseudoGame.hide_default_game()
+
+		-- grid size
+		if u_getDifficultyMult() < 1 then
+			w = 1
+			h = 2
+		elseif u_getDifficultyMult() > 1 then
+			w = 3
+			h = 3
+			rot_disabled = true
+		else
+			w = 2
+			h = 2
 		end
 
-		-- append to current grid line
-		table.insert(game_grid[#game_grid], games[i])
-	end
-
-	-- overwrite the real game's functions (mostly wall functions) with the last game
-	games[1]:overwrite()
-
-	-- keep track of the selected game
-	game = games[1]
-	current_index = 1
-
-	-- change which game is being accessed every 5s
-	overwrite_timeline = ct_create()
-	ct_wait(overwrite_timeline, 300)
-	ct_eval(overwrite_timeline, [[next_game()]])
-
-	function next_game()
-		game:restore()
-		current_index = current_index + 1
-		if current_index > #games then
-			current_index = 1
+		-- create games
+		games = {}
+		-- make games rotate individually
+		rotation_values = {}
+		for i = 1, w * h do
+			table.insert(games, PseudoGame.game.Game:new({
+				-- making our own timeline for each game using onFakeStep to spawn patterns
+				walls = {
+					timeline = PseudoGame.game.Timeline:new(onFakeStep)
+				}
+			}))
+			table.insert(rotation_values, 0)
 		end
-		game = games[current_index]
-		game:overwrite()
+
+		-- position them in a grid
+		game_grid = {{}}
+		for i = 1, #games do
+			-- update every game once so there's something to draw
+			games[i]:overwrite()
+			games[i]:update(0, 0, false, false)
+			games[i]:restore()
+			-- have to overwrite for updating here as the game's timeline is empty calling onFakeStep (which uses default game functions)
+
+			-- start a new grid line every 3rd element
+			if #game_grid[#game_grid] == w then
+				game_grid[#game_grid + 1] = {}
+			end
+
+			-- append to current grid line
+			table.insert(game_grid[#game_grid], games[i])
+		end
+
+		-- overwrite the real game's functions (mostly wall functions) with the last game
+		games[1]:overwrite()
+
+		-- keep track of the selected game
+		game = games[1]
+		current_index = 1
+
+		-- change which game is being accessed every 5s
+		overwrite_timeline = ct_create()
 		ct_wait(overwrite_timeline, 300)
 		ct_eval(overwrite_timeline, [[next_game()]])
+
+		function next_game()
+			game:restore()
+			current_index = current_index + 1
+			if current_index > #games then
+				current_index = 1
+			end
+			game = games[current_index]
+			game:overwrite()
+			ct_wait(overwrite_timeline, 300)
+			ct_eval(overwrite_timeline, [[next_game()]])
+		end
+
+		-- tmp collection for better clipping performance
+		tmp_collection = PseudoGame.graphics.PolygonCollection:new()
+
+		width = PseudoGame.graphics.screen:get_width()
+		height = PseudoGame.graphics.screen:get_height()
+		screen_bounds = PseudoGame.graphics.Polygon:new({-width / 2, -height / 2, -width / 2, height / 2, width / 2, height / 2, width / 2, -height / 2}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	end
-
-	-- tmp collection for better clipping performance
-	tmp_collection = PseudoGame.graphics.PolygonCollection:new()
-
-	width = PseudoGame.graphics.screen:get_width()
-	height = PseudoGame.graphics.screen:get_height()
-	screen_bounds = PseudoGame.graphics.Polygon:new({-width / 2, -height / 2, -width / 2, height / 2, width / 2, height / 2, width / 2, -height / 2}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 end
 
 function onInput(frametime, movement, focus, swap)
@@ -146,76 +216,11 @@ function onRenderStage(render_stage, frametime)
 	end)
 end
 
--- This function adds a pattern to the level "timeline" based on a numeric key.
-function addPattern(mKey)
-        if mKey == 0 then pAltBarrage(u_rndInt(3, 5), 2)
-    elseif mKey == 1 then pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
-    elseif mKey == 2 then pBarrageSpiral(u_rndInt(0, 3), 1, 1)
-    elseif mKey == 3 then pInverseBarrage(0)
-    elseif mKey == 4 then pTunnel(u_rndInt(1, 3))
-    elseif mKey == 5 then pSpiral(l_getSides() * u_rndInt(1, 2), 0)
-    end
-end
-
--- Shuffle the keys, and then call them to add all the patterns.
--- Shuffling is better than randomizing - it guarantees all the patterns will
--- be called.
-keys = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5 }
-shuffle(keys)
-index = 0
-achievementUnlocked = false
-
--- `onInit` is an hardcoded function that is called when the level is first
--- loaded. This can be used to setup initial level parameters.
-function onInit()
-    l_setSpeedMult(1.55)
-    l_setSpeedInc(0.125)
-    l_setSpeedMax(3.5)
-    l_setRotationSpeed(0)
-    l_setRotationSpeedMax(0)
-    l_setRotationSpeedInc(0)
-    l_setDelayMult(1.0)
-    l_setDelayInc(-0.01)
-    l_setFastSpin(0.0)
-    l_setSides(6)
-    l_setSidesMin(5)
-    l_setSidesMax(6)
-    l_setIncTime(15)
-
-    -- would wait until all games don't have walls, which is a pretty long time
-    l_setIncEnabled(false)
-
-    l_setPulseMin(75)
-    l_setPulseMax(75)
-    l_setPulseSpeed(1.2)
-    l_setPulseSpeedR(1)
-    l_setPulseDelayMax(23.9)
-
-    l_setBeatPulseMax(17)
-    l_setBeatPulseDelayMax(24.8)
-
-    enableSwapIfDMGreaterThan(2.5)
-    disableIncIfDMGreaterThan(3)
-end
-
 -- `onLoad` is an hardcoded function that is called when the level is started
 -- or restarted.
 function onLoad()
     e_messageAdd("welcome to the seventh PseudoGame example level", 150)
     e_messageAdd("This example is using multiple game objects.", 200)
-end
-
--- `onStep` is an hardcoded function that is called when the level "timeline"
--- is empty. The level timeline is a queue of pending actions.
--- `onStep` should generally contain your pattern spawning logic.
-function onStep()
-    addPattern(keys[index])
-    index = index + 1
-
-    if index - 1 == #keys then
-        index = 1
-        shuffle(keys)
-    end
 end
 
 -- `onIncrement` is an hardcoded function that is called when the level
@@ -224,9 +229,7 @@ function onIncrement()
     -- ...
 end
 
--- `onUnload` is an hardcoded function that is called when the level is
--- closed/restarted.
-function onUnload()
+function onPreUnload()
 	-- overwriting game functions may cause issues, so it's important to undo it
 	game:restore()
 end

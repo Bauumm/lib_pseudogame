@@ -21,7 +21,7 @@ game:overwrite()
 transforms = {
 	function(x, y, r, g, b, a)
 		local rotate_other_dir = PseudoGame.graphics.effects:rotate(math.rad(2 * l_getRotation()))
-		x, y = rotate_other_dir(x, y)
+		x, y = rotate_other_dir(-x, y)
 		return x, y, 255 - r, g, b, a
 	end,
 	function(x, y, r, g, b, a)
@@ -169,9 +169,7 @@ function onIncrement()
     -- ...
 end
 
--- `onUnload` is an hardcoded function that is called when the level is
--- closed/restarted.
-function onUnload()
+function onPreUnload()
 	-- overwriting game functions may cause issues, so it's important to undo it
 	game:restore()
 end

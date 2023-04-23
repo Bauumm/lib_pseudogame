@@ -142,9 +142,7 @@ function onIncrement()
     -- ...
 end
 
--- `onUnload` is an hardcoded function that is called when the level is
--- closed/restarted.
-function onUnload()
+function onPreUnload()
 	-- overwriting game functions may cause issues, so it's important to undo it
 	game:restore()
 end
