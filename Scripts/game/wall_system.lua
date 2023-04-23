@@ -21,6 +21,7 @@ end
 -- @tparam[opt] table options  some options for the wall system
 -- @tparam[opt=nil] Timeline options.timeline  the timeline to use (nil will use the default t_ functions)
 -- @tparam[opt=`l_getWallSpawnDistance() * 1.1`] Timeline options.despawn_distance  the distance at which walls are removed
+-- @tparam[opt=false] Timeline options.reverse_direction  makes walls move from the center out of the screen
 -- @tparam[opt=level_style] Style style  the style to use
 -- @treturn WallSystem
 function PseudoGame.game.WallSystem:new(options, style)
@@ -58,6 +59,10 @@ function PseudoGame.game.WallSystem:wall(height, hue_modifier, side, thickness, 
 	min_speed = min_speed or 0
 	max_speed = max_speed or 0
 	local distance = height or l_getWallSpawnDistance()
+	if self.options.reverse_direction then
+		distance = -thickness
+		speed_mult = -speed_mult
+	end
 	local div = math.pi / l_getSides()
 	local angle = div * 2 * side
 	local polygon = PseudoGame.graphics.Polygon:new()
@@ -78,7 +83,14 @@ function PseudoGame.game.WallSystem:wall(height, hue_modifier, side, thickness, 
 		ping_pong = ping_pong and -1 or 1,
 		old_speed_dm = u_getSpeedMultDM(),	-- used for curving walls actual speed
 		curving = curving,
-		distance = distance + thickness
+		distance = distance,
+		angle1 = angle - div,
+		angle2 = angle + div,
+		thickness = thickness,
+		angle_left = l_getWallAngleLeft(),
+		angle_right = l_getWallAngleRight(),
+		skew_left = l_getWallSkewLeft(),
+		skew_right = l_getWallSkewRight()
 	})
 end
 
@@ -118,7 +130,7 @@ function PseudoGame.game.WallSystem:update(frametime)
 			if x_dist > outer_bounds or y_dist > outer_bounds then
 				points_out_of_bounds = points_out_of_bounds + 1
 			end
-			if x_dist < half_radius and y_dist < half_radius then
+			if x_dist < half_radius and y_dist < half_radius and not self.options.reverse_direction then
 				points_on_center = points_on_center + 1
 			else
 				local magnitude = math.sqrt(x ^ 2 + y ^ 2)
@@ -131,7 +143,26 @@ function PseudoGame.game.WallSystem:update(frametime)
 			end
 		end
 		wall.distance = wall.distance - move_distance
-		self.wall_height = math.max(self.wall_height, wall.distance)
+
+		-- TODO: clean this up a bit
+		if self.options.reverse_direction then
+			if wall.distance < 0 then
+				polygon:set_vertex_pos(1, 0, 0)
+				polygon:set_vertex_pos(2, 0, 0)
+			else
+				polygon:set_vertex_pos(1, PseudoGame.game.get_orbit(wall.angle1, wall.distance))
+				polygon:set_vertex_pos(2, PseudoGame.game.get_orbit(wall.angle2, wall.distance))
+			end
+			if wall.distance + wall.thickness < 0 then
+				polygon:set_vertex_pos(3, 0, 0)
+				polygon:set_vertex_pos(4, 0, 0)
+			else
+				polygon:set_vertex_pos(3, PseudoGame.game.get_orbit(wall.angle2 + wall.angle_left, wall.distance + wall.thickness + wall.skew_left))
+				polygon:set_vertex_pos(4, PseudoGame.game.get_orbit(wall.angle1 + wall.angle_right, wall.distance + wall.thickness + wall.skew_right))
+			end
+		end
+
+		self.wall_height = math.max(self.wall_height, wall.distance + wall.thickness)
 		if points_on_center == 4 or points_out_of_bounds == 4 then
 			table.insert(del_queue, 1, i)
 			self.polygon_collection:remove(wall.polygon)

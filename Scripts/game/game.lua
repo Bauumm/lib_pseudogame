@@ -13,7 +13,7 @@ PseudoGame.game.Game.__index = PseudoGame.game.Game
 -- @tparam[opt=false] bool options.components.pseudo3d  update and draw the 3d
 -- @tparam[opt=level_style] Style options.style  the style the game should use
 -- @tparam[opt] table options.walls  wall system options
--- @tparam[opt=nil] Timeline options.walls.timeline  the timeline the wall system should use
+-- @tparam[opt] table options.player  player options
 -- @treturn Game
 function PseudoGame.game.Game:new(options)
 	if options == nil then
@@ -73,11 +73,11 @@ function PseudoGame.game.Game:new(options)
 			pseudo3d = true
 		}
 	end
-	obj:_init(options.components, options.walls, options.style)
+	obj:_init(options.components, options.player, options.walls, options.style)
 	return obj
 end
 
-function PseudoGame.game.Game:_init(components, wall_options, style)
+function PseudoGame.game.Game:_init(components, player_options, wall_options, style)
 	-- initialize game objects
 	if components.background then
 		self.background = PseudoGame.game.Background:new(style)
@@ -123,7 +123,12 @@ function PseudoGame.game.Game:_init(components, wall_options, style)
 		end
 	end
 	if components.player then
-		self.player = PseudoGame.game.Player:new(style, PseudoGame.game.basic_collision_handler)
+		if player_options == nil then
+			player_options = {
+				collision_handler = PseudoGame.game.basic_collision_handler
+			}
+		end
+		self.player = PseudoGame.game.Player:new(player_options, style)
 		self.death_effect = PseudoGame.game.DeathEffect:new(self.player)
 		self._collide_collection = PseudoGame.graphics.PolygonCollection:new()
 		self._player_collection = PseudoGame.graphics.PolygonCollection:new()

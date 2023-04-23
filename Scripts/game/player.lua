@@ -4,11 +4,14 @@ PseudoGame.game.Player = {}
 PseudoGame.game.Player.__index = PseudoGame.game.Player
 
 --- the constructor for a player that can handle collisions (without relying on the game's internals)
+-- @tparam[opt] table options  some options for the player
+-- @tparam[opt=nil] function options.collision_handler  the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)
+-- @tparam[opt=false] bool options.reverse  reverse the player (obviously this only works with a custom collision handler)
+-- @tparam[opt] number options.radius  overwrite the default radius the player moves on (obviously this only works with a custom collision handler)
 -- @tparam[opt=level_style] Style style  the style to use
--- @tparam[opt=nil] function collision_handler  the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)
 -- @treturn Player
-function PseudoGame.game.Player:new(style, collision_handler)
-	return setmetatable({
+function PseudoGame.game.Player:new(options, style)
+	local obj = setmetatable({
 		--- @tfield Style style  the style the player is using
 		style = style or PseudoGame.game.level_style,
 		--- @tfield number  the player's current angle
@@ -25,12 +28,13 @@ function PseudoGame.game.Player:new(style, collision_handler)
 		swap_cooldown_time = math.max(36 * l_getSwapCooldownMult(), 8),
 		--- @tfield bool  this field is true if the player swapped this tick, it's false otherwise
 		just_swapped = false,
-		--- @tfield function  the collision handler the player is currently using
-		collision_handler = collision_handler,
-		_use_real_player = collision_handler == nil,
+		--- @tfield table  the player's options
+		options = options or {},
 		--- @tfield Polygon polygon  the player triangle (use this for drawing)
 		polygon = PseudoGame.graphics.Polygon:new({0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	}, PseudoGame.game.Player)
+	obj._use_real_player = obj.options.collision_handler == nil
+	return obj
 end
 
 --- reset the swap cooldown to show swap blinking effect (should be called in `onCursorSwap` when using the "real" player)
@@ -65,7 +69,16 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
 			self.color = nil
 		end
 	end
-	local radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
+	local radius
+	if self.options.radius == nil then
+		if self.options.reverse then
+			radius = radius - math.min(PseudoGame.graphics.screen:get_width(), PseudoGame.graphics.screen:get_height()) * 0.5
+		else
+			radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
+		end
+	else
+		radius = self.options.radius
+	end
 	self.last_angle = self.angle
 	for i=1, 2 do
 		self.last_pos[i] = self.pos[i]
@@ -83,7 +96,7 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
 	end
 	self.pos[1], self.pos[2] = PseudoGame.game.get_orbit(self.angle, radius)
 	if not self._use_real_player and collide_collection ~= nil then
-		if self.collision_handler(self, collide_collection) then
+		if self.options.collision_handler(self, collide_collection) then
 			if self.kill_cw == nil then
 				self.kill_cw = PseudoGame.game.cw_function_backup.cw_createDeadly()
 			end
