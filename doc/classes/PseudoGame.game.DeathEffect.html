@@ -1,0 +1,557 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.game.DeathEffect - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><strong>PseudoGame.game.DeathEffect</strong></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.game.DeathEffect</code></h1>
+<p>Class to create the blinking hexagonal death effects around a player</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect:new">PseudoGame.game.DeathEffect:new (player)</a>
+      </td>
+      <td class="summary">
+        the constructor for a death effect
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect:death">PseudoGame.game.DeathEffect:death ()</a>
+      </td>
+      <td class="summary">
+        this function causes the death effect ot be shown permanently (should be called in <code>onDeath</code>)
+make sure to update and draw the death effect in onRenderStage as the other functions aren't called after death
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect:invincible_death">PseudoGame.game.DeathEffect:invincible_death ()</a>
+      </td>
+      <td class="summary">
+        this function shows the death effect for a moment (should be called in <code>onPreDeath</code>)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect:update">PseudoGame.game.DeathEffect:update (frametime)</a>
+      </td>
+      <td class="summary">
+        update the death effects shape and color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect:ensure_tickrate">PseudoGame.game.DeathEffect:ensure_tickrate (render_stage, frametime, draw_function)</a>
+      </td>
+      <td class="summary">
+        ensures that a function is called 240 times per second in onRenderStage after death (does nothing if the death method wasn't called)
+(only works if shaders are loaded, but that is usually the case when using this function as there's no need for a fake death effect if the player isn't hidden)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect.polygon_collection">PseudoGame.game.DeathEffect.polygon_collection</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect.player_hue">PseudoGame.game.DeathEffect.player_hue</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect.dead">PseudoGame.game.DeathEffect.dead</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect.timer">PseudoGame.game.DeathEffect.timer</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.DeathEffect.player">PseudoGame.game.DeathEffect.player</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect:new" href="#PseudoGame.game.DeathEffect:new">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect:new (player)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    the constructor for a death effect
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">player</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Player.html">Player</a></span></td>
+           <td class="see_also_description">  the player the death effect is for</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.game.DeathEffect.html">DeathEffect</a></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect:death" href="#PseudoGame.game.DeathEffect:death">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect:death ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    this function causes the death effect ot be shown permanently (should be called in <code>onDeath</code>)
+make sure to update and draw the death effect in onRenderStage as the other functions aren't called after death
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect:invincible_death" href="#PseudoGame.game.DeathEffect:invincible_death">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect:invincible_death ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    this function shows the death effect for a moment (should be called in <code>onPreDeath</code>)
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect:update" href="#PseudoGame.game.DeathEffect:update">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect:update (frametime)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    update the death effects shape and color
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">frametime</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the time in 1/60s that passed since the last call to this function</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect:ensure_tickrate" href="#PseudoGame.game.DeathEffect:ensure_tickrate">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect:ensure_tickrate (render_stage, frametime, draw_function)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    ensures that a function is called 240 times per second in onRenderStage after death (does nothing if the death method wasn't called)
+(only works if shaders are loaded, but that is usually the case when using this function as there's no need for a fake death effect if the player isn't hidden)
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">render_stage</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the render stage that onRenderStage is being called for</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">frametime</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the inconsistent frametime that onRenderStage gets as second parameter</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">draw_function</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">function</span></span></td>
+           <td class="see_also_description">  a function that will be called 240 times per second (should contain your drawing logic so the death effect can be drawn)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect.polygon_collection" href="#PseudoGame.game.DeathEffect.polygon_collection">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect.polygon_collection</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  The collection of polygons representing the visual death effect (use this for drawing)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect.player_hue" href="#PseudoGame.game.DeathEffect.player_hue">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect.player_hue</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">player_hue</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  The hue the player and the death effect currently have</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect.dead" href="#PseudoGame.game.DeathEffect.dead">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect.dead</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">dead</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  True if the player has died</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect.timer" href="#PseudoGame.game.DeathEffect.timer">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect.timer</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">timer</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  The time the death effect is going to be shown for in invincible mode (counts down and stops showing the death effect once it reaches 0)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.DeathEffect.player" href="#PseudoGame.game.DeathEffect.player">&#128279;</a>
+    <strong>PseudoGame.game.DeathEffect.player</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">player</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Player.html">Player</a></span></td>
+           <td class="see_also_description">  The player the death effect is for</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

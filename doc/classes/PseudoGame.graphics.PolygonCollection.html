@@ -1,0 +1,615 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.graphics.PolygonCollection - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><strong>PseudoGame.graphics.PolygonCollection</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.graphics.PolygonCollection</code></h1>
+<p>Class for storing multiple polygons in an efficient manner</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:new">PseudoGame.graphics.PolygonCollection:new ()</a>
+      </td>
+      <td class="summary">
+        the constructor for a polygon collection
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:add">PseudoGame.graphics.PolygonCollection:add (polygon)</a>
+      </td>
+      <td class="summary">
+        add a polygon to the collection
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:resize">PseudoGame.graphics.PolygonCollection:resize (size)</a>
+      </td>
+      <td class="summary">
+        make the collection be a certain size by deleting polygons if it's too big and creating new ones if it's too small
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:remove">PseudoGame.graphics.PolygonCollection:remove (index)</a>
+      </td>
+      <td class="summary">
+        remove a polygon from the collection (this does not shift other indices)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:get">PseudoGame.graphics.PolygonCollection:get (index)</a>
+      </td>
+      <td class="summary">
+        get a polygon from the collection
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:copy_add">PseudoGame.graphics.PolygonCollection:copy_add (polygon_collection)</a>
+      </td>
+      <td class="summary">
+        add the polygons from another collection to this one by copying them (uses <a href="../classes/PseudoGame.graphics.Polygon.html#PseudoGame.graphics.Polygon:copy">Polygon:copy</a> so this function is bad for performance)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:ref_add">PseudoGame.graphics.PolygonCollection:ref_add (polygon_collection)</a>
+      </td>
+      <td class="summary">
+        add the polygons from another collection to this one by referencing them
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:iter">PseudoGame.graphics.PolygonCollection:iter ()</a>
+      </td>
+      <td class="summary">
+        an iterator to loop over all polygons in the collection
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:generator">PseudoGame.graphics.PolygonCollection:generator ()</a>
+      </td>
+      <td class="summary">
+        recreate all polygons in the collection while reusing the old ones (avoids table allocation so this is very good for performance)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:transform">PseudoGame.graphics.PolygonCollection:transform (transform_func)</a>
+      </td>
+      <td class="summary">
+        transform the vertices and vertex colors of all polygons in the collection
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection:clear">PseudoGame.graphics.PolygonCollection:clear ()</a>
+      </td>
+      <td class="summary">
+        clear all polygons from this collection (does not delete the items in the table internally, so it's fine performance wise to frequently clear a collection)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.PolygonCollection.size">PseudoGame.graphics.PolygonCollection.size</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:new" href="#PseudoGame.graphics.PolygonCollection:new">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:new ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    the constructor for a polygon collection
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span>
+        the newly created polygon collection
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:add" href="#PseudoGame.graphics.PolygonCollection:add">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:add (polygon)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    add a polygon to the collection
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.Polygon.html">Polygon</a></span></td>
+           <td class="see_also_description">  the polygon to add</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        the index of the polygon in the collection
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:resize" href="#PseudoGame.graphics.PolygonCollection:resize">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:resize (size)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    make the collection be a certain size by deleting polygons if it's too big and creating new ones if it's too small
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">size</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the amount of polygons that will be in the collection</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:remove" href="#PseudoGame.graphics.PolygonCollection:remove">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:remove (index)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    remove a polygon from the collection (this does not shift other indices)
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">index</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the index of the polygon that should be deleted</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:get" href="#PseudoGame.graphics.PolygonCollection:get">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:get (index)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    get a polygon from the collection
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">index</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the index of the polygon in the collection</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.graphics.Polygon.html">Polygon</a></span>
+        the polygon at the index in the collection
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:copy_add" href="#PseudoGame.graphics.PolygonCollection:copy_add">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:copy_add (polygon_collection)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    add the polygons from another collection to this one by copying them (uses <a href="../classes/PseudoGame.graphics.Polygon.html#PseudoGame.graphics.Polygon:copy">Polygon:copy</a> so this function is bad for performance)
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the collection with the polygons that should be added</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:ref_add" href="#PseudoGame.graphics.PolygonCollection:ref_add">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:ref_add (polygon_collection)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    add the polygons from another collection to this one by referencing them
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the collection with the polygons that should be added</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:iter" href="#PseudoGame.graphics.PolygonCollection:iter">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:iter ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    an iterator to loop over all polygons in the collection
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">for</span> polygon <span class="keyword">in</span> mypolygoncollection:iter() <span class="keyword">do</span>
+    ...
+<span class="keyword">end</span></pre>
+    </ul>
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:generator" href="#PseudoGame.graphics.PolygonCollection:generator">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:generator ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    recreate all polygons in the collection while reusing the old ones (avoids table allocation so this is very good for performance)
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> gen = polygon_collection:generator()
+<span class="keyword">for</span> i=<span class="number">1</span>,<span class="number">100</span> <span class="keyword">do</span>
+    <span class="keyword">local</span> polygon = gen()
+    <span class="comment">-- since it reuses old polygons and creates new empty ones if there is none
+</span>    <span class="comment">-- we don't know what vertex count the polygon has, so it makes sense to set it
+</span>    <span class="comment">-- setting it to the number you need directly instead of setting it to 0 and adding
+</span>    <span class="comment">-- vertices is better for performance (less (or no when reusing) memory allocation)
+</span>    <span class="comment">-- (this is not required if you call methods like polygon:copy_data)
+</span>    polygon:resize(<span class="number">4</span>)
+    ...
+<span class="keyword">end</span></pre>
+    </ul>
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:transform" href="#PseudoGame.graphics.PolygonCollection:transform">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:transform (transform_func)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    transform the vertices and vertex colors of all polygons in the collection
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">transform_func</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">function</span></span></td>
+           <td class="see_also_description">  a function that takes <code>x, y, r, g, b, a</code> and returns <code>x, y, r, g, b, a</code></td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection:clear" href="#PseudoGame.graphics.PolygonCollection:clear">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection:clear ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    clear all polygons from this collection (does not delete the items in the table internally, so it's fine performance wise to frequently clear a collection)
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.PolygonCollection.size" href="#PseudoGame.graphics.PolygonCollection.size">&#128279;</a>
+    <strong>PseudoGame.graphics.PolygonCollection.size</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">size</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the amount of polygons in the collection</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

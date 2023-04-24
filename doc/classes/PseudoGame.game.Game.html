@@ -1,0 +1,909 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.game.Game - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><strong>PseudoGame.game.Game</strong></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.game.Game</code></h1>
+<p>Class that creates and manages all the game components allowing direct access to each component's polygons for transformation</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game:new">PseudoGame.game.Game:new ([options])</a>
+      </td>
+      <td class="summary">
+        the constructor for a game object
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game:overwrite">PseudoGame.game.Game:overwrite ()</a>
+      </td>
+      <td class="summary">
+        overwrites the wall functions as well as custom walls function to modify the walls in this game (only if walls were specified in the components)
+IMPORTANT: once this function was called, you have to call <code>Game:restore()</code> before exiting your level (e.g.
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game:restore">PseudoGame.game.Game:restore ()</a>
+      </td>
+      <td class="summary">
+        restores the original wall and custom wall functions
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game:update">PseudoGame.game.Game:update (frametime, move, focus, swap)</a>
+      </td>
+      <td class="summary">
+        update the game
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game:draw">PseudoGame.game.Game:draw ()</a>
+      </td>
+      <td class="summary">
+        puts all component collections polygons into <a href="../classes/PseudoGame.game.Game.html#PseudoGame.game.Game.polygon_collection">Game.polygon_collection</a>
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game:draw_to_screen">PseudoGame.game.Game:draw_to_screen ()</a>
+      </td>
+      <td class="summary">
+        draws all component collections onto the screen and updates it
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.component_collections">PseudoGame.game.Game.component_collections</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.collections">PseudoGame.game.Game.collections</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.polygon_collection">PseudoGame.game.Game.polygon_collection</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.background">PseudoGame.game.Game.background</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.walls">PseudoGame.game.Game.walls</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.player">PseudoGame.game.Game.player</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.death_effect">PseudoGame.game.Game.death_effect</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.pivot">PseudoGame.game.Game.pivot</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.cap">PseudoGame.game.Game.cap</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Game.pseudo3d">PseudoGame.game.Game.pseudo3d</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game:new" href="#PseudoGame.game.Game:new">&#128279;</a>
+    <strong>PseudoGame.game.Game:new ([options])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    the constructor for a game object
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+        <tr>
+           <td><span class="parameter">options</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">table</span></span></td>
+           <td class="see_also_description">  options for the game object </td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">components</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  table telling the game what game components it needs to update, draw and which collections to return from <a href="../classes/PseudoGame.game.Game.html#PseudoGame.game.Game:update">Game:update</a> (helps reducing lag if e.g. 3D isn't needed), just sets every component to true when not given</td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">components.background</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  update and draw the background</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">components.walls</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  update and draw the walls</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">components.pivot</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  update and draw the pivot (including cap)</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">components.player</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  update and draw the player (including death effect)</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">components.pseudo3d</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  update and draw the 3d</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">style</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Style.html">Style</a></span></td>
+           <td class="see_also_description">  the style the game should use</td>
+           <td><span class="default_value"><code>level_style</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">walls</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  wall system options</td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">player</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  player options</td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.game.Game.html">Game</a></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game:overwrite" href="#PseudoGame.game.Game:overwrite">&#128279;</a>
+    <strong>PseudoGame.game.Game:overwrite ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    overwrites the wall functions as well as custom walls function to modify the walls in this game (only if walls were specified in the components)
+IMPORTANT: once this function was called, you have to call <code>Game:restore()</code> before exiting your level (e.g.  in <code>onPreUnload</code>), otherwise it may break other levels at random, as this function overwrites some default game functions
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game:restore" href="#PseudoGame.game.Game:restore">&#128279;</a>
+    <strong>PseudoGame.game.Game:restore ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    restores the original wall and custom wall functions
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game:update" href="#PseudoGame.game.Game:update">&#128279;</a>
+    <strong>PseudoGame.game.Game:update (frametime, move, focus, swap)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    update the game
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">frametime</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the time in 1/60s that passed since the last call of this function</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">move</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the current movement direction, so either -1, 0 or 1</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">focus</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  true if the player is focusing, false otherwise</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">swap</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  true if the swap key is pressed, false otherwise</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game:draw" href="#PseudoGame.game.Game:draw">&#128279;</a>
+    <strong>PseudoGame.game.Game:draw ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    puts all component collections polygons into <a href="../classes/PseudoGame.game.Game.html#PseudoGame.game.Game.polygon_collection">Game.polygon_collection</a>
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game:draw_to_screen" href="#PseudoGame.game.Game:draw_to_screen">&#128279;</a>
+    <strong>PseudoGame.game.Game:draw_to_screen ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    draws all component collections onto the screen and updates it
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.component_collections" href="#PseudoGame.game.Game.component_collections">&#128279;</a>
+    <strong>PseudoGame.game.Game.component_collections</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <h3>Fields:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+        <tr>
+           <td><span class="parameter">component_collections</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">table</span></span></td>
+           <td class="see_also_description">  a table with the game component names as keys containing the polygon_collections for each component (use this for customized drawing) </td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">background</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the game's background (only exists if <code>components.background == true</code>)</td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">walls</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the game's walls (only exists if <code>components.walls == true</code>)</td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">player</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the game's player (only exists if <code>components.player == true</code>)</td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">pivot</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the game's pivot (only exists if <code>components.pivot == true</code>)</td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">pseudo3d</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the game's 3d (only exists if <code>components.pseudo3d == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.collections" href="#PseudoGame.game.Game.collections">&#128279;</a>
+    <strong>PseudoGame.game.Game.collections</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <h3>Fields:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">collections</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  same as <a href="../classes/PseudoGame.game.Game.html#PseudoGame.game.Game.component_collections">Game.component_collections</a> but instead of having named keys it's an ordered list that has the collections in the following order: background, pseudo3d, walls, pivot, player (if one of these components is not defined the list will be shorter and the other components are moved (use <a href="../classes/PseudoGame.game.Game.html#PseudoGame.game.Game.component_collections">Game.component_collections</a> for constant keys))</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.polygon_collection" href="#PseudoGame.game.Game.polygon_collection">&#128279;</a>
+    <strong>PseudoGame.game.Game.polygon_collection</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the collection the <code>Game:draw()</code> method draws into</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.background" href="#PseudoGame.game.Game.background">&#128279;</a>
+    <strong>PseudoGame.game.Game.background</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">background</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Background.html">Background</a></span></td>
+           <td class="see_also_description">  the game's background (only exists if <code>components.background == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.walls" href="#PseudoGame.game.Game.walls">&#128279;</a>
+    <strong>PseudoGame.game.Game.walls</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">walls</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.WallSystem.html">WallSystem</a></span></td>
+           <td class="see_also_description">  the game's wall system (only exists if <code>components.walls == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.player" href="#PseudoGame.game.Game.player">&#128279;</a>
+    <strong>PseudoGame.game.Game.player</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">player</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Player.html">Player</a></span></td>
+           <td class="see_also_description">  the game's player (uses <code>PseudoGame.game.basic_collision_handler</code> by default) (only exists if <code>components.player == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.death_effect" href="#PseudoGame.game.Game.death_effect">&#128279;</a>
+    <strong>PseudoGame.game.Game.death_effect</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">death_effect</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.DeathEffect.html">DeathEffect</a></span></td>
+           <td class="see_also_description">  the game's player's death effect (only exists if <code>components.player == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.pivot" href="#PseudoGame.game.Game.pivot">&#128279;</a>
+    <strong>PseudoGame.game.Game.pivot</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">pivot</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Pivot.html">Pivot</a></span></td>
+           <td class="see_also_description">  the game's pivot (only exists if <code>components.pivot == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.cap" href="#PseudoGame.game.Game.cap">&#128279;</a>
+    <strong>PseudoGame.game.Game.cap</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">cap</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Cap.html">Cap</a></span></td>
+           <td class="see_also_description">  the game's cap (only exists if <code>components.pivot == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Game.pseudo3d" href="#PseudoGame.game.Game.pseudo3d">&#128279;</a>
+    <strong>PseudoGame.game.Game.pseudo3d</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">pseudo3d</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Pseudo3D.html">Pseudo3D</a></span></td>
+           <td class="see_also_description">  the game's 3d effect (only exists if <code>components.pseudo3d == true</code>)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

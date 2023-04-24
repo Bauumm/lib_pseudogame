@@ -1,0 +1,948 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.game.Player - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><strong>PseudoGame.game.Player</strong></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.game.Player</code></h1>
+<p>Class that represents a game's player</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player:new">PseudoGame.game.Player:new ([options[, style=nil]])</a>
+      </td>
+      <td class="summary">
+        the constructor for a player that can handle collisions (without relying on the game's internals)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player:reset_swap_cooldown">PseudoGame.game.Player:reset_swap_cooldown ()</a>
+      </td>
+      <td class="summary">
+        reset the swap cooldown to show swap blinking effect (should be called in <code>onCursorSwap</code> when using the "real" player)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player:update">PseudoGame.game.Player:update (frametime[, move], focus[, swap[, collide_collection]])</a>
+      </td>
+      <td class="summary">
+        update the players position while handling collisions as well as swap
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.pos">PseudoGame.game.Player.pos</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.last_pos">PseudoGame.game.Player.last_pos</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.style">PseudoGame.game.Player.style</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.angle">PseudoGame.game.Player.angle</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.last_angle">PseudoGame.game.Player.last_angle</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.movement_dir">PseudoGame.game.Player.movement_dir</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.speed">PseudoGame.game.Player.speed</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.swap_blink_time">PseudoGame.game.Player.swap_blink_time</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.swap_cooldown_time">PseudoGame.game.Player.swap_cooldown_time</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.just_swapped">PseudoGame.game.Player.just_swapped</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.options">PseudoGame.game.Player.options</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.dead">PseudoGame.game.Player.dead</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.radius">PseudoGame.game.Player.radius</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Player.polygon">PseudoGame.game.Player.polygon</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player:new" href="#PseudoGame.game.Player:new">&#128279;</a>
+    <strong>PseudoGame.game.Player:new ([options[, style=nil]])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    the constructor for a player that can handle collisions (without relying on the game's internals)
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+        <tr>
+           <td><span class="parameter">options</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">table</span></span></td>
+           <td class="see_also_description">  some options for the player </td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">collision_handler</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">function</span></span></td>
+           <td class="see_also_description">  the collision system to use (nil will make it use the real player, so you'll have to draw cws with collision)</td>
+           <td><span class="default_value"><code>nil</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">reverse</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  reverse the player (obviously this only works with a custom collision handler)</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">radius</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  overwrite the default radius the player moves on (obviously this only works with a custom collision handler)</td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">style</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Style.html">Style</a></span></td>
+           <td class="see_also_description">  the style to use</td>
+           <td><span class="default_value"><code>level_style</code></span></td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.game.Player.html">Player</a></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player:reset_swap_cooldown" href="#PseudoGame.game.Player:reset_swap_cooldown">&#128279;</a>
+    <strong>PseudoGame.game.Player:reset_swap_cooldown ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    reset the swap cooldown to show swap blinking effect (should be called in <code>onCursorSwap</code> when using the "real" player)
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player:update" href="#PseudoGame.game.Player:update">&#128279;</a>
+    <strong>PseudoGame.game.Player:update (frametime[, move], focus[, swap[, collide_collection]])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    update the players position while handling collisions as well as swap
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">frametime</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the time in 1/60s that passed since the last call of this function</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">move</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the current movement direction, so either -1, 0 or 1 (only required when using a custom collision handler)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">focus</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  true if the player is focusing, false otherwise</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">swap</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  true if the swap key is pressed, false otherwise (only required when using a custom collision handler)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">collide_collection</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description">  the collection of polygons the player should collide with (only required when using a custom collision handler)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.pos" href="#PseudoGame.game.Player.pos">&#128279;</a>
+    <strong>PseudoGame.game.Player.pos</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <h3>Fields:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">pos</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the current position of the player (formatted like this: {x, y})</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.last_pos" href="#PseudoGame.game.Player.last_pos">&#128279;</a>
+    <strong>PseudoGame.game.Player.last_pos</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <h3>Fields:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">last_pos</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the position the player had in the last tick (formatted like this: {x, y})</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.style" href="#PseudoGame.game.Player.style">&#128279;</a>
+    <strong>PseudoGame.game.Player.style</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">style</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Style.html">Style</a></span></td>
+           <td class="see_also_description">  the style the player is using</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.angle" href="#PseudoGame.game.Player.angle">&#128279;</a>
+    <strong>PseudoGame.game.Player.angle</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> player's current angle</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.last_angle" href="#PseudoGame.game.Player.last_angle">&#128279;</a>
+    <strong>PseudoGame.game.Player.last_angle</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> angle the player had in the last tick</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.movement_dir" href="#PseudoGame.game.Player.movement_dir">&#128279;</a>
+    <strong>PseudoGame.game.Player.movement_dir</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> current movement direction</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.speed" href="#PseudoGame.game.Player.speed">&#128279;</a>
+    <strong>PseudoGame.game.Player.speed</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> current movement speed</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.swap_blink_time" href="#PseudoGame.game.Player.swap_blink_time">&#128279;</a>
+    <strong>PseudoGame.game.Player.swap_blink_time</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">a</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> number that indicates the current state of the swap blinking animation (the current blink hue is swap<em>blink</em>time * 36)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.swap_cooldown_time" href="#PseudoGame.game.Player.swap_cooldown_time">&#128279;</a>
+    <strong>PseudoGame.game.Player.swap_cooldown_time</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> time in 1/60s the player has until it can swap again after swapping</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.just_swapped" href="#PseudoGame.game.Player.just_swapped">&#128279;</a>
+    <strong>PseudoGame.game.Player.just_swapped</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">this</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description"> field is true if the player swapped this tick, it's false otherwise</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.options" href="#PseudoGame.game.Player.options">&#128279;</a>
+    <strong>PseudoGame.game.Player.options</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description"> player's options</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.dead" href="#PseudoGame.game.Player.dead">&#128279;</a>
+    <strong>PseudoGame.game.Player.dead</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">true</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description"> if the player is dead (set by the death effects function)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.radius" href="#PseudoGame.game.Player.radius">&#128279;</a>
+    <strong>PseudoGame.game.Player.radius</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> player's radius</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Player.polygon" href="#PseudoGame.game.Player.polygon">&#128279;</a>
+    <strong>PseudoGame.game.Player.polygon</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">Polygon</span></span></td>
+           <td class="see_also_description">  the player triangle (use this for drawing)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

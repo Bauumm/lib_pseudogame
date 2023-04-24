@@ -1,0 +1,590 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.game.WallSystem - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><strong>PseudoGame.game.WallSystem</strong></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.game.WallSystem</code></h1>
+<p>Class that handles a game's walls</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:new">PseudoGame.game.WallSystem:new ([options[, style=nil]])</a>
+      </td>
+      <td class="summary">
+        the constructor for a wall system
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:wall">PseudoGame.game.WallSystem:wall ([height=`l_getWallSpawnDistance()`][, hue_modifier=0], side, thickness[, speed_mult=1[, acceleration=0[, min_speed=0[, max_speed=0[, ping_pong=false[, curving=false]]]]]])</a>
+      </td>
+      <td class="summary">
+        create a wall in the system
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:update">PseudoGame.game.WallSystem:update (frametime)</a>
+      </td>
+      <td class="summary">
+        update the walls position
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:overwrite">PseudoGame.game.WallSystem:overwrite ()</a>
+      </td>
+      <td class="summary">
+        overwrite the <code>w_wall</code>, <code>w_wallAdj</code>, <code>w_wallAcc</code> and <code>u_clearWalls</code> functions to create/clear walls in this system
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:restore">PseudoGame.game.WallSystem:restore ()</a>
+      </td>
+      <td class="summary">
+        restore the original <code>w_wall</code>, <code>w_wallAdj</code>, <code>w_wallAcc</code> and <code>u_clearWalls</code> functions
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem.style">PseudoGame.game.WallSystem.style</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem.options">PseudoGame.game.WallSystem.options</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem.polygon_collection">PseudoGame.game.WallSystem.polygon_collection</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem.wall_height">PseudoGame.game.WallSystem.wall_height</a>
+      </td>
+      <td class="summary">
+
+
+
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:new" href="#PseudoGame.game.WallSystem:new">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:new ([options[, style=nil]])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    the constructor for a wall system
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+        <tr>
+           <td><span class="parameter">options</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">table</span></span></td>
+           <td class="see_also_description">  some options for the wall system </td>
+           <td><span class="not_applicable">Undefined</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">timeline</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Timeline.html">Timeline</a></span></td>
+           <td class="see_also_description">  the timeline to use (nil will use the default t_ functions)</td>
+           <td><span class="default_value"><code>nil</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">despawn_distance</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Timeline.html">Timeline</a></span></td>
+           <td class="see_also_description">  the distance at which walls are removed</td>
+           <td><span class="default_value"><code>`l_getWallSpawnDistance() * 1.1`</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">reverse_direction</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Timeline.html">Timeline</a></span></td>
+           <td class="see_also_description">  makes walls move from the center out of the screen</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">style</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Style.html">Style</a></span></td>
+           <td class="see_also_description">  the style to use</td>
+           <td><span class="default_value"><code>level_style</code></span></td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.game.WallSystem.html">WallSystem</a></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:wall" href="#PseudoGame.game.WallSystem:wall">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:wall ([height=`l_getWallSpawnDistance()`][, hue_modifier=0], side, thickness[, speed_mult=1[, acceleration=0[, min_speed=0[, max_speed=0[, ping_pong=false[, curving=false]]]]]])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    create a wall in the system
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">height</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the height the wall will be spawned at</td>
+           <td><span class="default_value"><code>`l_getWallSpawnDistance()`</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">hue_modifier</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the modifier the hue of the wall will be adjusted by</td>
+           <td><span class="default_value"><code>0</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">side</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the side to spawn the wall at</td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">thickness</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the thickness the wall should have</td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">speed_mult</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the speed<em>mult (will be multiplied with u</em>getSpeedMultDM())</td>
+           <td><span class="default_value"><code>1</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">acceleration</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the acceleration (it will be adjusted using the difficulty mult)</td>
+           <td><span class="default_value"><code>0</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">min_speed</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the minimum speed the wall should have (will be multiplied with u_getSpeedMultDM())</td>
+           <td><span class="default_value"><code>0</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">max_speed</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the maximum speed the wall should have (will be multiplied with u_getSpeedMultDM())</td>
+           <td><span class="default_value"><code>0</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">ping_pong</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  will bounce between max and min speed if true</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">curving</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  will make the wall a curving wall if true (uses speed<em>mult, acceleration, min/max</em>speed for curve speed instead of wall speed)</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:update" href="#PseudoGame.game.WallSystem:update">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:update (frametime)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    update the walls position
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">frametime</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the time in 1/60s that passed since the last call of this function</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:overwrite" href="#PseudoGame.game.WallSystem:overwrite">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:overwrite ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    overwrite the <code>w_wall</code>, <code>w_wallAdj</code>, <code>w_wallAcc</code> and <code>u_clearWalls</code> functions to create/clear walls in this system
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:restore" href="#PseudoGame.game.WallSystem:restore">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:restore ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    restore the original <code>w_wall</code>, <code>w_wallAdj</code>, <code>w_wallAcc</code> and <code>u_clearWalls</code> functions
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem.style" href="#PseudoGame.game.WallSystem.style">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem.style</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Style.html">Style</a></span></td>
+           <td class="see_also_description"> style the wall system is using</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem.options" href="#PseudoGame.game.WallSystem.options">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem.options</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description"> options that were passed to the constructor</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem.polygon_collection" href="#PseudoGame.game.WallSystem.polygon_collection">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem.polygon_collection</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">PolygonCollection</span></span></td>
+           <td class="see_also_description"> collection of polygons representing the walls (use this for drawing)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem.wall_height" href="#PseudoGame.game.WallSystem.wall_height">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem.wall_height</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+
+
+
+
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">the</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description"> distance of the center to the highest wall in the system</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.game.Timeline - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><strong>PseudoGame.game.Timeline</strong></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.game.Timeline</code></h1>
+<p>Custom timeline class (it can be used with the game object, but it's disabled by default as it doesn't support increments)</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:new">PseudoGame.game.Timeline:new (on_empty_function)</a>
+      </td>
+      <td class="summary">
+        constructor for a new timeline
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:overwrite">PseudoGame.game.Timeline:overwrite ()</a>
+      </td>
+      <td class="summary">
+        overwrite the default t_ functions with this timeline
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:restore">PseudoGame.game.Timeline:restore ()</a>
+      </td>
+      <td class="summary">
+        restore the t_ functions that were present before overwriting
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:on_empty_function">PseudoGame.game.Timeline:on_empty_function ()</a>
+      </td>
+      <td class="summary">
+        function that is called when the timeline is empty (defined using the parameter in the constructor)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:update">PseudoGame.game.Timeline:update (frametime)</a>
+      </td>
+      <td class="summary">
+        update the timeline
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:wait_until">PseudoGame.game.Timeline:wait_until (time)</a>
+      </td>
+      <td class="summary">
+        append to the timeline: wait
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:wait">PseudoGame.game.Timeline:wait (time)</a>
+      </td>
+      <td class="summary">
+        append to the timeline: wait
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:eval">PseudoGame.game.Timeline:eval (func)</a>
+      </td>
+      <td class="summary">
+        append to the timeline: eval
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Timeline:clear">PseudoGame.game.Timeline:clear ()</a>
+      </td>
+      <td class="summary">
+        remove all entries from the timeline
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:new" href="#PseudoGame.game.Timeline:new">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:new (on_empty_function)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    constructor for a new timeline
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">on_empty_function</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">function</span></span></td>
+           <td class="see_also_description">  function that is called once the timeline is empty (should append new things to the timeline) (basically the same as onStep)</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.game.Timeline.html">Timeline</a></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:overwrite" href="#PseudoGame.game.Timeline:overwrite">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:overwrite ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    overwrite the default t_ functions with this timeline
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:restore" href="#PseudoGame.game.Timeline:restore">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:restore ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    restore the t_ functions that were present before overwriting
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:on_empty_function" href="#PseudoGame.game.Timeline:on_empty_function">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:on_empty_function ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    function that is called when the timeline is empty (defined using the parameter in the constructor)
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:update" href="#PseudoGame.game.Timeline:update">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:update (frametime)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    update the timeline
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">frametime</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  time in 1/60s that passed since the last call of this function</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:wait_until" href="#PseudoGame.game.Timeline:wait_until">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:wait_until (time)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    append to the timeline: wait
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">time</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  time in 1/60s to wait until (starts counting from where <a href="../classes/PseudoGame.game.Timeline.html#PseudoGame.game.Timeline:update">Timeline:update</a> is called for the first time)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:wait" href="#PseudoGame.game.Timeline:wait">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:wait (time)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    append to the timeline: wait
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">time</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  time in 1/60s to wait</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:eval" href="#PseudoGame.game.Timeline:eval">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:eval (func)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    append to the timeline: eval
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">func</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">function</span></span></td>
+           <td class="see_also_description">  the function to execute once this is reached</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Timeline:clear" href="#PseudoGame.game.Timeline:clear">&#128279;</a>
+    <strong>PseudoGame.game.Timeline:clear ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    remove all entries from the timeline
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

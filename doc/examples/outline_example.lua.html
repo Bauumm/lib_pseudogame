@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Example outline_example.lua - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><strong>outline_example.lua</strong></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <h2>outline_example.lua</h2>
+<pre>
+<span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
+</span><span class="comment">-- folder.
+</span>u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
+u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
+u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
+u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
+
+<span class="comment">-- reduce lag
+</span>s_set3dDepth(<span class="number">0</span>)
+
+<span class="comment">-- hide the real game
+</span>PseudoGame.hide_default_game()
+
+<span class="comment">-- create a fake game
+</span>game = PseudoGame.game.Game:new()
+
+<span class="comment">-- overwrite the real game's functions (mostly wall functions)
+</span>game:overwrite()
+
+<span class="comment">-- draw the outlines directly to the screen instead of filling up a collection
+</span>PseudoGame.graphics.effects.draw_directly = <span class="keyword">true</span>
+
+<span class="keyword">function</span> onInput(frametime, movement, focus, swap)
+    <span class="comment">-- update our game
+</span>    game:update(frametime, movement, focus, swap)
+
+    <span class="comment">-- draw the game
+</span>    game:draw()
+
+    <span class="keyword">for</span> i = <span class="number">1</span>, #game.collections <span class="keyword">do</span>
+        PseudoGame.graphics.screen:draw_polygon_collection(game.collections[i])
+        PseudoGame.graphics.effects:outline(game.collections[i], <span class="number">1</span>, { <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span> })
+    <span class="keyword">end</span>
+    PseudoGame.graphics.screen:update()
+<span class="keyword">end</span>
+
+<span class="comment">-- show a death effect when the player dies
+</span><span class="keyword">function</span> onDeath()
+    game.death_effect:death()
+<span class="keyword">end</span>
+
+<span class="comment">-- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
+</span><span class="keyword">function</span> onPreDeath()
+    game.death_effect:invincible_death()
+<span class="keyword">end</span>
+
+<span class="comment">-- show and update the death effect even in the death screen
+</span><span class="keyword">function</span> onRenderStage(render_stage, frametime)
+    game.death_effect:ensure_tickrate(render_stage, frametime, <span class="keyword">function</span>(new_frametime)
+        <span class="comment">-- updating and drawing the game again is required for the death effect to show properly
+</span>        <span class="comment">-- (make sure no game logic is progressing if <code>game.death_effect.dead == true</code>)
+</span>        onInput(new_frametime, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
+    <span class="keyword">end</span>)
+<span class="keyword">end</span>
+
+<span class="comment">-- This function adds a pattern to the level "timeline" based on a numeric key.
+</span><span class="keyword">function</span> addPattern(mKey)
+    <span class="keyword">if</span> mKey == <span class="number">0</span> <span class="keyword">then</span>
+        pAltBarrage(u_rndInt(<span class="number">3</span>, <span class="number">5</span>), <span class="number">2</span>)
+    <span class="keyword">elseif</span> mKey == <span class="number">1</span> <span class="keyword">then</span>
+        pMirrorSpiral(u_rndInt(<span class="number">2</span>, <span class="number">5</span>), getHalfSides() - <span class="number">3</span>)
+    <span class="keyword">elseif</span> mKey == <span class="number">2</span> <span class="keyword">then</span>
+        pBarrageSpiral(u_rndInt(<span class="number">0</span>, <span class="number">3</span>), <span class="number">1</span>, <span class="number">1</span>)
+    <span class="keyword">elseif</span> mKey == <span class="number">3</span> <span class="keyword">then</span>
+        pInverseBarrage(<span class="number">0</span>)
+    <span class="keyword">elseif</span> mKey == <span class="number">4</span> <span class="keyword">then</span>
+        pTunnel(u_rndInt(<span class="number">1</span>, <span class="number">3</span>))
+    <span class="keyword">elseif</span> mKey == <span class="number">5</span> <span class="keyword">then</span>
+        pSpiral(l_getSides() * u_rndInt(<span class="number">1</span>, <span class="number">2</span>), <span class="number">0</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- Shuffle the keys, and then call them to add all the patterns.
+</span><span class="comment">-- Shuffling is better than randomizing - it guarantees all the patterns will
+</span><span class="comment">-- be called.
+</span>keys = { <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span> }
+shuffle(keys)
+index = <span class="number">0</span>
+achievementUnlocked = <span class="keyword">false</span>
+
+<span class="comment">-- <code>onInit</code> is an hardcoded function that is called when the level is first
+</span><span class="comment">-- loaded. This can be used to setup initial level parameters.
+</span><span class="keyword">function</span> onInit()
+    l_setSpeedMult(<span class="number">1.55</span>)
+    l_setSpeedInc(<span class="number">0.125</span>)
+    l_setSpeedMax(<span class="number">3.5</span>)
+    l_setRotationSpeed(<span class="number">0.07</span>)
+    l_setRotationSpeedMax(<span class="number">0.75</span>)
+    l_setRotationSpeedInc(<span class="number">0.04</span>)
+    l_setDelayMult(<span class="number">1.0</span>)
+    l_setDelayInc(-<span class="number">0.01</span>)
+    l_setFastSpin(<span class="number">0.0</span>)
+    l_setSides(<span class="number">6</span>)
+    l_setSidesMin(<span class="number">5</span>)
+    l_setSidesMax(<span class="number">6</span>)
+    l_setIncTime(<span class="number">15</span>)
+
+    l_setPulseMin(<span class="number">75</span>)
+    l_setPulseMax(<span class="number">91</span>)
+    l_setPulseSpeed(<span class="number">1.2</span>)
+    l_setPulseSpeedR(<span class="number">1</span>)
+    l_setPulseDelayMax(<span class="number">23.9</span>)
+
+    l_setBeatPulseMax(<span class="number">17</span>)
+    l_setBeatPulseDelayMax(<span class="number">24.8</span>)
+
+    enableSwapIfDMGreaterThan(<span class="number">2.5</span>)
+    disableIncIfDMGreaterThan(<span class="number">3</span>)
+<span class="keyword">end</span>
+
+<span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
+</span><span class="comment">-- or restarted.
+</span><span class="keyword">function</span> onLoad()
+    e_messageAdd(<span class="string">"welcome to the tenth PseudoGame example level"</span>, <span class="number">150</span>)
+    e_messageAdd(<span class="string">"This one demonstrates the premade outline effect."</span>, <span class="number">200</span>)
+<span class="keyword">end</span>
+
+<span class="comment">-- <code>onStep</code> is an hardcoded function that is called when the level "timeline"
+</span><span class="comment">-- is empty. The level timeline is a queue of pending actions.
+</span><span class="comment">-- <code>onStep</code> should generally contain your pattern spawning logic.
+</span><span class="keyword">function</span> onStep()
+    addPattern(keys[index])
+    index = index + <span class="number">1</span>
+
+    <span class="keyword">if</span> index - <span class="number">1</span> == #keys <span class="keyword">then</span>
+        index = <span class="number">1</span>
+        shuffle(keys)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- <code>onIncrement</code> is an hardcoded function that is called when the level
+</span><span class="comment">-- difficulty is incremented.
+</span><span class="keyword">function</span> onIncrement()
+    <span class="comment">-- ...
+</span><span class="keyword">end</span>
+
+<span class="keyword">function</span> onPreUnload()
+    <span class="comment">-- overwriting game functions may cause issues, so it's important to undo it
+</span>    game:restore()
+<span class="keyword">end</span>
+
+<span class="comment">-- <code>onUpdate</code> is an hardcoded function that is called every frame. <code>mFrameTime</code>
+</span><span class="comment">-- represents the time delta between the current and previous frame.
+</span><span class="keyword">function</span> onUpdate(mFrameTime)
+    <span class="comment">-- ...
+</span><span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

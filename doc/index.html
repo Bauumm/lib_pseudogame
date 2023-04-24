@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>PseudoGame Documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="scripts/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+
+  <h2>A library giving greater control over game components and rendering</h2>
+  <p>PseudoGame not only reimplements the game's components to look exactly as the original but also adds options to extend them. Furthermore it provides an advanced rendering system based on custom walls, that allows for all kinds of visual effects to be created.</p>
+
+<h2>Modules</h2>
+<table class="module_list">
+  <tr>
+    <td class="name"  nowrap><a href="modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></td>
+    <td class="summary">Module containing premade collision handlers for use with the Player class</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="modules/PseudoGame.game.common.html">PseudoGame.game.common</a></td>
+    <td class="summary">Some functions that are commonly used in the game logic</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></td>
+    <td class="summary">A module that overwrites the cw_ functions to modify a PolygonCollection</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></td>
+    <td class="summary">a module with some premade visual effects</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></td>
+    <td class="summary">Module for drawing polygon objects to the screen (by converting them to cw data which is applied on real custom walls in the right render order)</td>
+  </tr>
+</table>
+<h2>Scripts</h2>
+<table class="module_list">
+  <tr>
+    <td class="name"  nowrap><a href="scripts/main.html">main</a></td>
+    <td class="summary">this script initializes the library</td>
+  </tr>
+</table>
+<h2>Classes</h2>
+<table class="module_list">
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></td>
+    <td class="summary">Class representing a game's background</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></td>
+    <td class="summary">Class that represents a game's cap</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></td>
+    <td class="summary">Class to create the blinking hexagonal death effects around a player</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></td>
+    <td class="summary">Class that creates and manages all the game components allowing direct access to each component's polygons for transformation</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></td>
+    <td class="summary">Class that represents a game's pivot</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></td>
+    <td class="summary">Class that represents a game's player</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></td>
+    <td class="summary">Class for creating a pseudo 3d effect for a polygon collection</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></td>
+    <td class="summary">Class for storing colors and some other visual settings (it does not do any weird calculations on top of them on its own! (like the normal game's styles do))</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></td>
+    <td class="summary">Custom timeline class (it can be used with the game object, but it's disabled by default as it doesn't support increments)</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></td>
+    <td class="summary">Class that handles a game's walls</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></td>
+    <td class="summary">Class that represents a simple convex 2D Polygon</td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></td>
+    <td class="summary">Class for storing multiple polygons in an efficient manner</td>
+  </tr>
+</table>
+<h2>Examples</h2>
+<table class="module_list">
+  <tr>
+    <td class="name"  nowrap><a href="examples/basic_transform.lua.html">basic_transform.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/desync_example.lua.html">desync_example.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/examplelevel.lua.html">examplelevel.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/height_walls.lua.html">height_walls.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/multiple_games.lua.html">multiple_games.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/outline_example.lua.html">outline_example.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/reverse_walls.lua.html">reverse_walls.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/slice_example.lua.html">slice_example.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/style_example.lua.html">style_example.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+  <tr>
+    <td class="name"  nowrap><a href="examples/true_desync_example.lua.html">true_desync_example.lua</a></td>
+    <td class="summary"></td>
+  </tr>
+</table>
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

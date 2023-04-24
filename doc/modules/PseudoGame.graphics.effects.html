@@ -1,0 +1,372 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Module PseudoGame.graphics.effects - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><strong>PseudoGame.graphics.effects</strong></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><a href="../classes/PseudoGame.game.Style.html">PseudoGame.game.Style</a></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.graphics.effects</code></h1>
+<p>a module with some premade visual effects</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.effects:blend">PseudoGame.graphics.effects:blend (polygon_collection1, polygon_collection2, blend_func[, blend_collection])</a>
+      </td>
+      <td class="summary">
+        get the polygons that represent the intersection of two collections
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.effects:outline">PseudoGame.graphics.effects:outline (polygon_collection, thickness, color[, outline_collection])</a>
+      </td>
+      <td class="summary">
+        creates polygons along the edges of some polygons
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.effects:rotate">PseudoGame.graphics.effects:rotate (angle)</a>
+      </td>
+      <td class="summary">
+        generates a transformation function that rotates vertices
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.effects:mirror">PseudoGame.graphics.effects:mirror (mirror_x, mirror_y)</a>
+      </td>
+      <td class="summary">
+        generates a transformation function that mirrors vertices
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#draw_directly">draw_directly</a>
+      </td>
+      <td class="summary">
+        setting <a href="../modules/PseudoGame.graphics.effects.html#draw_directly">effects.draw_directly</a> to true will make the effects, that take a polygon collection to output to, draw directly to the screen instead
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.effects:blend" href="#PseudoGame.graphics.effects:blend">&#128279;</a>
+    <strong>PseudoGame.graphics.effects:blend (polygon_collection1, polygon_collection2, blend_func[, blend_collection])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    get the polygons that represent the intersection of two collections
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection1</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the first collection</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection2</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the second collection</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">blend_func</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">function</span></span></td>
+           <td class="see_also_description">  this function determines the color of the new polygons based on the color of the two intersected ones, so it should take <code>r0, g0, b0, a0, r1, g1, b1, a1</code> and return <code>r, g, b, a</code></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">blend_collection</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the collection the resulting polygons are added to (the collection is cleared before the operation) (not required if direct drawing is enabled)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.effects:outline" href="#PseudoGame.graphics.effects:outline">&#128279;</a>
+    <strong>PseudoGame.graphics.effects:outline (polygon_collection, thickness, color[, outline_collection])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    creates polygons along the edges of some polygons
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the polygon collection the outlines should be made for</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">thickness</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the thickness of the outlines</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">color</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the color of the outlines, should be formatted like this: <code>{r, g, b, a}</code></td>
+         </tr>
+         <tr>
+           <td><span class="parameter">outline_collection</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.effects:rotate" href="#PseudoGame.graphics.effects:rotate">&#128279;</a>
+    <strong>PseudoGame.graphics.effects:rotate (angle)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    generates a transformation function that rotates vertices
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">angle</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the angle to rotate</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        the transformation function
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.effects:mirror" href="#PseudoGame.graphics.effects:mirror">&#128279;</a>
+    <strong>PseudoGame.graphics.effects:mirror (mirror_x, mirror_y)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    generates a transformation function that mirrors vertices
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">mirror_x</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  whether it should mirror along the x axis</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">mirror_y</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  whether it should mirror along the y axis</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        the transformation function
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="draw_directly" href="#draw_directly">&#128279;</a>
+    <strong>draw_directly</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    setting <a href="../modules/PseudoGame.graphics.effects.html#draw_directly">effects.draw_directly</a> to true will make the effects, that take a polygon collection to output to, draw directly to the screen instead
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>

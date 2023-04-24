@@ -1,0 +1,604 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-theme="monokai">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Class PseudoGame.game.Style - PseudoGame Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+<div id="main">
+
+
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<h1>PseudoGame</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/PseudoGame.game.Background.html">PseudoGame.game.Background</a></li>
+  <li><a href="../classes/PseudoGame.game.Cap.html">PseudoGame.game.Cap</a></li>
+  <li><a href="../classes/PseudoGame.game.DeathEffect.html">PseudoGame.game.DeathEffect</a></li>
+  <li><a href="../classes/PseudoGame.game.Game.html">PseudoGame.game.Game</a></li>
+  <li><a href="../classes/PseudoGame.game.Pivot.html">PseudoGame.game.Pivot</a></li>
+  <li><a href="../classes/PseudoGame.game.Player.html">PseudoGame.game.Player</a></li>
+  <li><a href="../classes/PseudoGame.game.Pseudo3D.html">PseudoGame.game.Pseudo3D</a></li>
+  <li><strong>PseudoGame.game.Style</strong></li>
+  <li><a href="../classes/PseudoGame.game.Timeline.html">PseudoGame.game.Timeline</a></li>
+  <li><a href="../classes/PseudoGame.game.WallSystem.html">PseudoGame.game.WallSystem</a></li>
+  <li><a href="../classes/PseudoGame.graphics.Polygon.html">PseudoGame.graphics.Polygon</a></li>
+  <li><a href="../classes/PseudoGame.graphics.PolygonCollection.html">PseudoGame.graphics.PolygonCollection</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/PseudoGame.game.collision_handlers.html">PseudoGame.game.collision_handlers</a></li>
+  <li><a href="../modules/PseudoGame.game.common.html">PseudoGame.game.common</a></li>
+  <li><a href="../modules/PseudoGame.game.custom_walls.html">PseudoGame.game.custom_walls</a></li>
+  <li><a href="../modules/PseudoGame.graphics.effects.html">PseudoGame.graphics.effects</a></li>
+  <li><a href="../modules/PseudoGame.graphics.screen.html">PseudoGame.graphics.screen</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/main.html">main</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="nowrap">
+  <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
+  <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
+  <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
+  <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
+  <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
+  <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module: <code>PseudoGame.game.Style</code></h1>
+<p>Class for storing colors and some other visual settings (it does not do any weird calculations on top of them on its own! (like the normal game's styles do))</p>
+<p>
+
+</p>
+    <div class="extra-header">
+
+
+</div>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:new">PseudoGame.game.Style:new (style_table)</a>
+      </td>
+      <td class="summary">
+        constructor for a style object
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_main_color">PseudoGame.game.Style:get_main_color ()</a>
+      </td>
+      <td class="summary">
+        gets the main color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_player_color">PseudoGame.game.Style:get_player_color ()</a>
+      </td>
+      <td class="summary">
+        gets the player color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_wall_color">PseudoGame.game.Style:get_wall_color ()</a>
+      </td>
+      <td class="summary">
+        gets the wall color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_cap_color">PseudoGame.game.Style:get_cap_color ()</a>
+      </td>
+      <td class="summary">
+        gets the cap color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_background_color">PseudoGame.game.Style:get_background_color (index)</a>
+      </td>
+      <td class="summary">
+        gets a background color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_layer_color">PseudoGame.game.Style:get_layer_color (index)</a>
+      </td>
+      <td class="summary">
+        gets a layer color
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_layer_spacing">PseudoGame.game.Style:get_layer_spacing ()</a>
+      </td>
+      <td class="summary">
+        gets the 3d layer spacing
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_connect_layers">PseudoGame.game.Style:get_connect_layers ()</a>
+      </td>
+      <td class="summary">
+        gets if the 3d layers are supposed to be connected
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.Style:get_depth">PseudoGame.game.Style:get_depth ()</a>
+      </td>
+      <td class="summary">
+        gets the style's 3d depth
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.level_style">PseudoGame.game.level_style</a>
+      </td>
+      <td class="summary">
+        a table that implements the style getters using the game's style functions (use this if you want to keep your existing style)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:new" href="#PseudoGame.game.Style:new">&#128279;</a>
+    <strong>PseudoGame.game.Style:new (style_table)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    constructor for a style object
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+        <tr>
+           <td><span class="parameter">style_table</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">table</span></span></td>
+           <td class="see_also_description">  the table with the initial style options </td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">main_color</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the main color of the style (formatted like this: <code>{r, g, b, a}</code>)</td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">player_color</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the player color (formatted like this: <code>{r, g, b, a}</code>)</td>
+           <td><span class="default_value"><code>style_table.main_color</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">wall_color</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the wall color (formatted like this: <code>{r, g, b, a}</code>)</td>
+           <td><span class="default_value"><code>style_table.main_color</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">cap_color</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  the cap color of the style (formatted like this: <code>{r, g, b, a}</code>)</td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">background_colors</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  background colors (formatted like this: <code>{{r, g, b, a}, {r, g, b, a}, ...}</code>)</td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">layer_colors</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span></td>
+           <td class="see_also_description">  3d layer colors (formatted like this: <code>{{r, g, b, a}, {r, g, b, a}, ...}</code>)</td>
+           <td><span class="not_applicable" title="This parameter is mandatory">Not applicable</span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">layer_spacing</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the spacing between 3d layers</td>
+           <td><span class="default_value"><code>10</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">connect_layers</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  specifies if the 3d layers should be connected using extra polygons to create solid 3d</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">gradient</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">bool</span></span></td>
+           <td class="see_also_description">  specifies if the connected 3d layers should have gradients between the layers</td>
+           <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/PseudoGame.game.Style.html">Style</a></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_main_color" href="#PseudoGame.game.Style:get_main_color">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_main_color ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets the main color
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        color formatted like this: <code>{r, g, b, a}</code>
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_player_color" href="#PseudoGame.game.Style:get_player_color">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_player_color ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets the player color
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        color formatted like this: <code>{r, g, b, a}</code>
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_wall_color" href="#PseudoGame.game.Style:get_wall_color">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_wall_color ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets the wall color
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        color formatted like this: <code>{r, g, b, a}</code>
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_cap_color" href="#PseudoGame.game.Style:get_cap_color">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_cap_color ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets the cap color
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        color formatted like this: <code>{r, g, b, a}</code>
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_background_color" href="#PseudoGame.game.Style:get_background_color">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_background_color (index)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets a background color
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">index</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the index of the background panel</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        color formatted like this: <code>{r, g, b, a}</code>
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_layer_color" href="#PseudoGame.game.Style:get_layer_color">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_layer_color (index)</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets a layer color
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">index</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the index of the 3d layer</td>
+         </tr>
+        </table>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        color formatted like this: <code>{r, g, b, a}</code>
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_layer_spacing" href="#PseudoGame.game.Style:get_layer_spacing">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_layer_spacing ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets the 3d layer spacing
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_connect_layers" href="#PseudoGame.game.Style:get_connect_layers">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_connect_layers ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets if the 3d layers are supposed to be connected
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.Style:get_depth" href="#PseudoGame.game.Style:get_depth">&#128279;</a>
+    <strong>PseudoGame.game.Style:get_depth ()</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    gets the style's 3d depth
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+
+
+    </ol>
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.level_style" href="#PseudoGame.game.level_style">&#128279;</a>
+    <strong>PseudoGame.game.level_style</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    a table that implements the style getters using the game's style functions (use this if you want to keep your existing style)
+
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+
+</body>
+</html>
