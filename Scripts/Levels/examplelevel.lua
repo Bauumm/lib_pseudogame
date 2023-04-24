@@ -9,11 +9,7 @@ u_execDependencyScript("library_pseudogame", "pseudogame", "Baum", "main.lua")
 PseudoGame.hide_default_game()
 
 -- create a fake game
-game = PseudoGame.game.Game:new({
-	player = {
-		collision_handler = PseudoGame.game.default_collision_handler
-	}
-})
+game = PseudoGame.game.Game:new()
 
 -- overwrite the real game's functions (mostly wall functions)
 game:overwrite()
