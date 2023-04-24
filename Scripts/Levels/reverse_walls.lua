@@ -10,60 +10,66 @@ PseudoGame.hide_default_game()
 
 -- create a fake game
 game = PseudoGame.game.Game:new({
-	walls = {
-		-- make walls go the other way
-		reverse_direction = true
-	},
-	player = {
-		-- make the player be on the edge of the screen
-		reverse = true,
+    walls = {
+        -- make walls go the other way
+        reverse_direction = true,
+    },
+    player = {
+        -- make the player be on the edge of the screen
+        reverse = true,
 
-		-- overwrite the radius the player moves on (negative for inward facing player)
-		radius = -400,
+        -- overwrite the radius the player moves on (negative for inward facing player)
+        radius = -400,
 
-		-- reset the collision handler since we overwrote default settings
-		collision_handler = PseudoGame.game.basic_collision_handler
-	}
+        -- reset the collision handler since we overwrote default settings
+        collision_handler = PseudoGame.game.basic_collision_handler,
+    },
 })
 
 -- overwrite the real game's functions (mostly wall functions)
 game:overwrite()
 
 function onInput(frametime, movement, focus, swap)
-	-- update our game
-	game:update(frametime, movement, focus, swap)
+    -- update our game
+    game:update(frametime, movement, focus, swap)
 
-	-- draw the game to the screen
-	game:draw_to_screen()
+    -- draw the game to the screen
+    game:draw_to_screen()
 end
 
 -- show a death effect when the player dies
 function onDeath()
-	game.death_effect:death()
+    game.death_effect:death()
 end
 
 -- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
 function onPreDeath()
-	game.death_effect:invincible_death()
+    game.death_effect:invincible_death()
 end
 
 -- show and update the death effect even in the death screen
 function onRenderStage(render_stage, frametime)
-	game.death_effect:ensure_tickrate(render_stage, frametime, function(new_frametime)
-		-- updating and drawing the game again is required for the death effect to show properly
-		-- (make sure no game logic is progressing if `game.death_effect.dead == true`)
-		onInput(new_frametime, 0, false, false)
-	end)
+    game.death_effect:ensure_tickrate(render_stage, frametime, function(new_frametime)
+        -- updating and drawing the game again is required for the death effect to show properly
+        -- (make sure no game logic is progressing if `game.death_effect.dead == true`)
+        onInput(new_frametime, 0, false, false)
+    end)
 end
 
 -- This function adds a pattern to the level "timeline" based on a numeric key.
 function addPattern(mKey)
-        if mKey == 0 then pAltBarrage(u_rndInt(3, 5), 2)
-    elseif mKey == 1 then pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
-    elseif mKey == 2 then pBarrageSpiral(u_rndInt(0, 3), 1, 1)
-    elseif mKey == 3 then pInverseBarrage(0)
-    elseif mKey == 4 then pTunnel(u_rndInt(1, 3))
-    elseif mKey == 5 then pSpiral(l_getSides() * u_rndInt(1, 2), 0)
+    if mKey == 0 then
+        pAltBarrage(u_rndInt(3, 5), 2)
+    elseif mKey == 1 then
+        pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
+    elseif mKey == 2 then
+        pBarrageSpiral(u_rndInt(0, 3), 1, 1)
+    elseif mKey == 3 then
+        pInverseBarrage(0)
+    elseif mKey == 4 then
+        pTunnel(u_rndInt(1, 3))
+    elseif mKey == 5 then
+        pSpiral(l_getSides() * u_rndInt(1, 2), 0)
     end
 end
 
@@ -132,8 +138,8 @@ function onIncrement()
 end
 
 function onPreUnload()
-	-- overwriting game functions may cause issues, so it's important to undo it
-	game:restore()
+    -- overwriting game functions may cause issues, so it's important to undo it
+    game:restore()
 end
 
 -- `onUpdate` is an hardcoded function that is called every frame. `mFrameTime`

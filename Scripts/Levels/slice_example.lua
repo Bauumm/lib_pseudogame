@@ -23,65 +23,71 @@ collection_left = PseudoGame.graphics.PolygonCollection:new()
 collection_right = PseudoGame.graphics.PolygonCollection:new()
 
 function onInput(frametime, movement, focus, swap)
-	-- update our game
-	game:update(frametime, movement, focus, swap)
+    -- update our game
+    game:update(frametime, movement, focus, swap)
 
-	-- draw the game into game.polygon_collection
-	game:draw()
+    -- draw the game into game.polygon_collection
+    game:draw()
 
-	-- clear the collections and make generator functions used to "add" new polygons to the collections
-	-- (internally it reuses the objects which makes this the best way to create polygons performance wise)
-	local gen_left = collection_left:generator()
-	local gen_right = collection_right:generator()
-	
-	-- iterate over the game's polygons
-	for polygon in game.polygon_collection:iter() do
-		-- slice the polygon by a line going through (0, 0) and (0, 1) and return both sides and create the polygons using our generators
-		-- take the polygons for transforming (they are already added to the collections thanks to the generators)
-		local left_polygon, right_polygon = polygon:slice(0, 0, 0, 1, true, true, gen_left, gen_right)
+    -- clear the collections and make generator functions used to "add" new polygons to the collections
+    -- (internally it reuses the objects which makes this the best way to create polygons performance wise)
+    local gen_left = collection_left:generator()
+    local gen_right = collection_right:generator()
 
-		-- only transform the left side if a part of the sliced polygon is on the left side
-		if left_polygon ~= nil then
-			-- mirror the left side and invert the colors
-			left_polygon:transform(function(x, y, r, g, b, a)
-				return x, -y, 255 - r, 255 - g, 255 - b, a
-			end)
-		end
-	end
+    -- iterate over the game's polygons
+    for polygon in game.polygon_collection:iter() do
+        -- slice the polygon by a line going through (0, 0) and (0, 1) and return both sides and create the polygons using our generators
+        -- take the polygons for transforming (they are already added to the collections thanks to the generators)
+        local left_polygon, right_polygon = polygon:slice(0, 0, 0, 1, true, true, gen_left, gen_right)
 
-	-- draw our collections and update the screen
-	PseudoGame.graphics.screen:draw_polygon_collection(collection_left)
-	PseudoGame.graphics.screen:draw_polygon_collection(collection_right)
-	PseudoGame.graphics.screen:update()
+        -- only transform the left side if a part of the sliced polygon is on the left side
+        if left_polygon ~= nil then
+            -- mirror the left side and invert the colors
+            left_polygon:transform(function(x, y, r, g, b, a)
+                return x, -y, 255 - r, 255 - g, 255 - b, a
+            end)
+        end
+    end
+
+    -- draw our collections and update the screen
+    PseudoGame.graphics.screen:draw_polygon_collection(collection_left)
+    PseudoGame.graphics.screen:draw_polygon_collection(collection_right)
+    PseudoGame.graphics.screen:update()
 end
 
 -- show a death effect when the player dies
 function onDeath()
-	game.death_effect:death()
+    game.death_effect:death()
 end
 
 -- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
 function onPreDeath()
-	game.death_effect:invincible_death()
+    game.death_effect:invincible_death()
 end
 
 -- show and update the death effect even in the death screen
 function onRenderStage(render_stage, frametime)
-	game.death_effect:ensure_tickrate(render_stage, frametime, function(new_frametime)
-		-- updating and drawing the game again is required for the death effect to show properly
-		-- (make sure no game logic is progressing if `game.death_effect.dead == true`)
-		onInput(new_frametime, 0, false, false)
-	end)
+    game.death_effect:ensure_tickrate(render_stage, frametime, function(new_frametime)
+        -- updating and drawing the game again is required for the death effect to show properly
+        -- (make sure no game logic is progressing if `game.death_effect.dead == true`)
+        onInput(new_frametime, 0, false, false)
+    end)
 end
 
 -- This function adds a pattern to the level "timeline" based on a numeric key.
 function addPattern(mKey)
-        if mKey == 0 then pAltBarrage(u_rndInt(3, 5), 2)
-    elseif mKey == 1 then pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
-    elseif mKey == 2 then pBarrageSpiral(u_rndInt(0, 3), 1, 1)
-    elseif mKey == 3 then pInverseBarrage(0)
-    elseif mKey == 4 then pTunnel(u_rndInt(1, 3))
-    elseif mKey == 5 then pSpiral(l_getSides() * u_rndInt(1, 2), 0)
+    if mKey == 0 then
+        pAltBarrage(u_rndInt(3, 5), 2)
+    elseif mKey == 1 then
+        pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
+    elseif mKey == 2 then
+        pBarrageSpiral(u_rndInt(0, 3), 1, 1)
+    elseif mKey == 3 then
+        pInverseBarrage(0)
+    elseif mKey == 4 then
+        pTunnel(u_rndInt(1, 3))
+    elseif mKey == 5 then
+        pSpiral(l_getSides() * u_rndInt(1, 2), 0)
     end
 end
 
@@ -128,7 +134,10 @@ end
 function onLoad()
     e_messageAdd("welcome to the third PseudoGame example level", 150)
     e_messageAdd("Here the game was sliced and the left side\nwas mirrored and got inverted colors!", 200)
-    e_messageAdd("It works when the slicing line isn't aligned with the sides as well\n(see when it switches to penta-/heptagon)", 200)
+    e_messageAdd(
+        "It works when the slicing line isn't aligned with the sides as well\n(see when it switches to penta-/heptagon)",
+        200
+    )
 end
 
 -- `onStep` is an hardcoded function that is called when the level "timeline"
@@ -151,8 +160,8 @@ function onIncrement()
 end
 
 function onPreUnload()
-	-- overwriting game functions may cause issues, so it's important to undo it
-	game:restore()
+    -- overwriting game functions may cause issues, so it's important to undo it
+    game:restore()
 end
 
 -- `onUpdate` is an hardcoded function that is called every frame. `mFrameTime`

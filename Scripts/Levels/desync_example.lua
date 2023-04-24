@@ -20,69 +20,75 @@ game:overwrite()
 
 -- transform functions for the two copies of the game
 transforms = {
-	function(x, y, r, g, b, a)
-		local rotate_other_dir = PseudoGame.graphics.effects:rotate(math.rad(2 * l_getRotation()))
-		x, y = rotate_other_dir(-x, y)
-		return x, y, 255 - r, 255 - g, 255 - b, a / 2
-	end,
-	function(x, y, r, g, b, a)
-		return x, y, r, g, b, a / 2
-	end
+    function(x, y, r, g, b, a)
+        local rotate_other_dir = PseudoGame.graphics.effects:rotate(math.rad(2 * l_getRotation()))
+        x, y = rotate_other_dir(-x, y)
+        return x, y, 255 - r, 255 - g, 255 - b, a / 2
+    end,
+    function(x, y, r, g, b, a)
+        return x, y, r, g, b, a / 2
+    end,
 }
 
 -- the collection that is gonna contain all drawn polygons
 final_collection = PseudoGame.graphics.PolygonCollection:new()
 
 function onInput(frametime, movement, focus, swap)
-	-- update our game
-	game:update(frametime, movement, focus, swap)
+    -- update our game
+    game:update(frametime, movement, focus, swap)
 
-	-- generator for all drawn polygons
-	local gen = final_collection:generator()
+    -- generator for all drawn polygons
+    local gen = final_collection:generator()
 
-	-- iterate over all of the game's collections in render order
-	for j = 1, #game.collections do
-		-- for each transform...
-		for i = 1, 2 do
-			-- add the polygons of the current collection
-			for polygon in game.collections[j]:iter() do
-				gen():copy_data_transformed(polygon, transforms[i])
-			end
-		end
-	end
-	
-	-- draw the collection and update the screen
-	PseudoGame.graphics.screen:draw_polygon_collection(final_collection)
-	PseudoGame.graphics.screen:update()
+    -- iterate over all of the game's collections in render order
+    for j = 1, #game.collections do
+        -- for each transform...
+        for i = 1, 2 do
+            -- add the polygons of the current collection
+            for polygon in game.collections[j]:iter() do
+                gen():copy_data_transformed(polygon, transforms[i])
+            end
+        end
+    end
+
+    -- draw the collection and update the screen
+    PseudoGame.graphics.screen:draw_polygon_collection(final_collection)
+    PseudoGame.graphics.screen:update()
 end
 
 -- show a death effect when the player dies
 function onDeath()
-	game.death_effect:death()
+    game.death_effect:death()
 end
 
 -- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
 function onPreDeath()
-	game.death_effect:invincible_death()
+    game.death_effect:invincible_death()
 end
 
 -- show and update the death effect even in the death screen
 function onRenderStage(render_stage, frametime)
-	game.death_effect:ensure_tickrate(render_stage, frametime, function(new_frametime)
-		-- updating and drawing the game again is required for the death effect to show properly
-		-- (make sure no game logic is progressing if `game.death_effect.dead == true`)
-		onInput(new_frametime, 0, false, false)
-	end)
+    game.death_effect:ensure_tickrate(render_stage, frametime, function(new_frametime)
+        -- updating and drawing the game again is required for the death effect to show properly
+        -- (make sure no game logic is progressing if `game.death_effect.dead == true`)
+        onInput(new_frametime, 0, false, false)
+    end)
 end
 
 -- This function adds a pattern to the level "timeline" based on a numeric key.
 function addPattern(mKey)
-        if mKey == 0 then pAltBarrage(u_rndInt(3, 5), 2)
-    elseif mKey == 1 then pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
-    elseif mKey == 2 then pBarrageSpiral(u_rndInt(0, 3), 1, 1)
-    elseif mKey == 3 then pInverseBarrage(0)
-    elseif mKey == 4 then pTunnel(u_rndInt(1, 3))
-    elseif mKey == 5 then pSpiral(l_getSides() * u_rndInt(1, 2), 0)
+    if mKey == 0 then
+        pAltBarrage(u_rndInt(3, 5), 2)
+    elseif mKey == 1 then
+        pMirrorSpiral(u_rndInt(2, 5), getHalfSides() - 3)
+    elseif mKey == 2 then
+        pBarrageSpiral(u_rndInt(0, 3), 1, 1)
+    elseif mKey == 3 then
+        pInverseBarrage(0)
+    elseif mKey == 4 then
+        pTunnel(u_rndInt(1, 3))
+    elseif mKey == 5 then
+        pSpiral(l_getSides() * u_rndInt(1, 2), 0)
     end
 end
 
@@ -151,8 +157,8 @@ function onIncrement()
 end
 
 function onPreUnload()
-	-- overwriting game functions may cause issues, so it's important to undo it
-	game:restore()
+    -- overwriting game functions may cause issues, so it's important to undo it
+    game:restore()
 end
 
 -- `onUpdate` is an hardcoded function that is called every frame. `mFrameTime`
