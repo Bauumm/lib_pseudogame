@@ -108,7 +108,7 @@ function PseudoGame.game.Game:_init()
         self.component_collections.walls = self._wall_collection
         self.collections[#self.collections + 1] = self._wall_collection
         self._component_update[#self._component_update + 1] = function(self)
-            if self.death_effect ~= nil and not self.death_effect.dead then
+            if self.death_effect == nil or not self.death_effect.dead then
                 self.walls:update(self._frametime)
             end
             self._wall_collection:clear()
