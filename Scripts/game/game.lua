@@ -84,12 +84,15 @@ end
 
 function PseudoGame.game.Game:_init()
     -- initialize game objects
+    local headless = u_isHeadless()
     if self.options.components.background then
         self.background = PseudoGame.game.Background:new(self.options.style)
         self.component_collections.background = self.background.polygon_collection
         self.collections[#self.collections + 1] = self.background.polygon_collection
-        self._component_update[#self._component_update + 1] = function(self)
-            self.background:update()
+        if not headless then
+            self._component_update[#self._component_update + 1] = function(self)
+                self.background:update()
+            end
         end
     end
     if self.options.components.pseudo3d then
@@ -105,7 +108,7 @@ function PseudoGame.game.Game:_init()
         self.component_collections.walls = self._wall_collection
         self.collections[#self.collections + 1] = self._wall_collection
         self._component_update[#self._component_update + 1] = function(self)
-            if not self.death_effect.dead then
+            if self.death_effect ~= nil and not self.death_effect.dead then
                 self.walls:update(self._frametime)
             end
             self._wall_collection:clear()
@@ -124,19 +127,21 @@ function PseudoGame.game.Game:_init()
         end
         self.component_collections.pivot = self._pivot_collection
         self.collections[#self.collections + 1] = self._pivot_collection
-        if self.options.pivot.cap == nil or self.options.pivot.cap then
-            self._component_update[#self._component_update + 1] = function(self)
-                self.cap:update()
-                self.pivot:update()
-                self._pivot_collection:clear()
-                self._pivot_collection:ref_add(self.pivot.polygon_collection)
-                self._pivot_collection:add(self.cap.polygon)
-            end
-        else
-            self._component_update[#self._component_update + 1] = function(self)
-                self.pivot:update()
-            end
-        end
+        if not headless then
+		if self.options.pivot.cap == nil or self.options.pivot.cap then
+		    self._component_update[#self._component_update + 1] = function(self)
+			self.cap:update()
+			self.pivot:update()
+			self._pivot_collection:clear()
+			self._pivot_collection:ref_add(self.pivot.polygon_collection)
+			self._pivot_collection:add(self.cap.polygon)
+		    end
+		else
+		    self._component_update[#self._component_update + 1] = function(self)
+			self.pivot:update()
+		    end
+		end
+	end
     end
     if self.options.components.player then
         if self.options.player == nil then
@@ -167,7 +172,7 @@ function PseudoGame.game.Game:_init()
     end
 
     -- add later for proper update order while retaining render order
-    if self.options.components.pseudo3d then
+    if self.options.components.pseudo3d and not headless then
         self._component_update[#self._component_update + 1] = function(self)
             self._3d_collection:clear()
             if self.options.components.walls then
