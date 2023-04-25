@@ -14,6 +14,8 @@ PseudoGame.game.Game.__index = PseudoGame.game.Game
 -- @tparam[opt=level_style] Style options.style  the style the game should use
 -- @tparam[opt] table options.walls  wall system options
 -- @tparam[opt] table options.player  player options
+-- @tparam[opt] table options.pivot  pivot options (only for the game component, not the actual pivot object)
+-- @tparam[opt=true] bool options.pivot.cap  disables the cap if false
 -- @treturn Game
 function PseudoGame.game.Game:new(options)
     if options == nil then
@@ -23,6 +25,9 @@ function PseudoGame.game.Game:new(options)
         -- game data
         --- @tfield Style style  the game's style
         style = options.style or PseudoGame.game.level_style,
+
+        --- @tfield table options  the game's options
+        options = options,
 
         --- @tfield PolygonCollection polygon_collection  the collection the `Game:draw()` method draws into
         polygon_collection = PseudoGame.graphics.PolygonCollection:new(),
@@ -73,28 +78,28 @@ function PseudoGame.game.Game:new(options)
             pseudo3d = true,
         }
     end
-    obj:_init(options.components, options.player, options.walls, options.style)
+    obj:_init()
     return obj
 end
 
-function PseudoGame.game.Game:_init(components, player_options, wall_options, style)
+function PseudoGame.game.Game:_init()
     -- initialize game objects
-    if components.background then
-        self.background = PseudoGame.game.Background:new(style)
+    if self.options.components.background then
+        self.background = PseudoGame.game.Background:new(self.options.style)
         self.component_collections.background = self.background.polygon_collection
         self.collections[#self.collections + 1] = self.background.polygon_collection
         self._component_update[#self._component_update + 1] = function(self)
             self.background:update()
         end
     end
-    if components.pseudo3d then
+    if self.options.components.pseudo3d then
         self._3d_collection = PseudoGame.graphics.PolygonCollection:new()
-        self.pseudo3d = PseudoGame.game.Pseudo3D:new(self._3d_collection, style)
+        self.pseudo3d = PseudoGame.game.Pseudo3D:new(self._3d_collection, self.options.style)
         self.component_collections.pseudo3d = self.pseudo3d.polygon_collection
         self.collections[#self.collections + 1] = self.pseudo3d.polygon_collection
     end
-    if components.walls then
-        self.walls = PseudoGame.game.WallSystem:new(wall_options, style)
+    if self.options.components.walls then
+        self.walls = PseudoGame.game.WallSystem:new(self.options.walls, self.options.style)
         self._cws = PseudoGame.graphics.PolygonCollection:new()
         self._wall_collection = PseudoGame.graphics.PolygonCollection:new()
         self.component_collections.walls = self._wall_collection
@@ -108,27 +113,37 @@ function PseudoGame.game.Game:_init(components, player_options, wall_options, st
             self._wall_collection:ref_add(self._cws)
         end
     end
-    if components.pivot then
-        self.pivot = PseudoGame.game.Pivot:new(style)
-        self.cap = PseudoGame.game.Cap:new(style)
-        self._pivot_collection = PseudoGame.graphics.PolygonCollection:new()
+    if self.options.components.pivot then
+        self.pivot = PseudoGame.game.Pivot:new(self.options.style)
+        if self.options.pivot.cap == nil or self.options.pivot.cap then
+            self.cap = PseudoGame.game.Cap:new(self.options.style)
+            self._pivot_collection = PseudoGame.graphics.PolygonCollection:new()
+        else
+            self._pivot_collection = self.pivot.polygon_collection
+        end
         self.component_collections.pivot = self._pivot_collection
         self.collections[#self.collections + 1] = self._pivot_collection
-        self._component_update[#self._component_update + 1] = function(self)
-            self.cap:update()
-            self.pivot:update()
-            self._pivot_collection:clear()
-            self._pivot_collection:ref_add(self.pivot.polygon_collection)
-            self._pivot_collection:add(self.cap.polygon)
+        if self.options.pivot.cap == nil or self.options.pivot.cap then
+            self._component_update[#self._component_update + 1] = function(self)
+                self.cap:update()
+                self.pivot:update()
+                self._pivot_collection:clear()
+                self._pivot_collection:ref_add(self.pivot.polygon_collection)
+                self._pivot_collection:add(self.cap.polygon)
+            end
+        else
+            self._component_update[#self._component_update + 1] = function(self)
+                self.pivot:update()
+            end
         end
     end
-    if components.player then
-        if player_options == nil then
-            player_options = {
+    if self.options.components.player then
+        if self.options.player == nil then
+            self.options.player = {
                 collision_handler = PseudoGame.game.basic_collision_handler,
             }
         end
-        self.player = PseudoGame.game.Player:new(player_options, style)
+        self.player = PseudoGame.game.Player:new(self.options.player, self.options.style)
         self.death_effect = PseudoGame.game.DeathEffect:new(self.player)
         self._collide_collection = PseudoGame.graphics.PolygonCollection:new()
         self._player_collection = PseudoGame.graphics.PolygonCollection:new()
@@ -151,16 +166,16 @@ function PseudoGame.game.Game:_init(components, player_options, wall_options, st
     end
 
     -- add later for proper update order while retaining render order
-    if components.pseudo3d then
+    if self.options.components.pseudo3d then
         self._component_update[#self._component_update + 1] = function(self)
             self._3d_collection:clear()
-            if components.walls then
+            if self.options.components.walls then
                 self._3d_collection:ref_add(self._wall_collection)
             end
-            if components.pivot then
+            if self.options.components.pivot then
                 self._3d_collection:ref_add(self.pivot.polygon_collection)
             end
-            if components.player then
+            if self.options.components.player then
                 self._3d_collection:ref_add(self._player_collection)
             end
             self.pseudo3d:update(self._frametime)
