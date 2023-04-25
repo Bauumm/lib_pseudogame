@@ -3,7 +3,7 @@
 <html data-theme="monokai">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Example desync_example.lua - PseudoGame Documentation</title>
+    <title>Example dynamic_wall_speed.lua - PseudoGame Documentation</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -28,8 +28,8 @@
 <h2>Examples</h2>
 <ul class="nowrap">
   <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
-  <li><strong>desync_example.lua</strong></li>
-  <li><a href="../examples/dynamic_wall_speed.lua.html">dynamic_wall_speed.lua</a></li>
+  <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><strong>dynamic_wall_speed.lua</strong></li>
   <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
   <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
   <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
@@ -71,7 +71,7 @@
 
 <div id="content">
 
-    <h2>desync_example.lua</h2>
+    <h2>dynamic_wall_speed.lua</h2>
 <pre>
 <span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
 </span><span class="comment">-- folder.
@@ -79,10 +79,6 @@
 u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
 u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
 u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
-
-<span class="comment">-- remove 3d as it would look very weird
-</span>s_set3dDepth(<span class="number">3</span>)
-s_set3dSpacing(<span class="number">10</span>)
 
 <span class="comment">-- hide the real game
 </span>PseudoGame.hide_default_game()
@@ -93,42 +89,14 @@ s_set3dSpacing(<span class="number">10</span>)
 <span class="comment">-- overwrite the real game's functions (mostly wall functions)
 </span>game:overwrite()
 
-<span class="comment">-- transform functions for the two copies of the game
-</span>transforms = {
-    <span class="keyword">function</span>(x, y, r, g, b, a)
-        <span class="keyword">local</span> rotate_other_dir = PseudoGame.graphics.effects:rotate(<span class="global">math</span>.rad(<span class="number">2</span> * l_getRotation()))
-        x, y = rotate_other_dir(-x, y)
-        <span class="keyword">return</span> x, y, <span class="number">255</span> - r, <span class="number">255</span> - g, <span class="number">255</span> - b, a / <span class="number">2</span>
-    <span class="keyword">end</span>,
-    <span class="keyword">function</span>(x, y, r, g, b, a)
-        <span class="keyword">return</span> x, y, r, g, b, a / <span class="number">2</span>
-    <span class="keyword">end</span>,
-}
-
-<span class="comment">-- the collection that is gonna contain all drawn polygons
-</span>final_collection = PseudoGame.graphics.PolygonCollection:new()
-
 <span class="keyword">function</span> onInput(frametime, movement, focus, swap)
     <span class="comment">-- update our game
 </span>    game:update(frametime, movement, focus, swap)
 
-    <span class="comment">-- generator for all drawn polygons
-</span>    <span class="keyword">local</span> gen = final_collection:generator()
+    <span class="comment">-- draw the game to the screen
+</span>    game:draw_to_screen()
 
-    <span class="comment">-- iterate over all of the game's collections in render order
-</span>    <span class="keyword">for</span> j = <span class="number">1</span>, #game.collections <span class="keyword">do</span>
-        <span class="comment">-- for each transform...
-</span>        <span class="keyword">for</span> i = <span class="number">1</span>, <span class="number">2</span> <span class="keyword">do</span>
-            <span class="comment">-- add the polygons of the current collection
-</span>            <span class="keyword">for</span> polygon <span class="keyword">in</span> game.collections[j]:iter() <span class="keyword">do</span>
-                gen():copy_data_transformed(polygon, transforms[i])
-            <span class="keyword">end</span>
-        <span class="keyword">end</span>
-    <span class="keyword">end</span>
-
-    <span class="comment">-- draw the collection and update the screen
-</span>    PseudoGame.graphics.screen:draw_polygon_collection(final_collection)
-    PseudoGame.graphics.screen:update()
+    game.walls:set_speed(<span class="global">math</span>.sin(l_getLevelTime()) + <span class="number">2</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect when the player dies
@@ -208,8 +176,8 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
 </span><span class="keyword">function</span> onLoad()
-    e_messageAdd(<span class="string">"welcome to the fourth PseudoGame example level"</span>, <span class="number">150</span>)
-    e_messageAdd(<span class="string">"Here transformations are used in a more\nadvanced way to create a desync level!"</span>, <span class="number">200</span>)
+    e_messageAdd(<span class="string">"welcome to the eleventh PseudoGame example level"</span>, <span class="number">150</span>)
+    e_messageAdd(<span class="string">"This one demonstrates dynamic wall speed."</span>, <span class="number">200</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onStep</code> is an hardcoded function that is called when the level "timeline"

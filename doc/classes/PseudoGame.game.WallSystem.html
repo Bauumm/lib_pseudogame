@@ -61,6 +61,7 @@
 <ul class="nowrap">
   <li><a href="../examples/basic_transform.lua.html">basic_transform.lua</a></li>
   <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
+  <li><a href="../examples/dynamic_wall_speed.lua.html">dynamic_wall_speed.lua</a></li>
   <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
   <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
   <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
@@ -100,10 +101,30 @@
     </tr>
     <tr class="summary_row">
       <td class="name" nowrap>
-        <a href="#PseudoGame.game.WallSystem:wall">PseudoGame.game.WallSystem:wall ([height=`l_getWallSpawnDistance()`][, hue_modifier=0], side, thickness[, speed_mult=1[, acceleration=0[, min_speed=0[, max_speed=0[, ping_pong=false[, curving=false]]]]]])</a>
+        <a href="#PseudoGame.game.WallSystem:wall">PseudoGame.game.WallSystem:wall ([height=options.spawn_distance][, hue_modifier=0], side, thickness[, speed_mult=1[, acceleration=0[, min_speed=0[, max_speed=0[, ping_pong=false[, curving=false]]]]]])</a>
       </td>
       <td class="summary">
         create a wall in the system
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:set_speed">PseudoGame.game.WallSystem:set_speed ([speed=1])</a>
+      </td>
+      <td class="summary">
+        set the speed for every wall (does not change any kind of acceleration options)
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.game.WallSystem:set_curve_speed">PseudoGame.game.WallSystem:set_curve_speed ([speed=1])</a>
+      </td>
+      <td class="summary">
+        set the curve speed for every wall (does not change any kind of acceleration options)
       </td>
       <td class="baseclass" nowrap>
       </td>
@@ -233,9 +254,16 @@
          <tr class="see_also_sublist">
            <td><span class="parameter">despawn_distance</span></td>
            <td><span class="chips">Optional</span></td>
-           <td><span class="types"><a class="type" href="../classes/PseudoGame.game.Timeline.html">Timeline</a></span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
            <td class="see_also_description">  the distance at which walls are removed</td>
-           <td><span class="default_value"><code>`l_getWallSpawnDistance() * 1.1`</code></span></td>
+           <td><span class="default_value"><code>l_getWallSpawnDistance() * 1.1</code></span></td>
+         </tr>
+         <tr class="see_also_sublist">
+           <td><span class="parameter">spawn_distance</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the distance at which walls are spawned (has to be smaller than despawn distance)</td>
+           <td><span class="default_value"><code>l_getWallSpawnDistance()</code></span></td>
          </tr>
          <tr class="see_also_sublist">
            <td><span class="parameter">reverse_direction</span></td>
@@ -271,7 +299,7 @@
 </dd>
     <dt>
     <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:wall" href="#PseudoGame.game.WallSystem:wall">&#128279;</a>
-    <strong>PseudoGame.game.WallSystem:wall ([height=`l_getWallSpawnDistance()`][, hue_modifier=0], side, thickness[, speed_mult=1[, acceleration=0[, min_speed=0[, max_speed=0[, ping_pong=false[, curving=false]]]]]])</strong>
+    <strong>PseudoGame.game.WallSystem:wall ([height=options.spawn_distance][, hue_modifier=0], side, thickness[, speed_mult=1[, acceleration=0[, min_speed=0[, max_speed=0[, ping_pong=false[, curving=false]]]]]])</strong>
     <span class="baseclass" nowrap>
     </span>
     </dt>
@@ -292,7 +320,7 @@
            <td><span class="chips">Optional</span></td>
            <td><span class="types"><span class="type">number</span></span></td>
            <td class="see_also_description">  the height the wall will be spawned at</td>
-           <td><span class="default_value"><code>`l_getWallSpawnDistance()`</code></span></td>
+           <td><span class="default_value"><code>options.spawn_distance</code></span></td>
          </tr>
          <tr>
            <td><span class="parameter">hue_modifier</span></td>
@@ -356,6 +384,76 @@
            <td><span class="types"><span class="type">bool</span></span></td>
            <td class="see_also_description">  will make the wall a curving wall if true (uses speed<em>mult, acceleration, min/max</em>speed for curve speed instead of wall speed)</td>
            <td><span class="default_value"><code>false</code></span></td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:set_speed" href="#PseudoGame.game.WallSystem:set_speed">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:set_speed ([speed=1])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    set the speed for every wall (does not change any kind of acceleration options)
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">speed</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the speed mult (will be multiplied with u_getSpeedMultDM())</td>
+           <td><span class="default_value"><code>1</code></span></td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.game.WallSystem:set_curve_speed" href="#PseudoGame.game.WallSystem:set_curve_speed">&#128279;</a>
+    <strong>PseudoGame.game.WallSystem:set_curve_speed ([speed=1])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    set the curve speed for every wall (does not change any kind of acceleration options)
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+            <th>Default value</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">speed</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the speed mult (will be multiplied with u_getSpeedMultDM())</td>
+           <td><span class="default_value"><code>1</code></span></td>
          </tr>
         </table>
 
