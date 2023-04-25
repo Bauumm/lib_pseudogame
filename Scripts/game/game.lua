@@ -114,6 +114,7 @@ function PseudoGame.game.Game:_init()
         end
     end
     if self.options.components.pivot then
+        self.options.pivot = self.options.pivot or {}
         self.pivot = PseudoGame.game.Pivot:new(self.options.style)
         if self.options.pivot.cap == nil or self.options.pivot.cap then
             self.cap = PseudoGame.game.Cap:new(self.options.style)
