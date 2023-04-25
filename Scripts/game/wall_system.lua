@@ -98,7 +98,7 @@ function PseudoGame.game.WallSystem:wall(
         max_speed = max_speed * u_getSpeedMultDM(),
         hue_modifier = hue_modifier,
         ping_pong = ping_pong and -1 or 1,
-        old_speed_dm = u_getSpeedMultDM(), -- used for curving walls actual speed
+        old_speed = u_getSpeedMultDM(), -- used for curving walls actual speed (only curve needs accel)
         curving = curving,
         distance = distance,
         angle1 = angle - div,
@@ -114,6 +114,32 @@ function PseudoGame.game.WallSystem:wall(
     polygon.wall = wall_table
 
     table.insert(self._walls, wall_table)
+end
+
+--- set the speed for every wall (does not change any kind of acceleration options)
+-- @tparam[opt=1] number speed  the speed mult (will be multiplied with u_getSpeedMultDM())
+function PseudoGame.game.WallSystem:set_speed(speed)
+	local mult = u_getSpeedMultDM()
+	for i = 1, #self._walls do
+		local wall = self._walls[i]
+		if wall.curving then
+			wall.old_speed = speed * mult
+		else
+			wall.speed = speed * mult
+		end
+	end
+end
+
+--- set the curve speed for every wall (does not change any kind of acceleration options)
+-- @tparam[opt=1] number speed  the speed mult (will be multiplied with u_getSpeedMultDM())
+function PseudoGame.game.WallSystem:set_curve_speed(speed)
+	local mult = u_getSpeedMultDM()
+	for i = 1, #self._walls do
+		local wall = self._walls[i]
+		if wall.curving then
+			wall.speed = speed * mult
+		end
+	end
 end
 
 --- update the walls position
@@ -142,7 +168,7 @@ function PseudoGame.game.WallSystem:update(frametime)
         local polygon = self.polygon_collection:get(wall.polygon)
         local move_distance
         if wall.curving then
-            move_distance = wall.old_speed_dm * 5 * frametime
+            move_distance = wall.old_speed * 5 * frametime
         else
             move_distance = wall.speed * 5 * frametime
         end

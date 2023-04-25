@@ -1,0 +1,12 @@
+{
+    "id": "pg_dynamic_wall_speed",
+    "name": "dynamic wall speed",
+    "description": "example level using pseudogame",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 11,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/dynamic_wall_speed.lua",
+    "difficultyMults": []
+}
