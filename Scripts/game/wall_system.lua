@@ -20,7 +20,8 @@ end
 --- the constructor for a wall system
 -- @tparam[opt] table options  some options for the wall system
 -- @tparam[opt=nil] Timeline options.timeline  the timeline to use (nil will use the default t_ functions)
--- @tparam[opt=`l_getWallSpawnDistance() * 1.1`] Timeline options.despawn_distance  the distance at which walls are removed
+-- @tparam[opt=l_getWallSpawnDistance() * 1.1] number options.despawn_distance  the distance at which walls are removed
+-- @tparam[opt=l_getWallSpawnDistance()] number options.spawn_distance  the distance at which walls are spawned (has to be smaller than despawn distance)
 -- @tparam[opt=false] Timeline options.reverse_direction  makes walls move from the center out of the screen
 -- @tparam[opt=level_style] Style style  the style to use
 -- @treturn WallSystem
@@ -37,11 +38,12 @@ function PseudoGame.game.WallSystem:new(options, style)
         wall_height = 0,
     }, PseudoGame.game.WallSystem)
     PseudoGame.game.WallSystem._systems[#PseudoGame.game.WallSystem._systems + 1] = obj
+    obj.options.spawn_distance = obj.options.spawn_distance or l_getWallSpawnDistance()
     return obj
 end
 
 --- create a wall in the system
--- @tparam[opt=`l_getWallSpawnDistance()`] number height  the height the wall will be spawned at
+-- @tparam[opt=options.spawn_distance] number height  the height the wall will be spawned at
 -- @tparam[opt=0] number hue_modifier  the modifier the hue of the wall will be adjusted by
 -- @tparam number side  the side to spawn the wall at
 -- @tparam number thickness  the thickness the wall should have
@@ -69,7 +71,7 @@ function PseudoGame.game.WallSystem:wall(
     acceleration = acceleration or 0
     min_speed = min_speed or 0
     max_speed = max_speed or 0
-    local distance = height or l_getWallSpawnDistance()
+    local distance = height or self.options.spawn_distance
     if self.options.reverse_direction then
         distance = -thickness
         speed_mult = -speed_mult
