@@ -96,7 +96,8 @@ u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span c
     <span class="comment">-- draw the game to the screen
 </span>    game:draw_to_screen()
 
-    game.walls:set_speed(<span class="global">math</span>.sin(l_getLevelTime()) + <span class="number">2</span>)
+    <span class="comment">-- set the speed of all walls dynamically
+</span>    game.walls:set_speed(<span class="global">math</span>.sin(l_getLevelTime()) + <span class="number">2</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect when the player dies

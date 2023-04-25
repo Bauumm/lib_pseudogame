@@ -21,6 +21,7 @@ function onInput(frametime, movement, focus, swap)
     -- draw the game to the screen
     game:draw_to_screen()
 
+    -- set the speed of all walls dynamically
     game.walls:set_speed(math.sin(l_getLevelTime()) + 2)
 end
 
