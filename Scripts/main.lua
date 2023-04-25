@@ -3,9 +3,9 @@
 
 -- compatability with older versions of the game
 if u_getVersionMajor() <= 2 and u_getVersionMinor() <= 1 and u_getVersionMicro() <= 6 then
-	function u_isHeadless()
-		return false
-	end
+    function u_isHeadless()
+        return false
+    end
 end
 
 u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "utils.lua")

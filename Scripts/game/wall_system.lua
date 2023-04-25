@@ -119,27 +119,27 @@ end
 --- set the speed for every wall (does not change any kind of acceleration options)
 -- @tparam[opt=1] number speed  the speed mult (will be multiplied with u_getSpeedMultDM())
 function PseudoGame.game.WallSystem:set_speed(speed)
-	local mult = u_getSpeedMultDM()
-	for i = 1, #self._walls do
-		local wall = self._walls[i]
-		if wall.curving then
-			wall.old_speed = speed * mult
-		else
-			wall.speed = speed * mult
-		end
-	end
+    local mult = u_getSpeedMultDM()
+    for i = 1, #self._walls do
+        local wall = self._walls[i]
+        if wall.curving then
+            wall.old_speed = speed * mult
+        else
+            wall.speed = speed * mult
+        end
+    end
 end
 
 --- set the curve speed for every wall (does not change any kind of acceleration options)
 -- @tparam[opt=1] number speed  the speed mult (will be multiplied with u_getSpeedMultDM())
 function PseudoGame.game.WallSystem:set_curve_speed(speed)
-	local mult = u_getSpeedMultDM()
-	for i = 1, #self._walls do
-		local wall = self._walls[i]
-		if wall.curving then
-			wall.speed = speed * mult
-		end
-	end
+    local mult = u_getSpeedMultDM()
+    for i = 1, #self._walls do
+        local wall = self._walls[i]
+        if wall.curving then
+            wall.speed = speed * mult
+        end
+    end
 end
 
 --- update the walls position

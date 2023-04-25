@@ -128,20 +128,20 @@ function PseudoGame.game.Game:_init()
         self.component_collections.pivot = self._pivot_collection
         self.collections[#self.collections + 1] = self._pivot_collection
         if not headless then
-		if self.options.pivot.cap == nil or self.options.pivot.cap then
-		    self._component_update[#self._component_update + 1] = function(self)
-			self.cap:update()
-			self.pivot:update()
-			self._pivot_collection:clear()
-			self._pivot_collection:ref_add(self.pivot.polygon_collection)
-			self._pivot_collection:add(self.cap.polygon)
-		    end
-		else
-		    self._component_update[#self._component_update + 1] = function(self)
-			self.pivot:update()
-		    end
-		end
-	end
+            if self.options.pivot.cap == nil or self.options.pivot.cap then
+                self._component_update[#self._component_update + 1] = function(self)
+                    self.cap:update()
+                    self.pivot:update()
+                    self._pivot_collection:clear()
+                    self._pivot_collection:ref_add(self.pivot.polygon_collection)
+                    self._pivot_collection:add(self.cap.polygon)
+                end
+            else
+                self._component_update[#self._component_update + 1] = function(self)
+                    self.pivot:update()
+                end
+            end
+        end
     end
     if self.options.components.player then
         if self.options.player == nil then
