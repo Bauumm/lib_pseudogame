@@ -4,6 +4,7 @@ PseudoGame.graphics.effects = {
     --- setting `effects.draw_directly` to true will make the effects, that take a polygon collection to output to, draw directly to the screen instead
     draw_directly = false,
     _tmp_collection = PseudoGame.graphics.PolygonCollection:new(),
+    _headless = u_isHeadless(),
 }
 
 --- get the polygons that represent the intersection of two collections
@@ -15,19 +16,21 @@ function PseudoGame.graphics.effects:blend(polygon_collection1, polygon_collecti
     if not self.draw_directly then
         blend_collection:clear()
     end
-    local tmp_gen = self._tmp_collection:generator()
-    for polygon1 in polygon_collection1:iter() do
-        for polygon2 in polygon_collection2:iter() do
-            local clipped_polygon = polygon1:clip(polygon2, tmp_gen)
-            if clipped_polygon ~= nil then
-                local r, g, b, a = polygon1:get_vertex_color(1)
-                for index, x, y in clipped_polygon:vertex_color_pairs() do
-                    clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon2:get_vertex_color(1)))
-                end
-                if self.draw_directly then
-                    PseudoGame.graphics.screen:draw_polygon(clipped_polygon)
-                else
-                    blend_collection:add(clipped_polygon)
+    if not self.draw_directly or not self._headless then
+        local tmp_gen = self._tmp_collection:generator()
+        for polygon1 in polygon_collection1:iter() do
+            for polygon2 in polygon_collection2:iter() do
+                local clipped_polygon = polygon1:clip(polygon2, tmp_gen)
+                if clipped_polygon ~= nil then
+                    local r, g, b, a = polygon1:get_vertex_color(1)
+                    for index, x, y in clipped_polygon:vertex_color_pairs() do
+                        clipped_polygon:set_vertex_color(index, blend_func(r, g, b, a, polygon2:get_vertex_color(1)))
+                    end
+                    if self.draw_directly then
+                        PseudoGame.graphics.screen:draw_polygon(clipped_polygon)
+                    else
+                        blend_collection:add(clipped_polygon)
+                    end
                 end
             end
         end
@@ -40,28 +43,30 @@ end
 -- @tparam table color  the color of the outlines, should be formatted like this: `{r, g, b, a}`
 -- @tparam[opt] PolygonCollection outline_collection  the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
 function PseudoGame.graphics.effects:outline(polygon_collection, thickness, color, outline_collection)
-    local gen
-    if self.draw_directly then
-        gen = self._tmp_collection:generator()
-    else
-        gen = outline_collection:generator()
-    end
-    for polygon in polygon_collection:iter() do
-        for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in polygon:edge_color_pairs() do
-            local dx, dy = x1 - x0, y1 - y0
-            local len = math.sqrt(dx * dx + dy * dy)
-            local thick_x, thick_y = dx / len * thickness, dy / len * thickness
-            local new_poly = gen()
-            new_poly:resize(4)
-            new_poly:set_vertex_pos(1, x0 - thick_x - thick_y, y0 - thick_y + thick_x)
-            new_poly:set_vertex_pos(2, x0 - thick_x + thick_y, y0 - thick_y - thick_x)
-            new_poly:set_vertex_pos(3, x1 + thick_x + thick_y, y1 + thick_y - thick_x)
-            new_poly:set_vertex_pos(4, x1 + thick_x - thick_y, y1 + thick_y + thick_x)
-            for i = 1, 4 do
-                new_poly:set_vertex_color(i, unpack(color))
-            end
-            if self.draw_directly then
-                PseudoGame.graphics.screen:draw_polygon(new_poly)
+    if not self.draw_directly or not self._headless then
+        local gen
+        if self.draw_directly then
+            gen = self._tmp_collection:generator()
+        else
+            gen = outline_collection:generator()
+        end
+        for polygon in polygon_collection:iter() do
+            for x0, y0, r0, g0, b0, a0, x1, y1, r1, g1, b1, a1 in polygon:edge_color_pairs() do
+                local dx, dy = x1 - x0, y1 - y0
+                local len = math.sqrt(dx * dx + dy * dy)
+                local thick_x, thick_y = dx / len * thickness, dy / len * thickness
+                local new_poly = gen()
+                new_poly:resize(4)
+                new_poly:set_vertex_pos(1, x0 - thick_x - thick_y, y0 - thick_y + thick_x)
+                new_poly:set_vertex_pos(2, x0 - thick_x + thick_y, y0 - thick_y - thick_x)
+                new_poly:set_vertex_pos(3, x1 + thick_x + thick_y, y1 + thick_y - thick_x)
+                new_poly:set_vertex_pos(4, x1 + thick_x - thick_y, y1 + thick_y + thick_x)
+                for i = 1, 4 do
+                    new_poly:set_vertex_color(i, unpack(color))
+                end
+                if self.draw_directly then
+                    PseudoGame.graphics.screen:draw_polygon(new_poly)
+                end
             end
         end
     end
