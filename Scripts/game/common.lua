@@ -48,9 +48,8 @@ end
 -- @tparam number r  the r component of the color to transform
 -- @tparam number g  the g component of the color to transform
 -- @tparam number b  the b component of the color to transform
--- @tparam number a  the a component of the color to transform
 -- @treturn number,number,number,number  the resulting color
-function PseudoGame.game.transform_hue(hue, r, g, b, a)
+function PseudoGame.game.transform_hue(hue, r, g, b)
     -- using 3.14 instead of pi for parity with the OH code
     local u = math.cos(hue * 3.14 / 180)
     local w = math.sin(hue * 3.14 / 180)
