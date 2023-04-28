@@ -451,15 +451,6 @@ function PseudoGame.graphics.Polygon:transform(transform_func)
     return self
 end
 
--- remove duplicate vertices, does not respect color
-function PseudoGame.graphics.Polygon:_remove_doubles()
-    for i = self.vertex_count * 2, 1, -2 do
-        if self._vertices[i - 1] == self._vertices[i - 3] and self._vertices[i] == self._vertices[i - 2] then
-            self:remove_vertex(i / 2)
-        end
-    end
-end
-
 -- @tparam number x  the x coordinate of the point to check
 -- @tparam number y  the y coordinate of the point to check
 -- @treturn bool  true if the point is inside the polygon
