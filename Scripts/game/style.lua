@@ -117,6 +117,7 @@ PseudoGame.game.level_style = {
     _depth = s_get3dDepth(),
     _s_get3dDepth = s_get3dDepth,
     _s_set3dDepth = s_set3dDepth,
+    _frametime = 0.25
 }
 
 function PseudoGame.game.level_style:_overwrite()
@@ -136,15 +137,16 @@ function PseudoGame.game.level_style:_restore()
     s_set3dDepth(self._depth)
 end
 
-function PseudoGame.game.level_style:_update_pulse3D(frametime)
-    if self._last_pulse3D_update ~= l_getLevelTime() then
-        self._last_pulse3D_update = l_getLevelTime()
-        self._pulse3D = self._pulse3D + s_get3dPulseSpeed() * self._pulse3DDirection * frametime
-        if self._pulse3D > s_get3dPulseMax() then
-            self._pulse3DDirection = -1
-        elseif self._pulse3D < s_get3dPulseMin() then
-            self._pulse3DDirection = 1
-        end
+function PseudoGame.game.level_style:_update_pulse3D()
+    -- recreate the games internal 3D pulse logic as there is no way to get the current value from lua
+    local speedMult = l_getSpeedMult()
+    l_setSpeedMult(self._pulse3D + s_get3dPulseSpeed() * self._pulse3DDirection * self._frametime)
+    self._pulse3D = l_getSpeedMult()  -- use internal properties for accurate rounding (otherwise it doesn't match the game)
+    l_setSpeedMult(speedMult)
+    if self._pulse3D > s_get3dPulseMax() then
+        self._pulse3DDirection = -1
+    elseif self._pulse3D < s_get3dPulseMin() then
+        self._pulse3DDirection = 1
     end
 end
 
@@ -195,4 +197,14 @@ end
 
 function PseudoGame.game.level_style:get_depth()
     return self._depth
+end
+
+-- this is a very hacky way to make an independant update loop but it ensures that it's actually called exactly once per tick
+local pulse3d_update_timeline = ct_create()
+ct_eval(pulse3d_update_timeline, [[PseudoGame.game._3d_update_loop()]])
+
+function PseudoGame.game._3d_update_loop()
+    PseudoGame.game.level_style:_update_pulse3D()
+    ct_wait(pulse3d_update_timeline, PseudoGame.game.level_style._frametime)
+    ct_eval(pulse3d_update_timeline, [[PseudoGame.game._3d_update_loop()]])
 end

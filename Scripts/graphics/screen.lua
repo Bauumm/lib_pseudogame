@@ -17,10 +17,10 @@ function PseudoGame.graphics.screen:get_width()
     return u_getWidth() * self._zoom_factor
 end
 
---- get the height of the screen, so you put polygons directly on the edge (not adjusted for skew)
+--- get the height of the screen, so you put polygons directly on the edge (adjusted for skew, so need to refresh every tick if 3d is changing)
 -- @treturn number
 function PseudoGame.graphics.screen:get_height()
-    return u_getHeight() * self._zoom_factor
+    return u_getHeight() * self._zoom_factor * (1 + s_get3dSkew() * PseudoGame.game.level_style._pulse3D)
 end
 
 --- draw a polygon to the screen (only shown once `screen:update()` is called)

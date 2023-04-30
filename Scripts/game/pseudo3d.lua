@@ -21,10 +21,7 @@ end
 
 --- function to refill the polygon collection with the a 3d effect (which one is specified in the style)
 -- @tparam number frametime  the time in 1/60s that passed since the last call of this function
-function PseudoGame.game.Pseudo3D:update(frametime)
-    if self.style._update_pulse3D ~= nil then
-        self.style:_update_pulse3D(frametime)
-    end
+function PseudoGame.game.Pseudo3D:update()
     if self.style:get_connect_layers() then
         self:_update_gradient()
     else

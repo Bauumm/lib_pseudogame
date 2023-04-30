@@ -184,7 +184,7 @@ function PseudoGame.game.Game:_init()
             if self.options.components.player then
                 self._3d_collection:ref_add(self._player_collection)
             end
-            self.pseudo3d:update(self._frametime)
+            self.pseudo3d:update()
         end
     end
 end
@@ -226,6 +226,10 @@ function PseudoGame.game.Game:update(frametime, move, focus, swap)
     self._move = move
     self._focus = focus
     self._swap = swap
+
+    -- only give the level style the frametime, it needs to update on its own
+    -- otherwise it could be updated too often
+    PseudoGame.game.level_style._frametime = frametime
 
     for i = 1, #self._component_update do
         self._component_update[i](self)
