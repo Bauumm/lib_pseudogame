@@ -79,7 +79,14 @@ end
 -- @tparam number radius_step  the step size of the effect in the outer direction (lower values can lead to a lot of lag)
 -- @tparam number angle_step  the step size of the effect around the object (lower values can lead to a lot of lag)
 -- @tparam[opt] PolygonCollection glow_collection  the polygon collection the glow will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
-function PseudoGame.graphics.effects:glow(polygon_collection, intensity, radius, radius_step, angle_step, glow_collection)
+function PseudoGame.graphics.effects:glow(
+    polygon_collection,
+    intensity,
+    radius,
+    radius_step,
+    angle_step,
+    glow_collection
+)
     if not self.draw_directly or not self._headless then
         local gen
         if self.draw_directly then
@@ -112,7 +119,13 @@ end
 -- @tparam number initial_alpha_divisor  the number the alpha right at the edge of the polygon will be divided by (to create some contrast, otherwise the effect looks like a blur)
 -- @tparam number corner_resolution  the amount of vertices to add in the corners (has to be >= 1)
 -- @tparam[opt] PolygonCollection glow_collection  the polygon collection the glow will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
-function PseudoGame.graphics.effects:gradient_glow(polygon_collection, size, initial_alpha_divisor, corner_resolution, glow_collection)
+function PseudoGame.graphics.effects:gradient_glow(
+    polygon_collection,
+    size,
+    initial_alpha_divisor,
+    corner_resolution,
+    glow_collection
+)
     if not self.draw_directly or not self._headless then
         local gen
         if self.draw_directly then

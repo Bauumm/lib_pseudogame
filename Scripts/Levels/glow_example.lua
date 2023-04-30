@@ -24,7 +24,7 @@ function onInput(frametime, movement, focus, swap)
     game:update(frametime, movement, focus, swap)
 
     -- draw the game to the screen
-    for i=1,#game.collections do
+    for i = 1, #game.collections do
         PseudoGame.graphics.screen:draw_polygon_collection(game.collections[i])
         if i == 3 then
             -- draw the glow for the walls on top of them

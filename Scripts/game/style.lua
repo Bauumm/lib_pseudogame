@@ -117,7 +117,7 @@ PseudoGame.game.level_style = {
     _depth = s_get3dDepth(),
     _s_get3dDepth = s_get3dDepth,
     _s_set3dDepth = s_set3dDepth,
-    _frametime = 0.25
+    _frametime = 0.25,
 }
 
 function PseudoGame.game.level_style:_overwrite()
@@ -141,7 +141,7 @@ function PseudoGame.game.level_style:_update_pulse3D()
     -- recreate the games internal 3D pulse logic as there is no way to get the current value from lua
     local speedMult = l_getSpeedMult()
     l_setSpeedMult(self._pulse3D + s_get3dPulseSpeed() * self._pulse3DDirection * self._frametime)
-    self._pulse3D = l_getSpeedMult()  -- use internal properties for accurate rounding (otherwise it doesn't match the game)
+    self._pulse3D = l_getSpeedMult() -- use internal properties for accurate rounding (otherwise it doesn't match the game)
     l_setSpeedMult(speedMult)
     if self._pulse3D > s_get3dPulseMax() then
         self._pulse3DDirection = -1

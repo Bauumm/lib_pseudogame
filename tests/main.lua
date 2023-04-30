@@ -27,6 +27,12 @@ module_env = {
     s_get3dDepth = function()
         return 0
     end,
+    ct_create = function() end,
+    ct_wait = function() end,
+    ct_eval = function() end,
+    s_get3dSkew = function()
+        return 0
+    end,
 }
 math.randomseed(os.time())
 for k, v in pairs(_G) do
