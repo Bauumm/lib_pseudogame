@@ -102,15 +102,11 @@ s_set3dDepth(<span class="number">0</span>)
     <span class="comment">-- draw the game to the screen
 </span>    <span class="keyword">for</span> i=<span class="number">1</span>,#game.collections <span class="keyword">do</span>
         PseudoGame.graphics.screen:draw_polygon_collection(game.collections[i])
+        <span class="keyword">if</span> i == <span class="number">3</span> <span class="keyword">then</span>
+            <span class="comment">-- draw the glow for the walls on top of them
+</span>            PseudoGame.graphics.effects:gradient_glow(game.collections[i], <span class="number">10</span>, <span class="number">1.5</span>, <span class="number">6</span>)
+        <span class="keyword">end</span>
     <span class="keyword">end</span>
-    <span class="comment">-- draw the glow for the walls
-</span>    PseudoGame.graphics.effects:glow(
-        game.component_collections.walls,
-        <span class="number">0.2</span>,  <span class="comment">-- intensity (keep low for contrast)
-</span>        <span class="number">5</span> * (<span class="global">math</span>.sin(l_getLevelTime()) + <span class="number">2</span>),  <span class="comment">-- radius
-</span>        <span class="number">2</span>,  <span class="comment">-- radius step
-</span>        <span class="number">15</span>  <span class="comment">-- angle step
-</span>    )
 
     PseudoGame.graphics.screen:update()
 <span class="keyword">end</span>
@@ -192,9 +188,8 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
 </span><span class="keyword">function</span> onLoad()
-    e_messageAdd(<span class="string">"welcome to the first PseudoGame example level"</span>, <span class="number">150</span>)
-    e_messageAdd(<span class="string">"This is just a copy of the workshop example\nbut completely rendered using custom walls!"</span>, <span class="number">200</span>)
-    e_messageAdd(<span class="string">"Look at the next examples for seeing what can be done with this."</span>, <span class="number">200</span>)
+    e_messageAdd(<span class="string">"welcome to the 12th PseudoGame example level"</span>, <span class="number">150</span>)
+    e_messageAdd(<span class="string">"This one demonstrates the premade gradient glow effect."</span>, <span class="number">200</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onStep</code> is an hardcoded function that is called when the level "timeline"

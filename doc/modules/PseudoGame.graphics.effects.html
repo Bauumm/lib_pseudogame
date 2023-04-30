@@ -115,7 +115,17 @@
         <a href="#PseudoGame.graphics.effects:glow">PseudoGame.graphics.effects:glow (polygon_collection, intensity, radius, radius_step, angle_step[, glow_collection])</a>
       </td>
       <td class="summary">
-        renders a glow effect
+        renders a glow effect by rendering polygons many times, this is extremely laggy
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.effects:gradient_glow">PseudoGame.graphics.effects:gradient_glow (polygon_collection, size, initial_alpha_divisor, corner_resolution[, glow_collection])</a>
+      </td>
+      <td class="summary">
+        renders a glow effect by creating gradients around the polygons
       </td>
       <td class="baseclass" nowrap>
       </td>
@@ -271,7 +281,7 @@
     </span>
     </dt>
     <dd>
-    renders a glow effect
+    renders a glow effect by rendering polygons many times, this is extremely laggy
 
     <h3>Parameters:</h3>
     <table class="see_also">
@@ -310,6 +320,63 @@
            <td></td>
            <td><span class="types"><span class="type">number</span></span></td>
            <td class="see_also_description">  the step size of the effect around the object (lower values can lead to a lot of lag)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">glow_collection</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the polygon collection the glow will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.effects:gradient_glow" href="#PseudoGame.graphics.effects:gradient_glow">&#128279;</a>
+    <strong>PseudoGame.graphics.effects:gradient_glow (polygon_collection, size, initial_alpha_divisor, corner_resolution[, glow_collection])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    renders a glow effect by creating gradients around the polygons
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the polygon collection the glow should be made for</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">size</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the size of the effect (in non zoom factor adjusted pixels)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">initial_alpha_divisor</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the number the alpha right at the edge of the polygon will be divided by (to create some contrast, otherwise the effect looks like a blur)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">corner_resolution</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the amount of vertices to add in the corners (has to be >= 1)</td>
          </tr>
          <tr>
            <td><span class="parameter">glow_collection</span></td>

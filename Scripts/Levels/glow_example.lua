@@ -26,15 +26,11 @@ function onInput(frametime, movement, focus, swap)
     -- draw the game to the screen
     for i=1,#game.collections do
         PseudoGame.graphics.screen:draw_polygon_collection(game.collections[i])
+        if i == 3 then
+            -- draw the glow for the walls on top of them
+            PseudoGame.graphics.effects:gradient_glow(game.collections[i], 10, 1.5, 6)
+        end
     end
-    -- draw the glow for the walls
-    PseudoGame.graphics.effects:glow(
-        game.component_collections.walls,
-        0.2,  -- intensity (keep low for contrast)
-        5 * (math.sin(l_getLevelTime()) + 2),  -- radius
-        2,  -- radius step
-        15  -- angle step
-    )
 
     PseudoGame.graphics.screen:update()
 end
@@ -116,9 +112,8 @@ end
 -- `onLoad` is an hardcoded function that is called when the level is started
 -- or restarted.
 function onLoad()
-    e_messageAdd("welcome to the first PseudoGame example level", 150)
-    e_messageAdd("This is just a copy of the workshop example\nbut completely rendered using custom walls!", 200)
-    e_messageAdd("Look at the next examples for seeing what can be done with this.", 200)
+    e_messageAdd("welcome to the 12th PseudoGame example level", 150)
+    e_messageAdd("This one demonstrates the premade gradient glow effect.", 200)
 end
 
 -- `onStep` is an hardcoded function that is called when the level "timeline"
