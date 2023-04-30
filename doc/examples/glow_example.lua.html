@@ -3,7 +3,7 @@
 <html data-theme="monokai">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Example reverse_walls.lua - PseudoGame Documentation</title>
+    <title>Example glow_example.lua - PseudoGame Documentation</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -31,11 +31,11 @@
   <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
   <li><a href="../examples/dynamic_wall_speed.lua.html">dynamic_wall_speed.lua</a></li>
   <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
-  <li><a href="../examples/glow_example.lua.html">glow_example.lua</a></li>
+  <li><strong>glow_example.lua</strong></li>
   <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
   <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
   <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
-  <li><strong>reverse_walls.lua</strong></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
   <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
   <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
   <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
@@ -72,7 +72,7 @@
 
 <div id="content">
 
-    <h2>reverse_walls.lua</h2>
+    <h2>glow_example.lua</h2>
 <pre>
 <span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
 </span><span class="comment">-- folder.
@@ -81,36 +81,38 @@ u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="s
 u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
 u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
 
+s_set3dDepth(<span class="number">0</span>)
+
 <span class="comment">-- hide the real game
 </span>PseudoGame.hide_default_game()
 
 <span class="comment">-- create a fake game
-</span>game = PseudoGame.game.Game:new({
-    walls = {
-        <span class="comment">-- make walls go the other way
-</span>        reverse_direction = <span class="keyword">true</span>,
-    },
-    player = {
-        <span class="comment">-- make the player be on the edge of the screen
-</span>        reverse = <span class="keyword">true</span>,
-
-        <span class="comment">-- overwrite the radius the player moves on (negative for inward facing player)
-</span>        radius = -<span class="number">400</span>,
-
-        <span class="comment">-- reset the collision handler since we overwrote default settings
-</span>        collision_handler = PseudoGame.game.basic_collision_handler,
-    },
-})
+</span>game = PseudoGame.game.Game:new()
 
 <span class="comment">-- overwrite the real game's functions (mostly wall functions)
 </span>game:overwrite()
+
+<span class="comment">-- draw effects directly on the screen
+</span>PseudoGame.graphics.effects.draw_directly = <span class="keyword">true</span>
 
 <span class="keyword">function</span> onInput(frametime, movement, focus, swap)
     <span class="comment">-- update our game
 </span>    game:update(frametime, movement, focus, swap)
 
     <span class="comment">-- draw the game to the screen
-</span>    game:draw_to_screen()
+</span>    <span class="keyword">for</span> i=<span class="number">1</span>,#game.collections <span class="keyword">do</span>
+        PseudoGame.graphics.screen:draw_polygon_collection(game.collections[i])
+    <span class="keyword">end</span>
+    <span class="comment">-- draw the glow for the walls
+</span>    PseudoGame.graphics.effects:glow(
+        game.component_collections.walls,
+        <span class="number">0.2</span>,  <span class="comment">-- intensity (keep low for contrast)
+</span>        <span class="number">5</span> * (<span class="global">math</span>.sin(l_getLevelTime()) + <span class="number">2</span>),  <span class="comment">-- radius
+</span>        <span class="number">2</span>,  <span class="comment">-- radius step
+</span>        <span class="number">15</span>  <span class="comment">-- angle step
+</span>    )
+
+    PseudoGame.graphics.screen:update()
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect when the player dies
@@ -160,9 +162,9 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="comment">-- <code>onInit</code> is an hardcoded function that is called when the level is first
 </span><span class="comment">-- loaded. This can be used to setup initial level parameters.
 </span><span class="keyword">function</span> onInit()
-    l_setSpeedMult(<span class="number">1.25</span>)
+    l_setSpeedMult(<span class="number">1.55</span>)
     l_setSpeedInc(<span class="number">0.125</span>)
-    l_setSpeedMax(<span class="number">2</span>)
+    l_setSpeedMax(<span class="number">3.5</span>)
     l_setRotationSpeed(<span class="number">0.07</span>)
     l_setRotationSpeedMax(<span class="number">0.75</span>)
     l_setRotationSpeedInc(<span class="number">0.04</span>)
@@ -190,8 +192,9 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
 </span><span class="keyword">function</span> onLoad()
-    e_messageAdd(<span class="string">"welcome to the eight PseudoGame example level"</span>, <span class="number">150</span>)
-    e_messageAdd(<span class="string">"Here the wall direction and the player are reversed."</span>, <span class="number">200</span>)
+    e_messageAdd(<span class="string">"welcome to the first PseudoGame example level"</span>, <span class="number">150</span>)
+    e_messageAdd(<span class="string">"This is just a copy of the workshop example\nbut completely rendered using custom walls!"</span>, <span class="number">200</span>)
+    e_messageAdd(<span class="string">"Look at the next examples for seeing what can be done with this."</span>, <span class="number">200</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onStep</code> is an hardcoded function that is called when the level "timeline"

@@ -72,6 +72,40 @@ function PseudoGame.graphics.effects:outline(polygon_collection, thickness, colo
     end
 end
 
+--- renders a glow effect
+-- @tparam PolygonCollection polygon_collection  the polygon collection the glow should be made for
+-- @tparam number intensity  the intensity of the effect (should be between 0 and 1)
+-- @tparam number radius  the radius of the effect
+-- @tparam number radius_step  the step size of the effect in the outer direction (lower values can lead to a lot of lag)
+-- @tparam number angle_step  the step size of the effect around the object (lower values can lead to a lot of lag)
+-- @tparam[opt] PolygonCollection glow_collection  the polygon collection the glow will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)
+function PseudoGame.graphics.effects:glow(polygon_collection, intensity, radius, radius_step, angle_step, glow_collection)
+    if not self.draw_directly or not self._headless then
+        local gen
+        if self.draw_directly then
+            gen = self._tmp_collection:generator()
+        else
+            gen = glow_collection:generator()
+        end
+        for polygon in polygon_collection:iter() do
+            for cr = 1, radius, radius_step do
+                for angle = 0, 360 - angle_step, angle_step do
+                    local new_poly = gen()
+                    local rad = math.rad(angle)
+                    local push_x = math.cos(rad) * cr
+                    local push_y = math.sin(rad) * cr
+                    new_poly:copy_data_transformed(polygon, function(x, y, r, g, b, a)
+                        return x + push_x, y + push_y, r, g, b, a / cr * intensity
+                    end)
+                    if self.draw_directly then
+                        PseudoGame.graphics.screen:draw_polygon(new_poly)
+                    end
+                end
+            end
+        end
+    end
+end
+
 --- generates a transformation function that rotates vertices
 -- @tparam number angle  the angle to rotate
 -- @treturn function  the transformation function

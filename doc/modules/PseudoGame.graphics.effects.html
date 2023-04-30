@@ -63,6 +63,7 @@
   <li><a href="../examples/desync_example.lua.html">desync_example.lua</a></li>
   <li><a href="../examples/dynamic_wall_speed.lua.html">dynamic_wall_speed.lua</a></li>
   <li><a href="../examples/examplelevel.lua.html">examplelevel.lua</a></li>
+  <li><a href="../examples/glow_example.lua.html">glow_example.lua</a></li>
   <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
   <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
   <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
@@ -105,6 +106,16 @@
       </td>
       <td class="summary">
         creates polygons along the edges of some polygons
+      </td>
+      <td class="baseclass" nowrap>
+      </td>
+    </tr>
+    <tr class="summary_row">
+      <td class="name" nowrap>
+        <a href="#PseudoGame.graphics.effects:glow">PseudoGame.graphics.effects:glow (polygon_collection, intensity, radius, radius_step, angle_step[, glow_collection])</a>
+      </td>
+      <td class="summary">
+        renders a glow effect
       </td>
       <td class="baseclass" nowrap>
       </td>
@@ -242,6 +253,69 @@
            <td><span class="chips">Optional</span></td>
            <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
            <td class="see_also_description">  the polygon collection the outlines will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)</td>
+         </tr>
+        </table>
+
+
+
+
+
+    <span id=item class="hide_extra">
+    </span>
+
+</dd>
+    <dt>
+    <a class="copy-link js-copy-link" name="PseudoGame.graphics.effects:glow" href="#PseudoGame.graphics.effects:glow">&#128279;</a>
+    <strong>PseudoGame.graphics.effects:glow (polygon_collection, intensity, radius, radius_step, angle_step[, glow_collection])</strong>
+    <span class="baseclass" nowrap>
+    </span>
+    </dt>
+    <dd>
+    renders a glow effect
+
+    <h3>Parameters:</h3>
+    <table class="see_also">
+         <tr class="param_header">
+            <th>Name</th>
+            <th></th>
+            <th>Type(s)</th>
+            <th>Description</th>
+         </tr>
+         <tr>
+           <td><span class="parameter">polygon_collection</span></td>
+           <td></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the polygon collection the glow should be made for</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">intensity</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the intensity of the effect (should be between 0 and 1)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">radius</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the radius of the effect</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">radius_step</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the step size of the effect in the outer direction (lower values can lead to a lot of lag)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">angle_step</span></td>
+           <td></td>
+           <td><span class="types"><span class="type">number</span></span></td>
+           <td class="see_also_description">  the step size of the effect around the object (lower values can lead to a lot of lag)</td>
+         </tr>
+         <tr>
+           <td><span class="parameter">glow_collection</span></td>
+           <td><span class="chips">Optional</span></td>
+           <td><span class="types"><a class="type" href="../classes/PseudoGame.graphics.PolygonCollection.html">PolygonCollection</a></span></td>
+           <td class="see_also_description">  the polygon collection the glow will be added to (the collection is cleared before the operation) (not required if direct drawing is enabled)</td>
          </tr>
         </table>
 

@@ -1,0 +1,12 @@
+{
+    "id": "pg_glow_example",
+    "name": "glow example",
+    "description": "example level using pseudogame to make a glow effect",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 12,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/glow_example.lua",
+    "difficultyMults": []
+}
