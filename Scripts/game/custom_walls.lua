@@ -24,7 +24,7 @@ local cw_function_names = {
     "cw_clear",
 }
 
-if type(cw_create) == "userdata" then
+if PseudoGame.game.cw_function_backup == nil then
     PseudoGame.game.cw_function_backup = {}
     for _, name in pairs(cw_function_names) do
         PseudoGame.game.cw_function_backup[name] = _G[name]
