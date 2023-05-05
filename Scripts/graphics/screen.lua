@@ -6,7 +6,6 @@ PseudoGame.graphics.screen = {
     _cw_data = {},
     _extra_cw_data = {},
     _cw_list = {},
-    _zoom_factor = math.max(1024 / u_getWidth(), 768 / u_getHeight()),
     _is_headless = u_isHeadless(),
     _polygons_with_extra_data = false,
 }
@@ -14,13 +13,15 @@ PseudoGame.graphics.screen = {
 --- get the width of the screen, so you put polygons directly on the edge
 -- @treturn number
 function PseudoGame.graphics.screen:get_width()
-    return u_getWidth() * self._zoom_factor
+    local zoom_factor = math.max(1024 / u_getWidth(), 768 / u_getHeight())
+    return u_getWidth() * zoom_factor
 end
 
 --- get the height of the screen, so you put polygons directly on the edge (adjusted for skew, so need to refresh every tick if 3d is changing)
 -- @treturn number
 function PseudoGame.graphics.screen:get_height()
-    return u_getHeight() * self._zoom_factor * (1 + s_get3dSkew() * PseudoGame.game.level_style._pulse3D)
+    local zoom_factor = math.max(1024 / u_getWidth(), 768 / u_getHeight())
+    return u_getHeight() * zoom_factor * (1 + s_get3dSkew() * PseudoGame.game.level_style._pulse3D)
 end
 
 --- draw a polygon to the screen (only shown once `screen:update()` is called)

@@ -205,6 +205,6 @@ ct_eval(pulse3d_update_timeline, [[PseudoGame.game._3d_update_loop()]])
 
 function PseudoGame.game._3d_update_loop()
     PseudoGame.game.level_style:_update_pulse3D()
-    ct_wait(pulse3d_update_timeline, PseudoGame.game.level_style._frametime)
+    ct_wait(pulse3d_update_timeline, PseudoGame.game.level_style._frametime - 1e-10)
     ct_eval(pulse3d_update_timeline, [[PseudoGame.game._3d_update_loop()]])
 end

@@ -76,7 +76,6 @@ function onInit()
         -- adjust 3d
         s_set3dDepth(0)
 
-        -- undoing any 3d skew would make it uneccessary to call get_height every tick below
         --s_set3dSkew(0)
 
         -- hide the real game
@@ -167,7 +166,7 @@ function onInit()
 end
 
 function onInput(frametime, movement, focus, swap)
-    -- update height all the time because of the real game's 3d skew
+    width = PseudoGame.graphics.screen:get_width()
     height = PseudoGame.graphics.screen:get_height()
     -- update bounds with the height as well
     screen_bounds:set_vertex_pos(1, -width / 2, -height / 2)
