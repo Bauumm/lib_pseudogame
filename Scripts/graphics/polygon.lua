@@ -83,14 +83,14 @@ end
 --- adds a vertex with a vertex color to the polygon
 -- @tparam number x  the x coordinate of the vertex
 -- @tparam number y  the y coordinate of the vertex
--- @tparam number r  the r component of the vertex color
--- @tparam number g  the g component of the vertex color
--- @tparam number b  the b component of the vertex color
--- @tparam number a  the a component of the vertex color
+-- @tparam[opt=0] number r  the r component of the vertex color
+-- @tparam[opt=0] number g  the g component of the vertex color
+-- @tparam[opt=0] number b  the b component of the vertex color
+-- @tparam[opt=0] number a  the a component of the vertex color
 function PseudoGame.graphics.Polygon:add_vertex(x, y, r, g, b, a)
     self.vertex_count = self.vertex_count + 1
     self:set_vertex_pos(self.vertex_count, x, y)
-    self:set_vertex_color(self.vertex_count, r, g, b, a)
+    self:set_vertex_color(self.vertex_count, r or 0, g or 0, b or 0, a or 0)
 end
 
 function PseudoGame.graphics.Polygon:_check_vert_index(index)

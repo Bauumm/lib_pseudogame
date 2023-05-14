@@ -152,8 +152,7 @@ achievementUnlocked = <span class="keyword">false</span>
         <span class="comment">-- adjust 3d
 </span>        s_set3dDepth(<span class="number">0</span>)
 
-        <span class="comment">-- undoing any 3d skew would make it uneccessary to call get_height every tick below
-</span>        <span class="comment">--s_set3dSkew(0)
+        <span class="comment">--s_set3dSkew(0)
 </span>
         <span class="comment">-- hide the real game
 </span>        PseudoGame.hide_default_game()
@@ -243,8 +242,8 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="keyword">end</span>
 
 <span class="keyword">function</span> onInput(frametime, movement, focus, swap)
-    <span class="comment">-- update height all the time because of the real game's 3d skew
-</span>    height = PseudoGame.graphics.screen:get_height()
+    width = PseudoGame.graphics.screen:get_width()
+    height = PseudoGame.graphics.screen:get_height()
     <span class="comment">-- update bounds with the height as well
 </span>    screen_bounds:set_vertex_pos(<span class="number">1</span>, -width / <span class="number">2</span>, -height / <span class="number">2</span>)
     screen_bounds:set_vertex_pos(<span class="number">2</span>, -width / <span class="number">2</span>, height / <span class="number">2</span>)
