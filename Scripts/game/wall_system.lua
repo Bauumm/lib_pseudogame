@@ -149,7 +149,7 @@ function PseudoGame.game.WallSystem:update(frametime)
         self.options.timeline:update(frametime)
     end
     local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
-    local outer_bounds = self.options.despawn_distance or l_getWallSpawnDistance() * 1.1
+    local outer_bounds = self.options.despawn_distance or self.options.spawn_distance * 1.1
     local del_queue = {}
     self.wall_height = 0
     for i, wall in pairs(self._walls) do
