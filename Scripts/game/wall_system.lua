@@ -116,6 +116,12 @@ function PseudoGame.game.WallSystem:wall(
     table.insert(self._walls, wall_table)
 end
 
+--- get the amount of walls present in the system
+-- @treturn number
+function PseudoGame.game.WallSystem:get_wall_count()
+    return #self._walls
+end
+
 --- set the speed for every wall (does not change any kind of acceleration options)
 -- @tparam[opt=1] number speed  the speed mult (will be multiplied with u_getSpeedMultDM())
 function PseudoGame.game.WallSystem:set_speed(speed)
