@@ -237,6 +237,13 @@ function PseudoGame.game.WallSystem:update(frametime)
                     )
                 )
             end
+            for vertex = 1, 4 do
+                local x, y = polygon:get_vertex_pos(vertex)
+                local x_dist, y_dist = math.abs(x), math.abs(y)
+                if x_dist > outer_bounds or y_dist > outer_bounds then
+                    points_out_of_bounds = points_out_of_bounds + 1
+                end
+            end
         end
 
         self.wall_height = math.max(self.wall_height, wall.distance + wall.thickness)
