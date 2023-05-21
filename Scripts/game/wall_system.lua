@@ -22,7 +22,8 @@ end
 -- @tparam[opt=nil] Timeline options.timeline  the timeline to use (nil will use the default t_ functions)
 -- @tparam[opt=l_getWallSpawnDistance() * 1.1] number options.despawn_distance  the distance at which walls are removed
 -- @tparam[opt=l_getWallSpawnDistance()] number options.spawn_distance  the distance at which walls are spawned (has to be smaller than despawn distance)
--- @tparam[opt=false] Timeline options.reverse_direction  makes walls move from the center out of the screen
+-- @tparam[opt=false] bool options.reverse_direction  makes walls move from the center out of the screen
+-- @tparam[opt=false] bool options.better_pivot_fade  makes walls fade into the pivot directly at the edge
 -- @tparam[opt=level_style] Style style  the style to use
 -- @treturn WallSystem
 function PseudoGame.game.WallSystem:new(options, style)
@@ -154,7 +155,7 @@ function PseudoGame.game.WallSystem:update(frametime)
     if self.options.timeline ~= nil then
         self.options.timeline:update(frametime)
     end
-    local half_radius = 0.5 * (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
+    local radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
     local outer_bounds = self.options.despawn_distance or self.options.spawn_distance * 1.1
     local del_queue = {}
     self.wall_height = 0
@@ -178,18 +179,25 @@ function PseudoGame.game.WallSystem:update(frametime)
         else
             move_distance = wall.speed * 5 * frametime
         end
+        if not self.options.reverse_direction then
+            for vertex = 1, 4 do
+                local x, y = polygon:get_vertex_pos(vertex)
+                local x_dist, y_dist = math.abs(x), math.abs(y)
+                if x_dist > outer_bounds or y_dist > outer_bounds then
+                    points_out_of_bounds = points_out_of_bounds + 1
+                end
+                if
+                    (x_dist < radius * 0.5 and y_dist < radius * 0.5 and not self.options.better_pivot_fade)
+                    or (self.options.better_pivot_fade and x_dist ^ 2 + y_dist ^ 2 < (radius * 0.75 + 5) ^ 2)
+                then
+                    points_on_center = points_on_center + 1
+                else
+                    local magnitude = math.sqrt(x ^ 2 + y ^ 2)
+                    polygon:set_vertex_pos(vertex, x - x / magnitude * move_distance, y - y / magnitude * move_distance)
+                end
+            end
+        end
         for vertex = 1, 4 do
-            local x, y = polygon:get_vertex_pos(vertex)
-            local x_dist, y_dist = math.abs(x), math.abs(y)
-            if x_dist > outer_bounds or y_dist > outer_bounds then
-                points_out_of_bounds = points_out_of_bounds + 1
-            end
-            if x_dist < half_radius and y_dist < half_radius and not self.options.reverse_direction then
-                points_on_center = points_on_center + 1
-            else
-                local magnitude = math.sqrt(x ^ 2 + y ^ 2)
-                polygon:set_vertex_pos(vertex, x - x / magnitude * move_distance, y - y / magnitude * move_distance)
-            end
             if wall.hue_modifier == 0 then
                 polygon:set_vertex_color(vertex, self.style:get_wall_color())
             else
