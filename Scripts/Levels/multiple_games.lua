@@ -229,6 +229,7 @@ function onDeath()
     for i = 1, #games do
         games[i].death_effect:death()
     end
+    s_set3dPulseSpeed(0)
 end
 
 -- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
