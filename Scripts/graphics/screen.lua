@@ -35,7 +35,7 @@ function PseudoGame.graphics.screen:draw_polygon(polygon)
     if not self._is_headless or needs_it_for_collisions then
         local last_index = self._current_index
         self._current_index = polygon:_to_cw_data(self._cw_data, self._current_index)
-        for i = 1, self._current_index - last_index do
+        for _ = 1, self._current_index - last_index, 2 do
             self._extra_cw_data[self._extra_index] = polygon.extra_data
             self._extra_index = self._extra_index + 1
         end
