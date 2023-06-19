@@ -90,11 +90,12 @@ function PseudoGame.game.WallSystem:wall(
     )
     if not curving then
         speed_mult = speed_mult * u_getSpeedMultDM()
+        acceleration = acceleration / (u_getDifficultyMult() ^ 0.65)
     end
     local wall_table = {
         polygon = self.polygon_collection:add(polygon),
         speed = speed_mult,
-        accel = acceleration / (u_getDifficultyMult() ^ 0.65),
+        accel = acceleration,
         min_speed = min_speed * u_getSpeedMultDM(),
         max_speed = max_speed * u_getSpeedMultDM(),
         hue_modifier = hue_modifier,
