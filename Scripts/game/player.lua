@@ -40,6 +40,8 @@ function PseudoGame.game.Player:new(options, style)
         radius = 0,
         --- @tfield Polygon polygon  the player triangle (use this for drawing)
         polygon = PseudoGame.graphics.Polygon:new({ 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
+        _last_collide_collection = nil,
+        _last_frametime = 0.25,
     }, PseudoGame.game.Player)
     obj._use_real_player = obj.options.collision_handler == nil
     return obj
@@ -51,6 +53,13 @@ function PseudoGame.game.Player:reset_swap_cooldown()
     self.swap_cooldown_time = self.swap_cooldown
 end
 
+--- swap the player while respecting collisions properly (only works when using a custom collision handler)
+function PseudoGame.game.Player:swap()
+    self.just_swapped = true
+    self:update(self._last_frametime, 180 / (self._last_frametime * 9.45 * l_getPlayerSpeedMult()), false, false, self._last_collide_collection)
+    self.just_swapped = false
+end
+
 --- update the players position while handling collisions as well as swap
 -- @tparam number frametime  the time in 1/60s that passed since the last call of this function
 -- @tparam[opt] number move  the current movement direction, so either -1, 0 or 1 (only required when using a custom collision handler)
@@ -58,6 +67,8 @@ end
 -- @tparam[opt] bool swap  true if the swap key is pressed, false otherwise (only required when using a custom collision handler)
 -- @tparam[opt] PolygonCollection collide_collection  the collection of polygons the player should collide with (only required when using a custom collision handler)
 function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_collection)
+    self._last_frametime = frametime
+    self._last_collide_collection = collide_collection
     self.movement_dir = move
     self.speed = (focus and 4.625 or 9.45) * l_getPlayerSpeedMult() * frametime
     if l_getSwapEnabled() then
