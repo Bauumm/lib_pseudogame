@@ -57,7 +57,13 @@ end
 --- swap the player while respecting collisions properly (only works when using a custom collision handler)
 function PseudoGame.game.Player:swap()
     self.just_swapped = true
-    self:update(self._last_frametime, 180 / (self._last_frametime * 9.45 * l_getPlayerSpeedMult()), false, false, self._last_collide_collection)
+    self:update(
+        self._last_frametime,
+        180 / (self._last_frametime * 9.45 * l_getPlayerSpeedMult()),
+        false,
+        false,
+        self._last_collide_collection
+    )
     self.just_swapped = false
 end
 

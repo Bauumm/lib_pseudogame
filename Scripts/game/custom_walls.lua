@@ -43,17 +43,26 @@ end
 function PseudoGame.game.overwrite_cw_functions(polygon_collection)
     if not u_inMenu() then
         cw_create = function()
-            local polygon = PseudoGame.graphics.Polygon:new({ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })
+            local polygon = PseudoGame.graphics.Polygon:new(
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+            )
             polygon.extra_data = { collision = true, deadly = false, killing_side = 0 }
             return polygon_collection:add(polygon)
         end
         cw_createDeadly = function()
-            local polygon = PseudoGame.graphics.Polygon:new({ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })
+            local polygon = PseudoGame.graphics.Polygon:new(
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+            )
             polygon.extra_data = { collision = false, deadly = true, killing_side = 0 }
             return polygon_collection:add(polygon)
         end
         cw_createNoCollision = function()
-            local polygon = PseudoGame.graphics.Polygon:new({ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })
+            local polygon = PseudoGame.graphics.Polygon:new(
+                { 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+            )
             polygon.extra_data = { collision = false, deadly = false, killing_side = 0 }
             return polygon_collection:add(polygon)
         end

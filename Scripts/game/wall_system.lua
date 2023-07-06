@@ -22,6 +22,7 @@ end
 -- @tparam[opt=nil] Timeline options.timeline  the timeline to use (nil will use the default t_ functions)
 -- @tparam[opt=l_getWallSpawnDistance() * 1.1] number options.despawn_distance  the distance at which walls are removed
 -- @tparam[opt=l_getWallSpawnDistance()] number options.spawn_distance  the distance at which walls are spawned (has to be smaller than despawn distance)
+-- @tparam[opt=l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()] number options.despawn_radius  the radius around the center that eats walls
 -- @tparam[opt=false] bool options.reverse_direction  makes walls move from the center out of the screen
 -- @tparam[opt=false] bool options.better_pivot_fade  makes walls fade into the pivot directly at the edge
 -- @tparam[opt=level_style] Style style  the style to use
@@ -158,7 +159,8 @@ function PseudoGame.game.WallSystem:update(frametime)
     if self.options.timeline ~= nil then
         self.options.timeline:update(frametime)
     end
-    local radius = l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse()
+    local radius = self.options.despawn_radius
+        or (l_getRadiusMin() * (l_getPulse() / l_getPulseMin()) + l_getBeatPulse())
     local outer_bounds = self.options.despawn_distance or self.options.spawn_distance * 1.1
     local del_queue = {}
     self.wall_height = 0
