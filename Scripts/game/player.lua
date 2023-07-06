@@ -42,6 +42,7 @@ function PseudoGame.game.Player:new(options, style)
         polygon = PseudoGame.graphics.Polygon:new({ 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
         _last_collide_collection = nil,
         _last_frametime = 0.25,
+        _last_death_cw_cooldown = 0,
     }, PseudoGame.game.Player)
     obj._use_real_player = obj.options.collision_handler == nil
     return obj
@@ -116,7 +117,7 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
     end
     self.pos[1], self.pos[2] = PseudoGame.game.get_orbit(self.angle, self.radius)
     if not self._use_real_player and collide_collection ~= nil and not self.dead then
-        if self.options.collision_handler(frametime, self, collide_collection) then
+        if self.options.collision_handler(frametime, self, collide_collection) or self._last_death_cw_cooldown > 0 then
             if self.kill_cw == nil then
                 self.kill_cw = PseudoGame.game.cw_function_backup.cw_createDeadly()
             end
@@ -132,6 +133,10 @@ function PseudoGame.game.Player:update(frametime, move, focus, swap, collide_col
                 1600,
                 -1600
             )
+            if self._last_death_cw_cooldown == 0 then
+                self._last_death_cw_cooldown = 2
+            end
+            self._last_death_cw_cooldown = math.max(self._last_death_cw_cooldown - 1, 0)
         else
             if self.kill_cw ~= nil then
                 PseudoGame.game.cw_function_backup.cw_destroy(self.kill_cw)
