@@ -76,16 +76,16 @@
 <pre>
 <span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
 </span><span class="comment">-- folder.
-</span>u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
-u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
-u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
-u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
+</span><span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
 
 <span class="comment">-- hide the real game
-</span>PseudoGame.hide_default_game()
+</span>PseudoGame.<span class="function-name">hide_default_game</span>()
 
 <span class="comment">-- create a fake game
-</span>game = PseudoGame.game.Game:new({
+</span>game = PseudoGame.game.Game:<span class="function-name">new</span>({
     walls = {
         <span class="comment">-- make walls go the other way
 </span>        reverse_direction = <span class="keyword">true</span>,
@@ -103,49 +103,49 @@ u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span c
 })
 
 <span class="comment">-- overwrite the real game's functions (mostly wall functions)
-</span>game:overwrite()
+</span>game:<span class="function-name">overwrite</span>()
 
-<span class="keyword">function</span> onInput(frametime, movement, focus, swap)
+<span class="keyword">function</span> <span class="function-name">onInput</span>(frametime, movement, focus, swap)
     <span class="comment">-- update our game
-</span>    game:update(frametime, movement, focus, swap)
+</span>    game:<span class="function-name">update</span>(frametime, movement, focus, swap)
 
     <span class="comment">-- draw the game to the screen
-</span>    game:draw_to_screen()
+</span>    game:<span class="function-name">draw_to_screen</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect when the player dies
-</span><span class="keyword">function</span> onDeath()
-    game.death_effect:death()
+</span><span class="keyword">function</span> <span class="function-name">onDeath</span>()
+    game.death_effect:<span class="function-name">death</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
-</span><span class="keyword">function</span> onPreDeath()
-    game.death_effect:invincible_death()
+</span><span class="keyword">function</span> <span class="function-name">onPreDeath</span>()
+    game.death_effect:<span class="function-name">invincible_death</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- show and update the death effect even in the death screen
-</span><span class="keyword">function</span> onRenderStage(render_stage, frametime)
-    game.death_effect:ensure_tickrate(render_stage, frametime, <span class="keyword">function</span>(new_frametime)
+</span><span class="keyword">function</span> <span class="function-name">onRenderStage</span>(render_stage, frametime)
+    game.death_effect:<span class="function-name">ensure_tickrate</span>(render_stage, frametime, <span class="keyword">function</span>(new_frametime)
         <span class="comment">-- updating and drawing the game again is required for the death effect to show properly
 </span>        <span class="comment">-- (make sure no game logic is progressing if <code>game.death_effect.dead == true</code>)
-</span>        onInput(new_frametime, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
+</span>        <span class="function-name">onInput</span>(new_frametime, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
     <span class="keyword">end</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- This function adds a pattern to the level "timeline" based on a numeric key.
-</span><span class="keyword">function</span> addPattern(mKey)
+</span><span class="keyword">function</span> <span class="function-name">addPattern</span>(mKey)
     <span class="keyword">if</span> mKey == <span class="number">0</span> <span class="keyword">then</span>
-        pAltBarrage(u_rndInt(<span class="number">3</span>, <span class="number">5</span>), <span class="number">2</span>)
+        <span class="function-name">pAltBarrage</span>(<span class="function-name">u_rndInt</span>(<span class="number">3</span>, <span class="number">5</span>), <span class="number">2</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">1</span> <span class="keyword">then</span>
-        pMirrorSpiral(u_rndInt(<span class="number">2</span>, <span class="number">5</span>), getHalfSides() - <span class="number">3</span>)
+        <span class="function-name">pMirrorSpiral</span>(<span class="function-name">u_rndInt</span>(<span class="number">2</span>, <span class="number">5</span>), <span class="function-name">getHalfSides</span>() - <span class="number">3</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">2</span> <span class="keyword">then</span>
-        pBarrageSpiral(u_rndInt(<span class="number">0</span>, <span class="number">3</span>), <span class="number">1</span>, <span class="number">1</span>)
+        <span class="function-name">pBarrageSpiral</span>(<span class="function-name">u_rndInt</span>(<span class="number">0</span>, <span class="number">3</span>), <span class="number">1</span>, <span class="number">1</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">3</span> <span class="keyword">then</span>
-        pInverseBarrage(<span class="number">0</span>)
+        <span class="function-name">pInverseBarrage</span>(<span class="number">0</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">4</span> <span class="keyword">then</span>
-        pTunnel(u_rndInt(<span class="number">1</span>, <span class="number">3</span>))
+        <span class="function-name">pTunnel</span>(<span class="function-name">u_rndInt</span>(<span class="number">1</span>, <span class="number">3</span>))
     <span class="keyword">elseif</span> mKey == <span class="number">5</span> <span class="keyword">then</span>
-        pSpiral(l_getSides() * u_rndInt(<span class="number">1</span>, <span class="number">2</span>), <span class="number">0</span>)
+        <span class="function-name">pSpiral</span>(<span class="function-name">l_getSides</span>() * <span class="function-name">u_rndInt</span>(<span class="number">1</span>, <span class="number">2</span>), <span class="number">0</span>)
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
@@ -153,74 +153,74 @@ u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span c
 </span><span class="comment">-- Shuffling is better than randomizing - it guarantees all the patterns will
 </span><span class="comment">-- be called.
 </span>keys = { <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span> }
-shuffle(keys)
+<span class="function-name">shuffle</span>(keys)
 index = <span class="number">0</span>
 achievementUnlocked = <span class="keyword">false</span>
 
 <span class="comment">-- <code>onInit</code> is an hardcoded function that is called when the level is first
 </span><span class="comment">-- loaded. This can be used to setup initial level parameters.
-</span><span class="keyword">function</span> onInit()
-    l_setSpeedMult(<span class="number">1.25</span>)
-    l_setSpeedInc(<span class="number">0.125</span>)
-    l_setSpeedMax(<span class="number">2</span>)
-    l_setRotationSpeed(<span class="number">0.07</span>)
-    l_setRotationSpeedMax(<span class="number">0.75</span>)
-    l_setRotationSpeedInc(<span class="number">0.04</span>)
-    l_setDelayMult(<span class="number">1.0</span>)
-    l_setDelayInc(-<span class="number">0.01</span>)
-    l_setFastSpin(<span class="number">0.0</span>)
-    l_setSides(<span class="number">6</span>)
-    l_setSidesMin(<span class="number">5</span>)
-    l_setSidesMax(<span class="number">6</span>)
-    l_setIncTime(<span class="number">15</span>)
+</span><span class="keyword">function</span> <span class="function-name">onInit</span>()
+    <span class="function-name">l_setSpeedMult</span>(<span class="number">1.25</span>)
+    <span class="function-name">l_setSpeedInc</span>(<span class="number">0.125</span>)
+    <span class="function-name">l_setSpeedMax</span>(<span class="number">2</span>)
+    <span class="function-name">l_setRotationSpeed</span>(<span class="number">0.07</span>)
+    <span class="function-name">l_setRotationSpeedMax</span>(<span class="number">0.75</span>)
+    <span class="function-name">l_setRotationSpeedInc</span>(<span class="number">0.04</span>)
+    <span class="function-name">l_setDelayMult</span>(<span class="number">1.0</span>)
+    <span class="function-name">l_setDelayInc</span>(-<span class="number">0.01</span>)
+    <span class="function-name">l_setFastSpin</span>(<span class="number">0.0</span>)
+    <span class="function-name">l_setSides</span>(<span class="number">6</span>)
+    <span class="function-name">l_setSidesMin</span>(<span class="number">5</span>)
+    <span class="function-name">l_setSidesMax</span>(<span class="number">6</span>)
+    <span class="function-name">l_setIncTime</span>(<span class="number">15</span>)
 
-    l_setPulseMin(<span class="number">75</span>)
-    l_setPulseMax(<span class="number">91</span>)
-    l_setPulseSpeed(<span class="number">1.2</span>)
-    l_setPulseSpeedR(<span class="number">1</span>)
-    l_setPulseDelayMax(<span class="number">23.9</span>)
+    <span class="function-name">l_setPulseMin</span>(<span class="number">75</span>)
+    <span class="function-name">l_setPulseMax</span>(<span class="number">91</span>)
+    <span class="function-name">l_setPulseSpeed</span>(<span class="number">1.2</span>)
+    <span class="function-name">l_setPulseSpeedR</span>(<span class="number">1</span>)
+    <span class="function-name">l_setPulseDelayMax</span>(<span class="number">23.9</span>)
 
-    l_setBeatPulseMax(<span class="number">17</span>)
-    l_setBeatPulseDelayMax(<span class="number">24.8</span>)
+    <span class="function-name">l_setBeatPulseMax</span>(<span class="number">17</span>)
+    <span class="function-name">l_setBeatPulseDelayMax</span>(<span class="number">24.8</span>)
 
-    enableSwapIfDMGreaterThan(<span class="number">2.5</span>)
-    disableIncIfDMGreaterThan(<span class="number">3</span>)
+    <span class="function-name">enableSwapIfDMGreaterThan</span>(<span class="number">2.5</span>)
+    <span class="function-name">disableIncIfDMGreaterThan</span>(<span class="number">3</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
-</span><span class="keyword">function</span> onLoad()
-    e_messageAdd(<span class="string">"welcome to the eight PseudoGame example level"</span>, <span class="number">150</span>)
-    e_messageAdd(<span class="string">"Here the wall direction and the player are reversed."</span>, <span class="number">200</span>)
+</span><span class="keyword">function</span> <span class="function-name">onLoad</span>()
+    <span class="function-name">e_messageAdd</span>(<span class="string">"welcome to the eight PseudoGame example level"</span>, <span class="number">150</span>)
+    <span class="function-name">e_messageAdd</span>(<span class="string">"Here the wall direction and the player are reversed."</span>, <span class="number">200</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onStep</code> is an hardcoded function that is called when the level "timeline"
 </span><span class="comment">-- is empty. The level timeline is a queue of pending actions.
 </span><span class="comment">-- <code>onStep</code> should generally contain your pattern spawning logic.
-</span><span class="keyword">function</span> onStep()
-    addPattern(keys[index])
+</span><span class="keyword">function</span> <span class="function-name">onStep</span>()
+    <span class="function-name">addPattern</span>(keys[index])
     index = index + <span class="number">1</span>
 
     <span class="keyword">if</span> index - <span class="number">1</span> == #keys <span class="keyword">then</span>
         index = <span class="number">1</span>
-        shuffle(keys)
+        <span class="function-name">shuffle</span>(keys)
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onIncrement</code> is an hardcoded function that is called when the level
 </span><span class="comment">-- difficulty is incremented.
-</span><span class="keyword">function</span> onIncrement()
+</span><span class="keyword">function</span> <span class="function-name">onIncrement</span>()
     <span class="comment">-- ...
 </span><span class="keyword">end</span>
 
-<span class="keyword">function</span> onPreUnload()
+<span class="keyword">function</span> <span class="function-name">onPreUnload</span>()
     <span class="comment">-- overwriting game functions may cause issues, so it's important to undo it
-</span>    game:restore()
+</span>    game:<span class="function-name">restore</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onUpdate</code> is an hardcoded function that is called every frame. <code>mFrameTime</code>
 </span><span class="comment">-- represents the time delta between the current and previous frame.
-</span><span class="keyword">function</span> onUpdate(mFrameTime)
+</span><span class="keyword">function</span> <span class="function-name">onUpdate</span>(mFrameTime)
     <span class="comment">-- ...
 </span><span class="keyword">end</span></pre>
 
@@ -228,7 +228,7 @@ achievementUnlocked = <span class="keyword">false</span>
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.5.0</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

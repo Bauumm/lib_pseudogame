@@ -76,18 +76,18 @@
 <pre>
 <span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
 </span><span class="comment">-- folder.
-</span>u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
-u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
-u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
-u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
+</span><span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
 
 <span class="comment">-- no need to hide or recreate the game as we just need walls
 </span><span class="comment">-- so we just make a wall system
-</span>walls = PseudoGame.game.WallSystem:new({
+</span>walls = PseudoGame.game.WallSystem:<span class="function-name">new</span>({
     despawn_distance = <span class="number">3200</span>,
 })
 
-<span class="keyword">function</span> onInput(frametime, movement, focus, swap)
+<span class="keyword">function</span> <span class="function-name">onInput</span>(frametime, movement, focus, swap)
     <span class="comment">-- pattern spawning
 </span>    <span class="keyword">if</span> walls.wall_height &lt; <span class="number">1600</span> <span class="keyword">then</span>
         <span class="comment">-- add space between patterns
@@ -98,97 +98,97 @@ u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span c
             height = <span class="number">1600</span>
         <span class="keyword">end</span>
 
-        <span class="keyword">local</span> pattern = <span class="global">math</span>.random(<span class="number">0</span>, <span class="number">1</span>)
+        <span class="keyword">local</span> pattern = <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">0</span>, <span class="number">1</span>)
         <span class="keyword">if</span> pattern == <span class="number">0</span> <span class="keyword">then</span>
             <span class="comment">-- tunnel
-</span>            <span class="keyword">local</span> start_side = <span class="global">math</span>.random(<span class="number">1</span>, l_getSides())
-            <span class="keyword">local</span> dir = <span class="number">1</span> - <span class="global">math</span>.random(<span class="number">0</span>, <span class="number">1</span>) * <span class="number">2</span>
-            <span class="keyword">for</span> times = <span class="number">1</span>, <span class="global">math</span>.random(<span class="number">1</span>, <span class="number">4</span>) <span class="keyword">do</span>
-                walls:wall(height, <span class="number">0</span>, start_side, <span class="number">300</span>)
-                <span class="keyword">for</span> side = <span class="number">1</span>, l_getSides() - <span class="number">2</span> <span class="keyword">do</span>
-                    walls:wall(height, <span class="number">0</span>, start_side + side * dir, <span class="number">50</span>)
+</span>            <span class="keyword">local</span> start_side = <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">1</span>, <span class="function-name">l_getSides</span>())
+            <span class="keyword">local</span> dir = <span class="number">1</span> - <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">0</span>, <span class="number">1</span>) * <span class="number">2</span>
+            <span class="keyword">for</span> times = <span class="number">1</span>, <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">1</span>, <span class="number">4</span>) <span class="keyword">do</span>
+                walls:<span class="function-name">wall</span>(height, <span class="number">0</span>, start_side, <span class="number">300</span>)
+                <span class="keyword">for</span> side = <span class="number">1</span>, <span class="function-name">l_getSides</span>() - <span class="number">2</span> <span class="keyword">do</span>
+                    walls:<span class="function-name">wall</span>(height, <span class="number">0</span>, start_side + side * dir, <span class="number">50</span>)
                 <span class="keyword">end</span>
                 dir = -dir
                 height = height + <span class="number">300</span>
             <span class="keyword">end</span>
-            <span class="keyword">for</span> side = <span class="number">0</span>, l_getSides() - <span class="number">2</span> <span class="keyword">do</span>
-                walls:wall(height, <span class="number">0</span>, start_side + side * dir, <span class="number">50</span>)
+            <span class="keyword">for</span> side = <span class="number">0</span>, <span class="function-name">l_getSides</span>() - <span class="number">2</span> <span class="keyword">do</span>
+                walls:<span class="function-name">wall</span>(height, <span class="number">0</span>, start_side + side * dir, <span class="number">50</span>)
             <span class="keyword">end</span>
         <span class="keyword">elseif</span> pattern == <span class="number">1</span> <span class="keyword">then</span>
             <span class="comment">-- mirror spiral
-</span>            <span class="keyword">local</span> start_side = <span class="global">math</span>.random(<span class="number">1</span>, l_getSides())
-            <span class="keyword">local</span> dir = <span class="number">1</span> - <span class="global">math</span>.random(<span class="number">0</span>, <span class="number">1</span>) * <span class="number">2</span>
-            <span class="keyword">for</span> side = <span class="number">1</span>, <span class="global">math</span>.random(<span class="number">8</span>, <span class="number">20</span>) <span class="keyword">do</span>
-                walls:wall(height, <span class="number">0</span>, start_side + side * dir, <span class="number">50</span>)
-                walls:wall(height, <span class="number">0</span>, start_side + side * dir + l_getSides() / <span class="number">2</span>, <span class="number">50</span>)
+</span>            <span class="keyword">local</span> start_side = <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">1</span>, <span class="function-name">l_getSides</span>())
+            <span class="keyword">local</span> dir = <span class="number">1</span> - <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">0</span>, <span class="number">1</span>) * <span class="number">2</span>
+            <span class="keyword">for</span> side = <span class="number">1</span>, <span class="global">math</span>.<span class="function-name">random</span>(<span class="number">8</span>, <span class="number">20</span>) <span class="keyword">do</span>
+                walls:<span class="function-name">wall</span>(height, <span class="number">0</span>, start_side + side * dir, <span class="number">50</span>)
+                walls:<span class="function-name">wall</span>(height, <span class="number">0</span>, start_side + side * dir + <span class="function-name">l_getSides</span>() / <span class="number">2</span>, <span class="number">50</span>)
                 height = height + <span class="number">50</span>
             <span class="keyword">end</span>
         <span class="keyword">end</span>
     <span class="keyword">end</span>
 
     <span class="comment">-- update our wall system
-</span>    walls:update(frametime)
+</span>    walls:<span class="function-name">update</span>(frametime)
 
     <span class="comment">-- make walls collide with the player using the game's actual custom wall collisions
-</span>    <span class="keyword">for</span> polygon <span class="keyword">in</span> walls.polygon_collection:iter() <span class="keyword">do</span>
+</span>    <span class="keyword">for</span> polygon <span class="keyword">in</span> walls.polygon_collection:<span class="function-name">iter</span>() <span class="keyword">do</span>
         polygon.extra_data = {
             collision = <span class="keyword">true</span>,
         }
     <span class="keyword">end</span>
 
     <span class="comment">-- draw the walls to the screen
-</span>    PseudoGame.graphics.screen:draw_polygon_collection(walls.polygon_collection)
-    PseudoGame.graphics.screen:update()
+</span>    PseudoGame.graphics.screen:<span class="function-name">draw_polygon_collection</span>(walls.polygon_collection)
+    PseudoGame.graphics.screen:<span class="function-name">update</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onInit</code> is an hardcoded function that is called when the level is first
 </span><span class="comment">-- loaded. This can be used to setup initial level parameters.
-</span><span class="keyword">function</span> onInit()
-    l_setSpeedMult(<span class="number">1.55</span>)
-    l_setSpeedInc(<span class="number">0.125</span>)
-    l_setSpeedMax(<span class="number">3.5</span>)
-    l_setRotationSpeed(<span class="number">0.07</span>)
-    l_setRotationSpeedMax(<span class="number">0.75</span>)
-    l_setRotationSpeedInc(<span class="number">0.04</span>)
-    l_setDelayMult(<span class="number">1.0</span>)
-    l_setDelayInc(-<span class="number">0.01</span>)
-    l_setFastSpin(<span class="number">0.0</span>)
-    l_setSides(<span class="number">6</span>)
-    l_setSidesMin(<span class="number">5</span>)
-    l_setSidesMax(<span class="number">6</span>)
-    l_setIncTime(<span class="number">15</span>)
+</span><span class="keyword">function</span> <span class="function-name">onInit</span>()
+    <span class="function-name">l_setSpeedMult</span>(<span class="number">1.55</span>)
+    <span class="function-name">l_setSpeedInc</span>(<span class="number">0.125</span>)
+    <span class="function-name">l_setSpeedMax</span>(<span class="number">3.5</span>)
+    <span class="function-name">l_setRotationSpeed</span>(<span class="number">0.07</span>)
+    <span class="function-name">l_setRotationSpeedMax</span>(<span class="number">0.75</span>)
+    <span class="function-name">l_setRotationSpeedInc</span>(<span class="number">0.04</span>)
+    <span class="function-name">l_setDelayMult</span>(<span class="number">1.0</span>)
+    <span class="function-name">l_setDelayInc</span>(-<span class="number">0.01</span>)
+    <span class="function-name">l_setFastSpin</span>(<span class="number">0.0</span>)
+    <span class="function-name">l_setSides</span>(<span class="number">6</span>)
+    <span class="function-name">l_setSidesMin</span>(<span class="number">5</span>)
+    <span class="function-name">l_setSidesMax</span>(<span class="number">6</span>)
+    <span class="function-name">l_setIncTime</span>(<span class="number">15</span>)
 
-    l_setIncEnabled(<span class="keyword">false</span>)
+    <span class="function-name">l_setIncEnabled</span>(<span class="keyword">false</span>)
 
-    l_setPulseMin(<span class="number">75</span>)
-    l_setPulseMax(<span class="number">91</span>)
-    l_setPulseSpeed(<span class="number">1.2</span>)
-    l_setPulseSpeedR(<span class="number">1</span>)
-    l_setPulseDelayMax(<span class="number">23.9</span>)
+    <span class="function-name">l_setPulseMin</span>(<span class="number">75</span>)
+    <span class="function-name">l_setPulseMax</span>(<span class="number">91</span>)
+    <span class="function-name">l_setPulseSpeed</span>(<span class="number">1.2</span>)
+    <span class="function-name">l_setPulseSpeedR</span>(<span class="number">1</span>)
+    <span class="function-name">l_setPulseDelayMax</span>(<span class="number">23.9</span>)
 
-    l_setBeatPulseMax(<span class="number">17</span>)
-    l_setBeatPulseDelayMax(<span class="number">24.8</span>)
+    <span class="function-name">l_setBeatPulseMax</span>(<span class="number">17</span>)
+    <span class="function-name">l_setBeatPulseDelayMax</span>(<span class="number">24.8</span>)
 
-    enableSwapIfDMGreaterThan(<span class="number">2.5</span>)
-    disableIncIfDMGreaterThan(<span class="number">3</span>)
+    <span class="function-name">enableSwapIfDMGreaterThan</span>(<span class="number">2.5</span>)
+    <span class="function-name">disableIncIfDMGreaterThan</span>(<span class="number">3</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
-</span><span class="keyword">function</span> onLoad()
-    e_messageAdd(<span class="string">"welcome to the seventh PseudoGame example level"</span>, <span class="number">150</span>)
-    e_messageAdd(<span class="string">"This is a normal level using height based walls."</span>, <span class="number">200</span>)
+</span><span class="keyword">function</span> <span class="function-name">onLoad</span>()
+    <span class="function-name">e_messageAdd</span>(<span class="string">"welcome to the seventh PseudoGame example level"</span>, <span class="number">150</span>)
+    <span class="function-name">e_messageAdd</span>(<span class="string">"This is a normal level using height based walls."</span>, <span class="number">200</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onIncrement</code> is an hardcoded function that is called when the level
 </span><span class="comment">-- difficulty is incremented.
-</span><span class="keyword">function</span> onIncrement()
+</span><span class="keyword">function</span> <span class="function-name">onIncrement</span>()
     <span class="comment">-- ...
 </span><span class="keyword">end</span>
 
 <span class="comment">-- <code>onUpdate</code> is an hardcoded function that is called every frame. <code>mFrameTime</code>
 </span><span class="comment">-- represents the time delta between the current and previous frame.
-</span><span class="keyword">function</span> onUpdate(mFrameTime)
+</span><span class="keyword">function</span> <span class="function-name">onUpdate</span>(mFrameTime)
     <span class="comment">-- ...
 </span><span class="keyword">end</span></pre>
 
@@ -196,7 +196,7 @@ u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span c
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.5.0</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 

@@ -76,25 +76,25 @@
 <pre>
 <span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
 </span><span class="comment">-- folder.
-</span>u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
-u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
-u_execDependencyScript(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
-u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
+</span><span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"utils.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"common.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
+<span class="function-name">u_execDependencyScript</span>(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
 
 <span class="comment">-- This function adds a pattern to the level "timeline" based on a numeric key.
-</span><span class="keyword">function</span> addPattern(mKey)
+</span><span class="keyword">function</span> <span class="function-name">addPattern</span>(mKey)
     <span class="keyword">if</span> mKey == <span class="number">0</span> <span class="keyword">then</span>
-        pAltBarrage(u_rndInt(<span class="number">3</span>, <span class="number">5</span>), <span class="number">2</span>)
+        <span class="function-name">pAltBarrage</span>(<span class="function-name">u_rndInt</span>(<span class="number">3</span>, <span class="number">5</span>), <span class="number">2</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">1</span> <span class="keyword">then</span>
-        pMirrorSpiral(u_rndInt(<span class="number">2</span>, <span class="number">5</span>), getHalfSides() - <span class="number">3</span>)
+        <span class="function-name">pMirrorSpiral</span>(<span class="function-name">u_rndInt</span>(<span class="number">2</span>, <span class="number">5</span>), <span class="function-name">getHalfSides</span>() - <span class="number">3</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">2</span> <span class="keyword">then</span>
-        pBarrageSpiral(u_rndInt(<span class="number">0</span>, <span class="number">3</span>), <span class="number">1</span>, <span class="number">1</span>)
+        <span class="function-name">pBarrageSpiral</span>(<span class="function-name">u_rndInt</span>(<span class="number">0</span>, <span class="number">3</span>), <span class="number">1</span>, <span class="number">1</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">3</span> <span class="keyword">then</span>
-        pInverseBarrage(<span class="number">0</span>)
+        <span class="function-name">pInverseBarrage</span>(<span class="number">0</span>)
     <span class="keyword">elseif</span> mKey == <span class="number">4</span> <span class="keyword">then</span>
-        pTunnel(u_rndInt(<span class="number">1</span>, <span class="number">3</span>))
+        <span class="function-name">pTunnel</span>(<span class="function-name">u_rndInt</span>(<span class="number">1</span>, <span class="number">3</span>))
     <span class="keyword">elseif</span> mKey == <span class="number">5</span> <span class="keyword">then</span>
-        pSpiral(l_getSides() * u_rndInt(<span class="number">1</span>, <span class="number">2</span>), <span class="number">0</span>)
+        <span class="function-name">pSpiral</span>(<span class="function-name">l_getSides</span>() * <span class="function-name">u_rndInt</span>(<span class="number">1</span>, <span class="number">2</span>), <span class="number">0</span>)
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
@@ -102,66 +102,66 @@ u_execDependencyScript(<span class="string">"library_pseudogame"</span>, <span c
 </span><span class="comment">-- Shuffling is better than randomizing - it guarantees all the patterns will
 </span><span class="comment">-- be called.
 </span>keys = { <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span> }
-shuffle(keys)
+<span class="function-name">shuffle</span>(keys)
 index = <span class="number">0</span>
 achievementUnlocked = <span class="keyword">false</span>
 
 <span class="comment">-- onStep for custom timeline, not calling it onStep as it would be called by the default game
-</span><span class="keyword">function</span> onFakeStep()
-    addPattern(keys[index])
+</span><span class="keyword">function</span> <span class="function-name">onFakeStep</span>()
+    <span class="function-name">addPattern</span>(keys[index])
     index = index + <span class="number">1</span>
 
     <span class="keyword">if</span> index - <span class="number">1</span> == #keys <span class="keyword">then</span>
         index = <span class="number">1</span>
-        shuffle(keys)
+        <span class="function-name">shuffle</span>(keys)
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onInit</code> is an hardcoded function that is called when the level is first
 </span><span class="comment">-- loaded. This can be used to setup initial level parameters.
-</span><span class="keyword">function</span> onInit()
-    l_setSpeedMult(<span class="number">1.55</span>)
-    l_setSpeedInc(<span class="number">0.125</span>)
-    l_setSpeedMax(<span class="number">3.5</span>)
-    l_setRotationSpeed(<span class="number">0</span>)
-    l_setRotationSpeedMax(<span class="number">0</span>)
-    l_setRotationSpeedInc(<span class="number">0</span>)
-    l_setDelayMult(<span class="number">1.0</span>)
-    l_setDelayInc(-<span class="number">0.01</span>)
-    l_setFastSpin(<span class="number">0.0</span>)
-    l_setSides(<span class="number">6</span>)
-    l_setSidesMin(<span class="number">5</span>)
-    l_setSidesMax(<span class="number">6</span>)
-    l_setIncTime(<span class="number">15</span>)
+</span><span class="keyword">function</span> <span class="function-name">onInit</span>()
+    <span class="function-name">l_setSpeedMult</span>(<span class="number">1.55</span>)
+    <span class="function-name">l_setSpeedInc</span>(<span class="number">0.125</span>)
+    <span class="function-name">l_setSpeedMax</span>(<span class="number">3.5</span>)
+    <span class="function-name">l_setRotationSpeed</span>(<span class="number">0</span>)
+    <span class="function-name">l_setRotationSpeedMax</span>(<span class="number">0</span>)
+    <span class="function-name">l_setRotationSpeedInc</span>(<span class="number">0</span>)
+    <span class="function-name">l_setDelayMult</span>(<span class="number">1.0</span>)
+    <span class="function-name">l_setDelayInc</span>(-<span class="number">0.01</span>)
+    <span class="function-name">l_setFastSpin</span>(<span class="number">0.0</span>)
+    <span class="function-name">l_setSides</span>(<span class="number">6</span>)
+    <span class="function-name">l_setSidesMin</span>(<span class="number">5</span>)
+    <span class="function-name">l_setSidesMax</span>(<span class="number">6</span>)
+    <span class="function-name">l_setIncTime</span>(<span class="number">15</span>)
 
     <span class="comment">-- would wait until all games don't have walls, which is a pretty long time
-</span>    l_setIncEnabled(<span class="keyword">false</span>)
+</span>    <span class="function-name">l_setIncEnabled</span>(<span class="keyword">false</span>)
 
-    l_setPulseMin(<span class="number">75</span>)
-    l_setPulseMax(<span class="number">75</span>)
-    l_setPulseSpeed(<span class="number">1.2</span>)
-    l_setPulseSpeedR(<span class="number">1</span>)
-    l_setPulseDelayMax(<span class="number">23.9</span>)
+    <span class="function-name">l_setPulseMin</span>(<span class="number">75</span>)
+    <span class="function-name">l_setPulseMax</span>(<span class="number">75</span>)
+    <span class="function-name">l_setPulseSpeed</span>(<span class="number">1.2</span>)
+    <span class="function-name">l_setPulseSpeedR</span>(<span class="number">1</span>)
+    <span class="function-name">l_setPulseDelayMax</span>(<span class="number">23.9</span>)
 
-    l_setBeatPulseMax(<span class="number">17</span>)
-    l_setBeatPulseDelayMax(<span class="number">24.8</span>)
+    <span class="function-name">l_setBeatPulseMax</span>(<span class="number">17</span>)
+    <span class="function-name">l_setBeatPulseDelayMax</span>(<span class="number">24.8</span>)
 
-    enableSwapIfDMGreaterThan(<span class="number">2.5</span>)
-    disableIncIfDMGreaterThan(<span class="number">3</span>)
-    <span class="keyword">if</span> <span class="keyword">not</span> u_inMenu() <span class="keyword">then</span>
+    <span class="function-name">enableSwapIfDMGreaterThan</span>(<span class="number">2.5</span>)
+    <span class="function-name">disableIncIfDMGreaterThan</span>(<span class="number">3</span>)
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="function-name">u_inMenu</span>() <span class="keyword">then</span>
         <span class="comment">-- adjust 3d
-</span>        s_set3dDepth(<span class="number">0</span>)
+</span>        <span class="function-name">s_set3dDepth</span>(<span class="number">0</span>)
 
         <span class="comment">--s_set3dSkew(0)
 </span>
         <span class="comment">-- hide the real game
-</span>        PseudoGame.hide_default_game()
+</span>        PseudoGame.<span class="function-name">hide_default_game</span>()
 
         <span class="comment">-- grid size
-</span>        <span class="keyword">if</span> u_getDifficultyMult() &lt; <span class="number">1</span> <span class="keyword">then</span>
+</span>        <span class="keyword">if</span> <span class="function-name">u_getDifficultyMult</span>() &lt; <span class="number">1</span> <span class="keyword">then</span>
             w = <span class="number">1</span>
             h = <span class="number">2</span>
-        <span class="keyword">elseif</span> u_getDifficultyMult() &gt; <span class="number">1</span> <span class="keyword">then</span>
+        <span class="keyword">elseif</span> <span class="function-name">u_getDifficultyMult</span>() &gt; <span class="number">1</span> <span class="keyword">then</span>
             w = <span class="number">3</span>
             h = <span class="number">3</span>
             rot_disabled = <span class="keyword">true</span>
@@ -175,25 +175,25 @@ achievementUnlocked = <span class="keyword">false</span>
         <span class="comment">-- make games rotate individually
 </span>        rotation_values = {}
         <span class="keyword">for</span> i = <span class="number">1</span>, w * h <span class="keyword">do</span>
-            <span class="global">table</span>.insert(
+            <span class="global">table</span>.<span class="function-name">insert</span>(
                 games,
-                PseudoGame.game.Game:new({
+                PseudoGame.game.Game:<span class="function-name">new</span>({
                     <span class="comment">-- making our own timeline for each game using onFakeStep to spawn patterns
 </span>                    walls = {
-                        timeline = PseudoGame.game.Timeline:new(onFakeStep),
+                        timeline = PseudoGame.game.Timeline:<span class="function-name">new</span>(onFakeStep),
                     },
                 })
             )
-            <span class="global">table</span>.insert(rotation_values, <span class="number">0</span>)
+            <span class="global">table</span>.<span class="function-name">insert</span>(rotation_values, <span class="number">0</span>)
         <span class="keyword">end</span>
 
         <span class="comment">-- position them in a grid
 </span>        game_grid = { {} }
         <span class="keyword">for</span> i = <span class="number">1</span>, #games <span class="keyword">do</span>
             <span class="comment">-- update every game once so there's something to draw
-</span>            games[i]:overwrite()
-            games[i]:update(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
-            games[i]:restore()
+</span>            games[i]:<span class="function-name">overwrite</span>()
+            games[i]:<span class="function-name">update</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
+            games[i]:<span class="function-name">restore</span>()
             <span class="comment">-- have to overwrite for updating here as the game's timeline is empty calling onFakeStep (which uses default game functions)
 </span>
             <span class="comment">-- start a new grid line every 3rd element
@@ -202,87 +202,87 @@ achievementUnlocked = <span class="keyword">false</span>
             <span class="keyword">end</span>
 
             <span class="comment">-- append to current grid line
-</span>            <span class="global">table</span>.insert(game_grid[#game_grid], games[i])
+</span>            <span class="global">table</span>.<span class="function-name">insert</span>(game_grid[#game_grid], games[i])
         <span class="keyword">end</span>
 
         <span class="comment">-- overwrite the real game's functions (mostly wall functions) with the last game
-</span>        games[<span class="number">1</span>]:overwrite()
+</span>        games[<span class="number">1</span>]:<span class="function-name">overwrite</span>()
 
         <span class="comment">-- keep track of the selected game
 </span>        game = games[<span class="number">1</span>]
         current_index = <span class="number">1</span>
 
         <span class="comment">-- change which game is being accessed every 5s
-</span>        overwrite_timeline = ct_create()
-        ct_wait(overwrite_timeline, <span class="number">300</span>)
-        ct_eval(overwrite_timeline, <span class="string">[[next_game()]]</span>)
+</span>        overwrite_timeline = <span class="function-name">ct_create</span>()
+        <span class="function-name">ct_wait</span>(overwrite_timeline, <span class="number">300</span>)
+        <span class="function-name">ct_eval</span>(overwrite_timeline, <span class="string">[[next_game()]]</span>)
 
-        <span class="keyword">function</span> next_game()
-            game:restore()
+        <span class="keyword">function</span> <span class="function-name">next_game</span>()
+            game:<span class="function-name">restore</span>()
             current_index = current_index + <span class="number">1</span>
             <span class="keyword">if</span> current_index &gt; #games <span class="keyword">then</span>
                 current_index = <span class="number">1</span>
             <span class="keyword">end</span>
             game = games[current_index]
-            game:overwrite()
-            ct_wait(overwrite_timeline, <span class="number">300</span>)
-            ct_eval(overwrite_timeline, <span class="string">[[next_game()]]</span>)
+            game:<span class="function-name">overwrite</span>()
+            <span class="function-name">ct_wait</span>(overwrite_timeline, <span class="number">300</span>)
+            <span class="function-name">ct_eval</span>(overwrite_timeline, <span class="string">[[next_game()]]</span>)
         <span class="keyword">end</span>
 
         <span class="comment">-- tmp collection for better clipping performance
-</span>        tmp_collection = PseudoGame.graphics.PolygonCollection:new()
+</span>        tmp_collection = PseudoGame.graphics.PolygonCollection:<span class="function-name">new</span>()
 
-        width = PseudoGame.graphics.screen:get_width()
-        height = PseudoGame.graphics.screen:get_height()
-        screen_bounds = PseudoGame.graphics.Polygon:new(
+        width = PseudoGame.graphics.screen:<span class="function-name">get_width</span>()
+        height = PseudoGame.graphics.screen:<span class="function-name">get_height</span>()
+        screen_bounds = PseudoGame.graphics.Polygon:<span class="function-name">new</span>(
             { -width / <span class="number">2</span>, -height / <span class="number">2</span>, -width / <span class="number">2</span>, height / <span class="number">2</span>, width / <span class="number">2</span>, height / <span class="number">2</span>, width / <span class="number">2</span>, -height / <span class="number">2</span> },
             { <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> }
         )
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
-<span class="keyword">function</span> onInput(frametime, movement, focus, swap)
-    width = PseudoGame.graphics.screen:get_width()
-    height = PseudoGame.graphics.screen:get_height()
+<span class="keyword">function</span> <span class="function-name">onInput</span>(frametime, movement, focus, swap)
+    width = PseudoGame.graphics.screen:<span class="function-name">get_width</span>()
+    height = PseudoGame.graphics.screen:<span class="function-name">get_height</span>()
     <span class="comment">-- update bounds with the height as well
-</span>    screen_bounds:set_vertex_pos(<span class="number">1</span>, -width / <span class="number">2</span>, -height / <span class="number">2</span>)
-    screen_bounds:set_vertex_pos(<span class="number">2</span>, -width / <span class="number">2</span>, height / <span class="number">2</span>)
-    screen_bounds:set_vertex_pos(<span class="number">3</span>, width / <span class="number">2</span>, height / <span class="number">2</span>)
-    screen_bounds:set_vertex_pos(<span class="number">4</span>, width / <span class="number">2</span>, -height / <span class="number">2</span>)
+</span>    screen_bounds:<span class="function-name">set_vertex_pos</span>(<span class="number">1</span>, -width / <span class="number">2</span>, -height / <span class="number">2</span>)
+    screen_bounds:<span class="function-name">set_vertex_pos</span>(<span class="number">2</span>, -width / <span class="number">2</span>, height / <span class="number">2</span>)
+    screen_bounds:<span class="function-name">set_vertex_pos</span>(<span class="number">3</span>, width / <span class="number">2</span>, height / <span class="number">2</span>)
+    screen_bounds:<span class="function-name">set_vertex_pos</span>(<span class="number">4</span>, width / <span class="number">2</span>, -height / <span class="number">2</span>)
 
     <span class="keyword">local</span> game_width = width / #game_grid[<span class="number">1</span>]
     <span class="keyword">local</span> game_height = height / #game_grid
     <span class="keyword">local</span> to_side = -width / <span class="number">2</span> + game_width / <span class="number">2</span>
     <span class="keyword">local</span> to_top = -height / <span class="number">2</span> + game_height / <span class="number">2</span>
-    <span class="keyword">local</span> tmp_gen = tmp_collection:generator()
+    <span class="keyword">local</span> tmp_gen = tmp_collection:<span class="function-name">generator</span>()
 
     <span class="comment">-- update current game
-</span>    game:update(frametime, movement, focus, swap)
+</span>    game:<span class="function-name">update</span>(frametime, movement, focus, swap)
     rotation_values[current_index] = rotation_values[current_index] + frametime / <span class="number">60</span>
 
     <span class="comment">-- draw games
 </span>    <span class="keyword">for</span> j = <span class="number">1</span>, #game_grid <span class="keyword">do</span>
         <span class="keyword">local</span> row = game_grid[j]
         <span class="keyword">for</span> i = <span class="number">1</span>, #row <span class="keyword">do</span>
-            row[i]:draw()
-            <span class="keyword">for</span> polygon <span class="keyword">in</span> row[i].polygon_collection:iter() <span class="keyword">do</span>
+            row[i]:<span class="function-name">draw</span>()
+            <span class="keyword">for</span> polygon <span class="keyword">in</span> row[i].polygon_collection:<span class="function-name">iter</span>() <span class="keyword">do</span>
                 <span class="keyword">local</span> in_polygon
 
                 <span class="comment">-- apply rotation before clipping if rotation is enabled
 </span>                <span class="keyword">if</span> rot_disabled <span class="keyword">then</span>
-                    in_polygon = polygon:clip(screen_bounds, tmp_gen)
+                    in_polygon = polygon:<span class="function-name">clip</span>(screen_bounds, tmp_gen)
                 <span class="keyword">else</span>
-                    <span class="keyword">local</span> new_polygon = tmp_gen()
-                    new_polygon:copy_data_transformed(
+                    <span class="keyword">local</span> new_polygon = <span class="function-name">tmp_gen</span>()
+                    new_polygon:<span class="function-name">copy_data_transformed</span>(
                         polygon,
-                        PseudoGame.graphics.effects:rotate(rotation_values[(j - <span class="number">1</span>) * #game_grid[<span class="number">1</span>] + i])
+                        PseudoGame.graphics.effects:<span class="function-name">rotate</span>(rotation_values[(j - <span class="number">1</span>) * #game_grid[<span class="number">1</span>] + i])
                     )
-                    in_polygon = new_polygon:clip(screen_bounds, tmp_gen)
+                    in_polygon = new_polygon:<span class="function-name">clip</span>(screen_bounds, tmp_gen)
                 <span class="keyword">end</span>
 
                 <span class="comment">-- if polygon is within clipping area, transform it to its part in the grid and draw it
 </span>                <span class="keyword">if</span> in_polygon ~= <span class="keyword">nil</span> <span class="keyword">then</span>
-                    in_polygon:transform(<span class="keyword">function</span>(x, y, r, g, b, a)
+                    in_polygon:<span class="function-name">transform</span>(<span class="keyword">function</span>(x, y, r, g, b, a)
                         <span class="keyword">return</span> x / #game_grid[<span class="number">1</span>] + to_side + (i - <span class="number">1</span>) * game_width,
                             y / #game_grid + to_top + (j - <span class="number">1</span>) * game_height,
                             r,
@@ -290,59 +290,59 @@ achievementUnlocked = <span class="keyword">false</span>
                             b,
                             a
                     <span class="keyword">end</span>)
-                    PseudoGame.graphics.screen:draw_polygon(in_polygon)
+                    PseudoGame.graphics.screen:<span class="function-name">draw_polygon</span>(in_polygon)
                 <span class="keyword">end</span>
             <span class="keyword">end</span>
         <span class="keyword">end</span>
     <span class="keyword">end</span>
 
     <span class="comment">-- update the screen
-</span>    PseudoGame.graphics.screen:update()
+</span>    PseudoGame.graphics.screen:<span class="function-name">update</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect when the player dies
-</span><span class="keyword">function</span> onDeath()
+</span><span class="keyword">function</span> <span class="function-name">onDeath</span>()
     <span class="keyword">for</span> i = <span class="number">1</span>, #games <span class="keyword">do</span>
-        games[i].death_effect:death()
+        games[i].death_effect:<span class="function-name">death</span>()
     <span class="keyword">end</span>
-    s_set3dPulseSpeed(<span class="number">0</span>)
+    <span class="function-name">s_set3dPulseSpeed</span>(<span class="number">0</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect for 5/3 seconds when dying in invincible mode (that's what the real game does)
-</span><span class="keyword">function</span> onPreDeath()
-    game.death_effect:invincible_death()
+</span><span class="keyword">function</span> <span class="function-name">onPreDeath</span>()
+    game.death_effect:<span class="function-name">invincible_death</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- show and update the death effect even in the death screen
-</span><span class="keyword">function</span> onRenderStage(render_stage, frametime)
-    game.death_effect:ensure_tickrate(render_stage, frametime, <span class="keyword">function</span>(new_frametime)
+</span><span class="keyword">function</span> <span class="function-name">onRenderStage</span>(render_stage, frametime)
+    game.death_effect:<span class="function-name">ensure_tickrate</span>(render_stage, frametime, <span class="keyword">function</span>(new_frametime)
         <span class="comment">-- updating and drawing the game again is required for the death effect to show properly
 </span>        <span class="comment">-- (make sure no game logic is progressing if <code>game.death_effect.dead == true</code>)
-</span>        onInput(new_frametime, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
+</span>        <span class="function-name">onInput</span>(new_frametime, <span class="number">0</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)
     <span class="keyword">end</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
-</span><span class="keyword">function</span> onLoad()
-    e_messageAdd(<span class="string">"welcome to the sixth PseudoGame example level"</span>, <span class="number">150</span>)
-    e_messageAdd(<span class="string">"This example is using multiple game objects."</span>, <span class="number">200</span>)
+</span><span class="keyword">function</span> <span class="function-name">onLoad</span>()
+    <span class="function-name">e_messageAdd</span>(<span class="string">"welcome to the sixth PseudoGame example level"</span>, <span class="number">150</span>)
+    <span class="function-name">e_messageAdd</span>(<span class="string">"This example is using multiple game objects."</span>, <span class="number">200</span>)
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onIncrement</code> is an hardcoded function that is called when the level
 </span><span class="comment">-- difficulty is incremented.
-</span><span class="keyword">function</span> onIncrement()
+</span><span class="keyword">function</span> <span class="function-name">onIncrement</span>()
     <span class="comment">-- ...
 </span><span class="keyword">end</span>
 
-<span class="keyword">function</span> onPreUnload()
+<span class="keyword">function</span> <span class="function-name">onPreUnload</span>()
     <span class="comment">-- overwriting game functions may cause issues, so it's important to undo it
-</span>    game:restore()
+</span>    game:<span class="function-name">restore</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onUpdate</code> is an hardcoded function that is called every frame. <code>mFrameTime</code>
 </span><span class="comment">-- represents the time delta between the current and previous frame.
-</span><span class="keyword">function</span> onUpdate(mFrameTime)
+</span><span class="keyword">function</span> <span class="function-name">onUpdate</span>(mFrameTime)
     <span class="comment">-- ...
 </span><span class="keyword">end</span></pre>
 
@@ -350,7 +350,7 @@ achievementUnlocked = <span class="keyword">false</span>
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.5.0</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 
