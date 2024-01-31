@@ -5,7 +5,6 @@ u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "common.lua")
 u_execDependencyScript("ohvrvanilla", "base", "vittorio romeo", "commonpatterns.lua")
 u_execDependencyScript("library_pseudogame", "pseudogame", "Baum", "main.lua")
 
--- remove 3d as it would look very weird
 s_set3dDepth(3)
 s_set3dSpacing(10)
 
