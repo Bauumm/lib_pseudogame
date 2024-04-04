@@ -187,6 +187,7 @@ function PseudoGame.game.Game:_init()
             self.pseudo3d:update()
         end
     end
+    self.last_style = self.style
 end
 
 --[[--
@@ -222,6 +223,14 @@ end
 -- @tparam bool focus  true if the player is focusing, false otherwise
 -- @tparam bool swap  true if the swap key is pressed, false otherwise
 function PseudoGame.game.Game:update(frametime, move, focus, swap)
+    if self.style ~= self.last_style then
+        self.last_style = self.style
+        self.background.style = self.style
+        self.walls.style = self.style
+        self.player.style = self.style
+        self.pivot.style = self.style
+        self.pseudo3d.style = self.style
+    end
     self._frametime = frametime
     self._move = move
     self._focus = focus
