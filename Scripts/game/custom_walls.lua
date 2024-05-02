@@ -45,7 +45,7 @@ function PseudoGame.game.overwrite_cw_functions(polygon_collection)
         cw_create = function()
             local polygon = PseudoGame.graphics.Polygon:new(
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                { 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255 }
             )
             polygon.extra_data = { collision = true, deadly = false, killing_side = 0 }
             return polygon_collection:add(polygon)
@@ -53,7 +53,7 @@ function PseudoGame.game.overwrite_cw_functions(polygon_collection)
         cw_createDeadly = function()
             local polygon = PseudoGame.graphics.Polygon:new(
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                { 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255 }
             )
             polygon.extra_data = { collision = false, deadly = true, killing_side = 0 }
             return polygon_collection:add(polygon)
@@ -61,7 +61,7 @@ function PseudoGame.game.overwrite_cw_functions(polygon_collection)
         cw_createNoCollision = function()
             local polygon = PseudoGame.graphics.Polygon:new(
                 { 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                { 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255 }
             )
             polygon.extra_data = { collision = false, deadly = false, killing_side = 0 }
             return polygon_collection:add(polygon)
