@@ -229,6 +229,7 @@ function PseudoGame.game.Game:update(frametime, move, focus, swap)
         self.walls.style = self.style
         self.player.style = self.style
         self.pivot.style = self.style
+        self.cap.style = self.style
         self.pseudo3d.style = self.style
     end
     self._frametime = frametime
