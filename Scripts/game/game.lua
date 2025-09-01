@@ -157,11 +157,13 @@ function PseudoGame.game.Game:_init()
         self.collections[#self.collections + 1] = self._player_collection
         self._component_update[#self._component_update + 1] = function(self)
             self.death_effect:update(self._frametime)
-            self._collide_collection:clear()
-            self._collide_collection:ref_add(self.walls.polygon_collection)
-            for polygon in self._cws:iter() do
-                if polygon.extra_data.collision or polygon.extra_data.deadly then
-                    self._collide_collection:add(polygon)
+            if self.options.components.walls then
+                self._collide_collection:clear()
+                self._collide_collection:ref_add(self.walls.polygon_collection)
+                for polygon in self._cws:iter() do
+                    if polygon.extra_data.collision or polygon.extra_data.deadly then
+                        self._collide_collection:add(polygon)
+                    end
                 end
             end
             self.player:update(self._frametime, self._move, self._focus, self._swap, self._collide_collection)
