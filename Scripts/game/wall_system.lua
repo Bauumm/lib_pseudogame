@@ -351,7 +351,7 @@ function PseudoGame.game.WallSystem:overwrite()
             u_clearWalls = function()
                 for i = 1, #self._walls do
                     local wall = self._walls[i]
-                    cw_destroy(wall.cw)
+                    self.polygon_collection:remove(wall.polygon)
                 end
                 self._walls = {}
             end
@@ -450,7 +450,7 @@ function PseudoGame.game.WallSystem:overwrite()
             u_clearWalls = function()
                 for i = 1, #self._walls do
                     local wall = self._walls[i]
-                    cw_destroy(wall.cw)
+                    self.polygon_collection:remove(wall.polygon)
                 end
                 self._walls = {}
             end
