@@ -1,0 +1,12 @@
+{
+    "id": "pg_perspective_transform",
+    "name": "Perspective Transformation",
+    "description": "example level using pseudogame to make a perspective transformation",
+    "author": "Baum (Original example by vee)",
+    "menuPriority": 13,
+    "selectable": true,
+    "styleId": "examplelevel",
+    "musicId": "jackRussel",
+    "luaFile": "Scripts/Levels/perspective_transform.lua",
+    "difficultyMults": []
+}
