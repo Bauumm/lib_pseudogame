@@ -84,26 +84,16 @@ function PseudoGame.game.overwrite_cw_functions(polygon_collection)
             local x, y = polygon:get_vertex_pos(vertex + 1)
             polygon:set_vertex_pos(vertex + 1, x + offset_x, y + offset_y)
         end
-        cw_moveVertexPos4Same = function(
-            handle,
-            offset_x0,
-            offset_y0,
-            offset_x1,
-            offset_y1,
-            offset_x2,
-            offset_y2,
-            offset_x3,
-            offset_y3
-        )
+        cw_moveVertexPos4Same = function(handle, offset_x, offset_y)
             local polygon = polygon_by_index(handle)
             local x0, y0 = polygon:get_vertex_pos(1)
             local x1, y1 = polygon:get_vertex_pos(2)
             local x2, y2 = polygon:get_vertex_pos(3)
             local x3, y3 = polygon:get_vertex_pos(4)
-            polygon:set_vertex_pos(1, x0 + offset_x0, y0 + offset_y0)
-            polygon:set_vertex_pos(2, x1 + offset_x1, y1 + offset_y1)
-            polygon:set_vertex_pos(3, x2 + offset_x2, y2 + offset_y2)
-            polygon:set_vertex_pos(4, x3 + offset_x3, y3 + offset_y3)
+            polygon:set_vertex_pos(1, x0 + offset_x, y0 + offset_y)
+            polygon:set_vertex_pos(2, x1 + offset_x, y1 + offset_y)
+            polygon:set_vertex_pos(3, x2 + offset_x, y2 + offset_y)
+            polygon:set_vertex_pos(4, x3 + offset_x, y3 + offset_y)
         end
         cw_setVertexColor = function(handle, vertex, r, g, b, a)
             polygon_by_index(handle):set_vertex_color(vertex + 1, r, g, b, a)
