@@ -3,6 +3,8 @@
 A library reimplementing some game components on top of a custom rendering system based on custom walls.
 ## Documentation
 The ldoc generated documentation is hosted using github pages [here](https://bauumm.github.io/lib_pseudogame/).
+
+Here's an image showing the game components to go along with it.
 ![Image showing the game components](https://github.com/Bauumm/lib_pseudogame/blob/main/components.png)
 ## Contributing
 Contributions in the form of issues, suggestions and any kind of feedback are welcome.
