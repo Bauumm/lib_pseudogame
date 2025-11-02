@@ -3,7 +3,7 @@
 <html data-theme="monokai">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Example reverse_walls.lua - PseudoGame Documentation</title>
+    <title>Example perspective_transform.lua - PseudoGame Documentation</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -35,8 +35,8 @@
   <li><a href="../examples/height_walls.lua.html">height_walls.lua</a></li>
   <li><a href="../examples/multiple_games.lua.html">multiple_games.lua</a></li>
   <li><a href="../examples/outline_example.lua.html">outline_example.lua</a></li>
-  <li><a href="../examples/perspective_transform.lua.html">perspective_transform.lua</a></li>
-  <li><strong>reverse_walls.lua</strong></li>
+  <li><strong>perspective_transform.lua</strong></li>
+  <li><a href="../examples/reverse_walls.lua.html">reverse_walls.lua</a></li>
   <li><a href="../examples/slice_example.lua.html">slice_example.lua</a></li>
   <li><a href="../examples/style_example.lua.html">style_example.lua</a></li>
   <li><a href="../examples/true_desync_example.lua.html">true_desync_example.lua</a></li>
@@ -73,7 +73,7 @@
 
 <div id="content">
 
-    <h2>reverse_walls.lua</h2>
+    <h2>perspective_transform.lua</h2>
 <pre>
 <span class="comment">-- Include useful files or existing libraries. These are found in the <code>Scripts</code>
 </span><span class="comment">-- folder.
@@ -82,36 +82,116 @@
 <span class="function-name">u_execDependencyScript</span>(<span class="string">"ohvrvanilla"</span>, <span class="string">"base"</span>, <span class="string">"vittorio romeo"</span>, <span class="string">"commonpatterns.lua"</span>)
 <span class="function-name">u_execDependencyScript</span>(<span class="string">"library_pseudogame"</span>, <span class="string">"pseudogame"</span>, <span class="string">"Baum"</span>, <span class="string">"main.lua"</span>)
 
+<span class="comment">-- remove them, so we can make our own
+</span><span class="function-name">s_set3dDepth</span>(<span class="number">0</span>)
+
 <span class="comment">-- hide the real game
 </span>PseudoGame.<span class="function-name">hide_default_game</span>()
 
 <span class="comment">-- create a fake game
-</span>game = PseudoGame.game.Game:<span class="function-name">new</span>({
-    walls = {
-        <span class="comment">-- make walls go the other way
-</span>        reverse_direction = <span class="keyword">true</span>,
-    },
-    player = {
-        <span class="comment">-- make the player be on the edge of the screen
-</span>        reverse = <span class="keyword">true</span>,
-
-        <span class="comment">-- overwrite the radius the player moves on (negative for inward facing player)
-</span>        radius = -<span class="number">400</span>,
-
-        <span class="comment">-- reset the collision handler since we overwrote default settings
-</span>        collision_handler = PseudoGame.game.basic_collision_handler,
+</span><span class="keyword">local</span> game = PseudoGame.game.Game:<span class="function-name">new</span>({
+    components = {
+        background = <span class="keyword">true</span>,
+        walls = <span class="keyword">true</span>,
+        player = <span class="keyword">true</span>,
+        pivot = <span class="keyword">true</span>,
+        pseudo3d = <span class="keyword">false</span>,
     },
 })
 
 <span class="comment">-- overwrite the real game's functions (mostly wall functions)
 </span>game:<span class="function-name">overwrite</span>()
 
+<span class="comment">-- project coordinates
+</span><span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">perspective</span>(x, y, z)
+    <span class="keyword">if</span> z &lt; <span class="number">1e-9</span> <span class="keyword">then</span>
+        z = <span class="number">1e-9</span>
+    <span class="keyword">end</span>
+    <span class="keyword">return</span> x / z, y / z
+<span class="keyword">end</span>
+
+<span class="comment">-- cache for transformed collections, indexed by the original ones
+</span><span class="keyword">local</span> transformed_collections = {}
+
+<span class="comment">-- draws a polygon collection at a certain depth, also animates a few values, optionally takes an overwrite color
+</span><span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">transform_and_draw_collection</span>(collection, depth, r, g, b, a)
+    <span class="comment">-- animate using a sine curve
+</span>    <span class="keyword">local</span> animation_factor = <span class="global">math</span>.<span class="function-name">sin</span>(<span class="function-name">l_getLevelTime</span>())
+    <span class="comment">-- rotate by -45..45° depending on animation_factor
+</span>    <span class="keyword">local</span> rotate = PseudoGame.graphics.effects:<span class="function-name">rotate</span>(<span class="global">math</span>.<span class="function-name">rad</span>(animation_factor * <span class="number">45</span>))
+
+    <span class="comment">-- get dimensions
+</span>    <span class="keyword">local</span> width = PseudoGame.graphics.screen:<span class="function-name">get_width</span>()
+    <span class="keyword">local</span> height = PseudoGame.graphics.screen:<span class="function-name">get_height</span>()
+
+    <span class="comment">-- define the transformation function once instead of every time in the loop
+</span>    <span class="keyword">local</span> <span class="keyword">function</span> <span class="function-name">transformation</span>(x, y, ...)
+        <span class="comment">-- normalize coordinates based on screen dimensions (-0.5..0.5 range)
+</span>        x = x / width
+        y = y / height
+
+        <span class="comment">-- move camera across screen to improve visibility (since the angle changes as well)
+</span>        <span class="comment">-- (note that the concept of camera doesn't really exist, we are just transforming everything
+</span>        <span class="comment">--  to the viewport rather than moving some kind of observer (This is how all 3D rendering works))
+</span>        y = y + animation_factor * <span class="number">0.6</span>
+
+        <span class="comment">-- define a depth the polygons in this collection are supposed to have
+</span>        <span class="comment">-- (increasing depth in the middle of the animation makes it look more natural)
+</span>        <span class="keyword">local</span> z = depth + <span class="number">0.5</span> * (<span class="number">1.2</span> - <span class="global">math</span>.<span class="function-name">abs</span>(animation_factor))
+
+        <span class="comment">-- actually apply the rotation using the function we generated above
+</span>        y, z = <span class="function-name">rotate</span>(y, z)
+
+        <span class="comment">-- project the 3D coordinates onto a 2D plane
+</span>        x, y = <span class="function-name">perspective</span>(x, y, z)
+
+        <span class="comment">-- return values with overwritten color if given
+</span>        <span class="comment">-- also multiply by screen dimensions to undo normalization
+</span>        <span class="keyword">if</span> r <span class="keyword">then</span>
+            <span class="keyword">return</span> x * width, y * height, r, g, b, a
+        <span class="keyword">end</span>
+        <span class="keyword">return</span> x * width, y * height, ...
+    <span class="keyword">end</span>
+
+    <span class="comment">-- cache the transformed collections in a table (recreating them every frame would be very inefficient)
+</span>    transformed_collections[collection] = transformed_collections[collection]
+        <span class="keyword">or</span> PseudoGame.graphics.PolygonCollection:<span class="function-name">new</span>()
+    <span class="keyword">local</span> transformed = transformed_collections[collection]
+
+    <span class="comment">-- copy the polygon data from the original collection and transform it
+</span>    <span class="keyword">local</span> gen = transformed:<span class="function-name">generator</span>()
+    <span class="keyword">for</span> polygon <span class="keyword">in</span> collection:<span class="function-name">iter</span>() <span class="keyword">do</span>
+        <span class="function-name">gen</span>():<span class="function-name">copy_data_transformed</span>(polygon, transformation)
+    <span class="keyword">end</span>
+
+    <span class="comment">-- draw the transformed collection
+</span>    PseudoGame.graphics.screen:<span class="function-name">draw_polygon_collection</span>(transformed)
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> custom3D = PseudoGame.graphics.PolygonCollection:<span class="function-name">new</span>()
+
 <span class="keyword">function</span> <span class="function-name">onInput</span>(frametime, movement, focus, swap)
     <span class="comment">-- update our game
 </span>    game:<span class="function-name">update</span>(frametime, movement, focus, swap)
 
-    <span class="comment">-- draw the game to the screen
-</span>    game:<span class="function-name">draw_to_screen</span>()
+    <span class="comment">-- create a custom 3D collection so we can make the transformations ourselves
+</span>    custom3D:<span class="function-name">clear</span>()
+    custom3D:<span class="function-name">ref_add</span>(game.component_collections.walls)
+    <span class="comment">-- game.component_collections.pivot also contains the cap which we don't want here
+</span>    custom3D:<span class="function-name">ref_add</span>(game.pivot.polygon_collection)
+    custom3D:<span class="function-name">ref_add</span>(game.component_collections.player)
+
+    <span class="comment">-- transform and draw game collections
+</span>    <span class="function-name">transform_and_draw_collection</span>(game.component_collections.background, <span class="number">1.2</span>)
+    <span class="function-name">transform_and_draw_collection</span>(custom3D, <span class="number">1.2</span>, game.style:<span class="function-name">get_layer_color</span>(<span class="number">3</span>))
+    <span class="function-name">transform_and_draw_collection</span>(custom3D, <span class="number">1.0</span>, game.style:<span class="function-name">get_layer_color</span>(<span class="number">2</span>))
+    <span class="function-name">transform_and_draw_collection</span>(custom3D, <span class="number">0.8</span>, game.style:<span class="function-name">get_layer_color</span>(<span class="number">1</span>))
+    <span class="function-name">transform_and_draw_collection</span>(game.component_collections.walls, <span class="number">0.6</span>)
+    <span class="function-name">transform_and_draw_collection</span>(game.component_collections.pivot, <span class="number">0.6</span>)
+    <span class="function-name">transform_and_draw_collection</span>(game.component_collections.player, <span class="number">0.6</span>)
+
+    <span class="comment">-- update the screen
+</span>    PseudoGame.graphics.screen:<span class="function-name">update</span>()
 <span class="keyword">end</span>
 
 <span class="comment">-- show a death effect when the player dies
@@ -161,12 +241,16 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="comment">-- <code>onInit</code> is an hardcoded function that is called when the level is first
 </span><span class="comment">-- loaded. This can be used to setup initial level parameters.
 </span><span class="keyword">function</span> <span class="function-name">onInit</span>()
-    <span class="function-name">l_setSpeedMult</span>(<span class="number">1.25</span>)
+    <span class="function-name">l_setSpeedMult</span>(<span class="number">1.55</span>)
     <span class="function-name">l_setSpeedInc</span>(<span class="number">0.125</span>)
-    <span class="function-name">l_setSpeedMax</span>(<span class="number">2</span>)
-    <span class="function-name">l_setRotationSpeed</span>(<span class="number">0.07</span>)
+    <span class="function-name">l_setSpeedMax</span>(<span class="number">3.5</span>)
+
+    <span class="comment">-- in this example the rotation that is applied on top of the level
+</span>    <span class="comment">-- essentially makes the camera roll, which might feel a bit unusual
+</span>    <span class="function-name">l_setRotationSpeed</span>(<span class="number">0.07</span>)
     <span class="function-name">l_setRotationSpeedMax</span>(<span class="number">0.75</span>)
     <span class="function-name">l_setRotationSpeedInc</span>(<span class="number">0.04</span>)
+
     <span class="function-name">l_setDelayMult</span>(<span class="number">1.0</span>)
     <span class="function-name">l_setDelayInc</span>(-<span class="number">0.01</span>)
     <span class="function-name">l_setFastSpin</span>(<span class="number">0.0</span>)
@@ -175,13 +259,13 @@ achievementUnlocked = <span class="keyword">false</span>
     <span class="function-name">l_setSidesMax</span>(<span class="number">6</span>)
     <span class="function-name">l_setIncTime</span>(<span class="number">15</span>)
 
-    <span class="function-name">l_setPulseMin</span>(<span class="number">75</span>)
-    <span class="function-name">l_setPulseMax</span>(<span class="number">91</span>)
+    <span class="function-name">l_setPulseMin</span>(<span class="number">80</span>)
+    <span class="function-name">l_setPulseMax</span>(<span class="number">80</span>)
     <span class="function-name">l_setPulseSpeed</span>(<span class="number">1.2</span>)
     <span class="function-name">l_setPulseSpeedR</span>(<span class="number">1</span>)
     <span class="function-name">l_setPulseDelayMax</span>(<span class="number">23.9</span>)
 
-    <span class="function-name">l_setBeatPulseMax</span>(<span class="number">17</span>)
+    <span class="function-name">l_setBeatPulseMax</span>(<span class="number">0</span>)
     <span class="function-name">l_setBeatPulseDelayMax</span>(<span class="number">24.8</span>)
 
     <span class="function-name">enableSwapIfDMGreaterThan</span>(<span class="number">2.5</span>)
@@ -191,8 +275,12 @@ achievementUnlocked = <span class="keyword">false</span>
 <span class="comment">-- <code>onLoad</code> is an hardcoded function that is called when the level is started
 </span><span class="comment">-- or restarted.
 </span><span class="keyword">function</span> <span class="function-name">onLoad</span>()
-    <span class="function-name">e_messageAdd</span>(<span class="string">"welcome to the eight PseudoGame example level"</span>, <span class="number">150</span>)
-    <span class="function-name">e_messageAdd</span>(<span class="string">"Here the wall direction and the player are reversed."</span>, <span class="number">200</span>)
+    <span class="function-name">e_messageAdd</span>(<span class="string">"welcome to the 13th PseudoGame example level"</span>, <span class="number">150</span>)
+    <span class="function-name">e_messageAdd</span>(<span class="string">"Here transformations are used in a more\nadvanced way to create a 3D effect!"</span>, <span class="number">200</span>)
+    <span class="function-name">e_messageAdd</span>(
+        <span class="string">"This doesn't really demonstrate any new\nfeatures though, it's still all just basic transformations."</span>,
+        <span class="number">400</span>
+    )
 <span class="keyword">end</span>
 
 <span class="comment">-- <code>onStep</code> is an hardcoded function that is called when the level "timeline"
