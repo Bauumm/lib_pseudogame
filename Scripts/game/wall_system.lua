@@ -65,7 +65,8 @@ function PseudoGame.game.WallSystem:wall(
     min_speed,
     max_speed,
     ping_pong,
-    curving
+    curving,
+    speed_data_wall_thing
 )
     hue_modifier = hue_modifier or 0
     side = math.floor(side)
@@ -91,9 +92,11 @@ function PseudoGame.game.WallSystem:wall(
     )
     if not curving then
         speed_mult = speed_mult * u_getSpeedMultDM()
-        acceleration = acceleration / (u_getDifficultyMult() ^ 0.65)
-        min_speed = min_speed * u_getSpeedMultDM()
-        max_speed = max_speed * u_getSpeedMultDM()
+        if not speed_data_wall_thing then
+            acceleration = acceleration / (u_getDifficultyMult() ^ 0.65)
+            min_speed = min_speed * u_getSpeedMultDM()
+            max_speed = max_speed * u_getSpeedMultDM()
+        end
     end
     local wall_table = {
         polygon = self.polygon_collection:add(polygon),
@@ -319,7 +322,9 @@ function PseudoGame.game.WallSystem:overwrite()
                         acceleration,
                         min_speed,
                         max_speed,
-                        ping_pong
+                        ping_pong,
+                        false,
+                        true
                     )
                 end)
             end
@@ -344,6 +349,7 @@ function PseudoGame.game.WallSystem:overwrite()
                         min_speed,
                         max_speed,
                         ping_pong,
+                        true,
                         true
                     )
                 end)
