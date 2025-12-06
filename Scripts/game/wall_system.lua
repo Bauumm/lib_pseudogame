@@ -420,7 +420,7 @@ function PseudoGame.game.WallSystem:overwrite()
                         .. max_speed
                         .. ", "
                         .. (ping_pong and "true" or "false")
-                        .. ")"
+                        .. ", false, true)"
                 )
             end
             w_wallHModCurveData = function(
