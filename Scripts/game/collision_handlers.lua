@@ -2,7 +2,7 @@
 -- @module PseudoGame.game.collision_handlers
 
 --- A function that handles collision of some polygons with a player
--- @tparam Player frametime  the time in 1/60s since the last call of this function
+-- @tparam number frametime  the time in 1/60s since the last call of this function
 -- @tparam Player player  the player to handle collisions for (it may be moved in the process)
 -- @tparam PolygonCollection collide_collection  the collection of polygons to collide with
 -- @treturn bool  determines if the player should be killed
